@@ -2,13 +2,12 @@
 %define _prefix /opt/baltrad/%{name}
 
 Name: bropo
-Version: 0.0.38
-Release: 1%{?dist}
+Version: %{version}
+Release: %{snapshot}%{?dist}
 Summary: Baltrad version of the FMI Anomaly detection and removal package ROPO
 License: GPL-3 and LGPL-3
 URL: http://www.baltrad.eu/
 Source0: %{name}-%{version}.tar.gz
-Patch1: %{name}-DESTDIR-support.patch
 BuildRequires: rave-devel
 BuildRequires: libpng-devel
 # pyropo
@@ -30,7 +29,6 @@ RAVE development headers and libraries.
 
 %prep
 %setup -q
-%patch1 -p1
 
 %build
 %configure --with-rave=/opt/baltrad/rave

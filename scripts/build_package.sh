@@ -12,7 +12,7 @@ BUILD_NUMBER=$2
 NODE_NAME=$3
 PACKAGE_VERSION=`cat packages/$PACKAGE_NAME/package.ini | grep pkg_version | sed -e"s/pkg_version=//g"`
 GIT_URI=`cat packages/$PACKAGE_NAME/package.ini | grep git_uri | sed -e"s/git_uri=//g"`
-SPECFILE=packages/$PACKAGENAME/`cat packages/$PACKAGE_NAME/package.ini | grep spec_file | sed -e"s/spec_file=//g"`
+SPECFILE=$PACKAGENAME/`cat packages/$PACKAGE_NAME/package.ini | grep spec_file | sed -e"s/spec_file=//g"`
 INSTALL_ARTIFACTS=`cat packages/$PACKAGE_NAME/package.ini | grep install_artifacts | sed -e"s/install_artifacts=//g"`
 
 if [ "$PACKAGE_VERSION" = "" -o "$GIT_URI" = "" -o "$SPECFILE" = "" -o "$INSTALL_ARTIFACTS" = "" ]; then
@@ -79,27 +79,27 @@ prepare_and_build_centos()
   if [ -f "$RPM_TOP_DIR/SOURCES/$2-$3.tar.gz" ]; then
     \rm -f "$RPM_TOP_DIR/SOURCES/$2-$3.tar.gz"
   fi
-  CFILES=`ls -1 packaging/centos/ | egrep '.conf$' | wc -l`
+  CFILES=`ls -1 "$1"/ | egrep '.conf$' | wc -l`
   if [ $CFILES -gt 0 ]; then
-    cp -f packaging/centos/*.conf "$RPM_TOP_DIR/SOURCES/"
+    cp -f "$1"/*.conf "$RPM_TOP_DIR/SOURCES/"
   fi
   #HOW DO WE DETERMINE BUILDROOT? NOW, just fake it...
-  git archive --format="tar.gz" --prefix="$2-$3/" master -o "$RPM_TOP_DIR/SOURCES/$2-$3.tar.gz"
+  git archive --format="tar.gz" --prefix="$3-$4/" master -o "$RPM_TOP_DIR/SOURCES/$3-$4.tar.gz"
   if [ $? -ne 0 ]; then
     echo "Failed to create source archive..."
     exit 127
   fi
-  rpmbuild --define="version $3" --define "snapshot $4" -v -ba $1
-  if [ $? -eq 0 -a "$5" = "true" ]; then
+  rpmbuild --define="version $4" --define "snapshot $5" -v -ba "$2"
+  if [ $? -eq 0 -a "$6" = "true" ]; then
     if [ "$RPM_PCK_DIR" != "" ]; then
-      sudo rpm -Uvh "$RPM_PCK_DIR/$2*-$3-$4*.$RPM_ARCH_DIR.rpm"
+      sudo rpm -Uvh "$RPM_PCK_DIR/$3*-$4-$5*.$RPM_ARCH_DIR.rpm"
     fi
   fi
   if [ ! -d ../../artifacts ]; then
     mkdir ../../artifacts || exit 127
   fi
   if [ "$RPM_PCK_DIR" != "" ]; then
-    mv "$RPM_PCK_DIR/$2*-$3-$4*.$RPM_ARCH_DIR.rpm" ../../artifacts/
+    mv "$RPM_PCK_DIR/$3*-$4-$5*.$RPM_ARCH_DIR.rpm" ../../artifacts/
   fi
 }
 
@@ -131,7 +131,7 @@ if [ "$OS_VARIANT" = "Ubuntu-16.04" ]; then
   prepare_and_build_debian "$PACKAGEDIR/$PACKAGE_NAME/debian" $PACKAGE_NAME $PACKAGE_VERSION-$BUILD_NUMBER $INSTALL_ARTIFACTS
 elif [ "$OS_VARIANT" = "CentOS-7" ]; then
   echo "Redhat build"
-  prepare_and_build_centos $SPECFILE $PACKAGE_NAME $PACKAGE_VERSION $BUILD_NUMBER $INSTALL_ARTIFACTS
+  prepare_and_build_centos "$PACKAGEDIR/$PACKAGE_NAME/centos" "$PACKAGEDIR/$PACKAGE_NAME/$SPECFILE" $PACKAGE_NAME $PACKAGE_VERSION $BUILD_NUMBER $INSTALL_ARTIFACTS
 fi
 
 
