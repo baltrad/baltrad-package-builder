@@ -99,7 +99,7 @@ prepare_and_build_centos()
     mkdir ../../artifacts || exit 127
   fi
   if [ "$RPM_PCK_DIR" != "" ]; then
-    mv "$RPM_PCK_DIR/$3*-$4-$5*.$RPM_ARCH_DIR.rpm" ../../artifacts/
+    mv "$RPM_PCK_DIR"/$3*-$4-$5*.$RPM_ARCH_DIR.rpm ../../artifacts/
   fi
 }
 
