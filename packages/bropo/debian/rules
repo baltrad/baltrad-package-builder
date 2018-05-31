@@ -1,0 +1,40 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+# Sample debian/rules that uses debhelper.
+# This file was originally written by Joey Hess and Craig Small.
+# As a special exception, when this file is copied by dh-make into a
+# dh-make output file, you may use that output file without restriction.
+# This special exception was added by Craig Small in version 0.37 of dh-make.
+
+# Uncomment this to turn on verbose mode.
+export DH_VERBOSE=1
+export DH_OPTIONS=-v
+#BUILDROOT=/usr/src/packages/BUILD/debian/tmp
+BUILDROOT=/tmp/baltrad-builds
+%:
+	dh $@ --with python2
+override_dh_auto_configure:
+	./configure --prefix=/opt/baltrad/bropo --with-rave=/opt/baltrad/rave
+override_dh_auto_build:
+	make
+override_dh_installdirs:
+	mkdir -p $(BUILDROOT)/opt/baltrad/bropo
+	echo "/opt/baltrad/bropo/lib">> $(BUILDROOT)/etc/ld.so.conf.d/bropo.conf
+override_dh_auto_install:
+	$(MAKE) DESTDIR=$(BUILDROOT) prefix=/opt/baltrad/bropo install
+override_dh_auto_clean:
+	
+override_dh_auto_test:
+	
+override_dh_shlibdeps:
+	dh_shlibdeps -l /opt/baltrad/hlhdf/default/lib:$(BUILDROOT)/opt/baltrad/bropo/lib:/opt/baltrad/rave/Lib:/opt/baltrad/rave/lib
+
+override_dh_install:
+	dh_python2
+	dh_numpy
+	dh_install --sourcedir=$(BUILDROOT)
+	dh_link
+
+build:
+	dh build
+

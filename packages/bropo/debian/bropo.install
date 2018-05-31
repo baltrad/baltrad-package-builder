@@ -1,0 +1,7 @@
+opt/baltrad/bropo/bin/ropo
+opt/baltrad/bropo/lib/libbropo.so
+opt/baltrad/bropo/share/bropo/config/ropo_options.xml
+opt/baltrad/bropo/share/bropo/pyropo/ropo_*.py
+opt/baltrad/bropo/share/bropo/pyropo/_fmiimage.so
+opt/baltrad/bropo/share/bropo/pyropo/_ropogenerator.so
+usr/lib/python2.7/site-packages/pyropo.pth usr/lib/python2.7/dist-packages/
