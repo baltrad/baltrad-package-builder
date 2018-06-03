@@ -1,0 +1,41 @@
+baltrad-db (0.0.378-1) stable; urgency=high
+
+  * Added python-distribute to dependencies
+
+ -- Povi Software LLC <laur@baltrad.eu>  Sun, 03 Nov 2013 13:05:27 +0200
+
+baltrad-db (0.0.377-6) stable; urgency=high
+
+  * Added python-distribute to dependencies
+
+ -- Povi Software LLC <laur@baltrad.eu>  Tue, 12 Aug 2013 14:38:34 +0300
+ 
+baltrad-db (0.0.377-5) stable; urgency=high
+
+  * Added backported python-daemon to dependencies
+
+ -- Povi Software LLC <laur@baltrad.eu>  Mon, 12 Aug 2013 22:50:23 +0300
+ 
+baltrad-db (0.0.377-4) stable; urgency=high
+
+  * Added needed Python modules in dependencies
+
+ -- Povi Software LLC <laur@baltrad.eu>  Sun, 11 Aug 2013 20:40:02 +0300
+ 
+baltrad-db (0.0.377-3) stable; urgency=high
+
+  * Packaging bugs fixed in regards to python egg files
+
+ -- Povi Software LLC <laur@baltrad.eu>  Sun, 04 Aug 2013 23:12:03 +0300
+
+baltrad-db (0.0.377-2) stable; urgency=high
+
+  * Packaging bugs fixed
+
+ -- Povi Software LLC <laur@baltrad.eu>  Tue, 30 Jul 2013 13:06:19 +0300
+
+baltrad-db (0.0.377-1) stable; urgency=low
+
+  * Initial release
+
+ -- Povi Software LLC <laur@baltrad.eu>  Wed, 29 May 2013 16:05:23 +0300

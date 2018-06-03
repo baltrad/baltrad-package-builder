@@ -1,0 +1,23 @@
+Source: baltrad-db
+Section: science
+Priority: extra
+Maintainer: Povi Software LLC <laur@baltrad.eu>
+Build-Depends: debhelper (>= 8.0.0),  openjdk-7-jdk, ant, python2.7-dev, python-setuptools
+#, javahelper
+Standards-Version: 3.9.4
+X-Python-Version: >=2.7
+
+Package: baltrad-db
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, python, python-progressbar, python-psycopg2, python-migrate, python-werkzeug, python-daemon (>=1.6.0), python-keyczar (>=0.7.1), jprops, python-distribute, postgresql, libpostgresql-jdbc-java, python-cherrypy3
+Description: High Level Interface to the HDF5 File Format
+
+Package: baltrad-db-java
+Architecture: any
+Depends: ${java:Depends}, ${misc:Depends}, openjdk-7-jre, baltrad-db, tomcat6, tomcat6-admin
+Description: High Level Interface to the HDF5 File Format
+
+Package: baltrad-db-external
+Architecture: any
+Depends: openjdk-7-jre, ${misc:Depends}, baltrad-db
+Description: High Level Interface to the HDF5 File Format

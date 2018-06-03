@@ -1,0 +1,36 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+# Sample debian/rules that uses debhelper.
+# This file was originally written by Joey Hess and Craig Small.
+# As a special exception, when this file is copied by dh-make into a
+# dh-make output file, you may use that output file without restriction.
+# This special exception was added by Craig Small in version 0.37 of dh-make.
+
+# Uncomment this to turn on verbose mode.
+export DH_VERBOSE=1
+export DH_OPTIONS=-v
+JAVA_HOME=/usr/lib/jvm/default-java
+INSTALLROOT=/usr/src/packages/BUILD/debian/tmp
+COMMONDIR=$(CURDIR)/common
+SERVERDIR=$(CURDIR)/server
+PYTHONCLIENT=$(CURDIR)/client/python
+JAVACLIENT=$(CURDIR)/client/java
+DEBROOT=$(CURDIR)/debian/tmp
+
+%:
+	dh $@ --with python2
+override_dh_auto_build:
+	cd $(COMMONDIR); python setup.py build
+	cd $(SERVERDIR); python setup.py build
+	cd $(PYTHONCLIENT); python setup.py build
+	cd $(JAVACLIENT); ant
+override_dh_auto_install:
+	cd $(COMMONDIR); python setup.py install --skip-build --root $(CURDIR)/debian/tmp
+	cd $(SERVERDIR); python setup.py install --skip-build --root $(CURDIR)/debian/tmp
+	cd $(PYTHONCLIENT); python setup.py install --skip-build --root $(CURDIR)/debian/tmp
+	mkdir -p $(DEBROOT)/opt/baltrad/share/baltrad-bdb/java
+	cd $(JAVACLIENT); cp -p dist/*.jar $(DEBROOT)/opt/baltrad/share/baltrad-bdb/java/
+	mkdir -p $(DEBROOT)/opt/baltrad/share/baltrad-bdb/java/libs
+	cp -p $(JAVACLIENT)/lib/commons/commons-lang3-3.1.jar $(DEBROOT)/opt/baltrad/share/baltrad-bdb/java/libs
+	cp -p $(JAVACLIENT)/lib/joda-time/joda-time-2.0.jar $(DEBROOT)/opt/baltrad/share/baltrad-bdb/java/libs
+	ls -lR $(DEBROOT)
