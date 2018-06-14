@@ -1,0 +1,59 @@
+To get started there are a few dependencies that has to be installed before atempting
+to build the various packages.
+
+On Ubuntu 16.04/18.04
+
+%> sudo apt-get install git
+%> sudo apt-get install python
+%> sudo apt-get install devscripts build-essential lintian
+%> sudo apt-get install openjdk-8-jdk python2.7-dev python-setuptools
+%> sudo apt-get install python-pip
+%> sudo -H pip install jprops
+
+After that, you
+BALTRAD-DB install (UBUNTU)
+%> sudo apt-get install openjdk-8-jre
+%> pip jprops 
+%> sudo apt-get install python-progressbar python-psycopg2 python-migrate python-werkzeug
+%> sudo apt-get install python-daemon python-keyczar libpostgresql-jdbc-java python-cherrypy3
+
+BALTRAD-DB install (CENTOS)
+%> sudo yum install python-pip python-pbr
+
+
+sudo pip install "sqlalchemy-migrate==0.10.0"
+baltrad-bdb-create --conf bdb.properties
+baltrad-bdb-server --conf bdb.properties --pidfile bdb.pid --logfile bdb.log --foreground
+keytool -genkey -alias tomcat -keyalg RSA -validity 3650 -keypass secret - -keystore /projects/baltrad/etc/bltnode-keys/keystore.jks -dname "CN=Unknown,OU=Unknown,O=Unknown,L=Unknown,ST=Unknown,C=Unknown"
+
+mkdir /home/anders/bdb-running/etc/test.priv
+python -m keyczar.keyczart create --location=/projects/baltrad/etc/bltnode-keys/test.priv --purpose=sign --name=test --asymmetric=dsa
+
+python -m keyczar.keyczart addkey --location=/projects/baltrad/etc/bltnode-keys/test.priv --status=primary
+
+mkdir /home/anders/bdb-running/etc/test.pub
+python -m keyczar.keyczart pubkey --location=/home/anders/bdb-running/etc/test.priv --destination=/home/anders/bdb-running/etc/test.pub --status=primary
+
+
+"""" bdb.properties
+# Can be werkzeug or cherrypy (recommended)
+baltrad.bdb.server.type = cherrypy
+# Number of working threads for cherrypy
+baltrad.bdb.server.cherrypy.threads = 10
+# The request queue size (backlog)
+baltrad.bdb.server.cherrypy.backlog = 5
+# The timeout for accepted connections
+baltrad.bdb.server.cherrypy.timeout = 10
+
+baltrad.bdb.server.uri = http://localhost:8090
+baltrad.bdb.server.enable_remove_all_files=false
+baltrad.bdb.server.backend.type = sqla
+baltrad.bdb.server.backend.sqla.uri = postgresql://baltrad:baltrad@localhost/baltrad
+baltrad.bdb.server.backend.sqla.storage.type=db
+baltrad.bdb.server.backend.sqla.storage.fs.path=/tmp/bdb_storage
+baltrad.bdb.server.backend.sqla.storage.fs.layers=3
+baltrad.bdb.server.auth.providers=noauth, keyczar
+baltrad.bdb.server.auth.verify_content=true
+baltrad.bdb.server.auth.keyczar.keystore_root=/home/anders/bdb-running/etc
+baltrad.bdb.server.auth.keyczar.keys.test=test.pub
+""""
