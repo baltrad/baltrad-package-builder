@@ -10,10 +10,15 @@ CHANGELOG_MESSAGE="Autobuild"
 PACKAGE_NAME=$1
 BUILD_NUMBER=$2
 NODE_NAME=$3
+BUILD_NAME=$PACKAGE_NAME
 PACKAGE_VERSION=`cat packages/$PACKAGE_NAME/package.ini | grep pkg_version | sed -e"s/pkg_version=//g"`
 GIT_URI=`cat packages/$PACKAGE_NAME/package.ini | grep git_uri | sed -e"s/git_uri=//g"`
 SPECFILE=$PACKAGENAME/`cat packages/$PACKAGE_NAME/package.ini | grep spec_file | sed -e"s/spec_file=//g"`
 INSTALL_ARTIFACTS=`cat packages/$PACKAGE_NAME/package.ini | grep install_artifacts | sed -e"s/install_artifacts=//g"`
+TBUILD_NAME=`cat packages/$PACKAGE_NAME/package.ini | grep pkg_name | sed -e"s/pkg_name=//g"`
+if [ "$TBUILD_NAME" != "" ]; then
+  BUILD_NAME=$TBUILD_NAME
+fi
 
 if [ "$PACKAGE_VERSION" = "" -o "$GIT_URI" = "" -o "$SPECFILE" = "" -o "$INSTALL_ARTIFACTS" = "" ]; then
   echo "Could not extract information from packages/$PACKAGE_NAME/package.ini"
@@ -114,18 +119,18 @@ fi
 
 OS_VARIANT=`get_os_version`
 
-echo "Building $PACKAGE_NAME-$PACKAGE_VERSION-$BUILD_NUMBER on $OS_VARIANT on node $NODE_NAME"
+echo "Building $BUILD_NAME-$PACKAGE_VERSION-$BUILD_NUMBER on $OS_VARIANT on node $NODE_NAME"
 
 cd packages/$PACKAGE_NAME
-if [ ! -d build/$PACKAGE_NAME ]; then
+if [ ! -d build/$BUILD_NAME ]; then
   if [ ! -d build ]; then
     mkdir build || exit 127
   fi
   cd build || exit 127
-  git clone $GIT_URI || exit 127
-  cd $PACKAGE_NAME
+  git clone $GIT_URI $BUILD_NAME || exit 127
+  cd $BUILD_NAME
 else
-  cd build/$PACKAGE_NAME
+  cd build/$BUILD_NAME
   #git checkout . || exit 127 # REMOVE ALL OLD STUFF
   #git checkout master || exit 127
   #git pull || exit 127
@@ -133,10 +138,10 @@ fi
 
 if [ "$OS_VARIANT" = "Ubuntu-16.04" -o "$OS_VARIANT" = "Ubuntu-18.04" ]; then
   echo "Debian build"
-  prepare_and_build_debian "$PACKAGEDIR/$PACKAGE_NAME/debian" $PACKAGE_NAME $PACKAGE_VERSION-$BUILD_NUMBER $INSTALL_ARTIFACTS
+  prepare_and_build_debian "$PACKAGEDIR/$PACKAGE_NAME/debian" $BUILD_NAME $PACKAGE_VERSION-$BUILD_NUMBER $INSTALL_ARTIFACTS
 elif [ "$OS_VARIANT" = "CentOS-7" ]; then
   echo "Redhat build"
-  prepare_and_build_centos "$PACKAGEDIR/$PACKAGE_NAME/centos" "$PACKAGEDIR/$PACKAGE_NAME/$SPECFILE" $PACKAGE_NAME $PACKAGE_VERSION $BUILD_NUMBER $INSTALL_ARTIFACTS
+  prepare_and_build_centos "$PACKAGEDIR/$PACKAGE_NAME/centos" "$PACKAGEDIR/$PACKAGE_NAME/$SPECFILE" $BUILD_NAME $PACKAGE_VERSION $BUILD_NUMBER $INSTALL_ARTIFACTS
 else
   echo "Unsupported build variant"  
 fi

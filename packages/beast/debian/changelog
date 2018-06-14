@@ -1,0 +1,29 @@
+baltrad-beast (0.0.276-1) stable; urgency=high
+
+  * Uped to 1.9
+
+ -- Povi Software LLC <laur@baltrad.eu>  Fri, 20 Dec 2013 18:26:41 +0200
+
+baltrad-beast (0.0.276-1) stable; urgency=high
+
+  * New version
+
+ -- Povi Software LLC <laur@baltrad.eu>  Sun, 03 Nov 2013 13:15:56 +0200
+
+baltrad-beast (0.0.275-3) stable; urgency=high
+
+  * Java 6
+
+ -- Povi Software LLC <laur@baltrad.eu>  Mon, 09 Sept 2013 13:11:19 +0300
+ 
+baltrad-beast (0.0.275-2) stable; urgency=high
+
+  * Packaging bugs fixed
+
+ -- Povi Software LLC <laur@baltrad.eu>  Tue, 30 Jul 2013 13:06:19 +0300
+
+baltrad-beast (0.0.275-1) stable; urgency=low
+
+  * Initial release
+
+ -- Povi Software LLC <laur@baltrad.eu>  Wed, 29 May 2013 16:05:23 +0300
