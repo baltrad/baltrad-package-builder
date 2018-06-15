@@ -1,0 +1,29 @@
+baltraddex (0.0.478-1) stable; urgency=high
+
+  * Updated to 2.0 
+  
+ -- Povi Software LLC <laur@baltrad.eu>  Thu, 09 Jan 2014 12:45:12 +0200
+ 
+baltraddex (0.0.466-1) stable; urgency=high
+
+  * Updated to 1.9 
+  
+ -- Povi Software LLC <laur@baltrad.eu>  Tue, 20 Dec 2013 17:41:01 +0200
+
+baltraddex (0.0.451-3) stable; urgency=high
+
+  * Building for Java 6 instead of Java 7
+
+ -- Povi Software LLC <laur@baltrad.eu>  Tue, 29 Aug 2013 16:18:19 +0300
+
+baltraddex (0.0.451-2) stable; urgency=high
+
+  * Packaging bugs fixed
+
+ -- Povi Software LLC <laur@baltrad.eu>  Tue, 30 Jul 2013 13:06:19 +0300
+
+baltraddex (0.0.451-1) stable; urgency=low
+
+  * Initial release
+
+ -- Povi Software LLC <laur@baltrad.eu>  Wed, 29 May 2013 16:05:23 +0300

@@ -1,0 +1,11 @@
+Source: baltrad-dex
+Section: science
+Priority: extra
+Maintainer: Povi Software LLC <laur@baltrad.eu>
+Build-Depends: debhelper (>= 8.0.0),  openjdk-8-jdk, ant, baltrad-db-external, baltrad-beast-external, doxygen, libjhdf5-java, libhdf5-dev
+Standards-Version: 3.9.4
+
+Package: baltrad-dex
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, openjdk-8-jre, libjhdf5-java
+Description: Distribution and Exchange subsystem

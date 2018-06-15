@@ -57,3 +57,7 @@ baltrad.bdb.server.auth.verify_content=true
 baltrad.bdb.server.auth.keyczar.keystore_root=/home/anders/bdb-running/etc
 baltrad.bdb.server.auth.keyczar.keys.test=test.pub
 """"
+
+
+BWRWP:
+, libatlas-base-dev

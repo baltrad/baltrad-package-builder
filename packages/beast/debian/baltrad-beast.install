@@ -1,6 +1,6 @@
-opt/baltrad/beast/bin/beast.jar
-opt/baltrad/beast/bin/pgfwkplugin
-opt/baltrad/beast/bin/xmlrpcserver
-opt/baltrad/beast/etc/*
-opt/baltrad/beast/examples/*
-opt/baltrad/beast/sql/*
+opt/baltrad/baltrad-beast/bin/beast.jar
+opt/baltrad/baltrad-beast/bin/pgfwkplugin
+opt/baltrad/baltrad-beast/bin/xmlrpcserver
+opt/baltrad/baltrad-beast/etc/*
+opt/baltrad/baltrad-beast/examples/*
+opt/baltrad/baltrad-beast/sql/*

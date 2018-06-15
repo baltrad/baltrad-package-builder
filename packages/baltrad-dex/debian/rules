@@ -10,7 +10,8 @@
 export DH_VERBOSE=1
 export DH_OPTIONS=-v
 JAVA_HOME=/usr/lib/jvm/default-java
-#DEBROOT=/usr/src/packages/BUILD/debian/tmp
+#INSTALLROOT=/usr/src/packages/BUILD/debian/tmp
+INSTALLROOT=$(CURDIR)/debian/tmp
 DEBROOT=$(CURDIR)/debian/tmp
 
 %:
@@ -18,8 +19,7 @@ DEBROOT=$(CURDIR)/debian/tmp
 override_dh_auto_clean:
 	
 override_dh_auto_build:
-	ant -Dbaltraddb.path=/opt/baltrad -Dbaltraddb.bin.path=/usr/bin
+	ant -Dbeast.path=/opt/baltrad/baltrad-beast -Dbaltrad.db.path="/opt/baltrad" -Djavahdf.path=/usr/share/java
 	ls -lR
 override_dh_auto_install:
-	mkdir -p $(DEBROOT)
-	ant install-files -Dapp.dist.dir.name=baltrad-beast -Dbaltraddb.path=/opt/baltrad -Dbaltraddb.bin.path=/usr/bin -Dprefix=$(DEBROOT)/opt/baltrad
+	ant install -Dapp.dist.dir.name=baltrad-dex -Dbeast.path=/opt/baltrad/baltrad-beast -Dbaltrad.db.path="/opt/baltrad" -Djavahdf.path=/usr/share/java -Dinstall.prefix=$(INSTALLROOT)/opt/baltrad
