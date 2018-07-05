@@ -9,3 +9,8 @@ Package: baltrad-dex
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, openjdk-8-jre, libjhdf5-java
 Description: Distribution and Exchange subsystem
+
+Package: baltrad-dex-tomcat
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, openjdk-8-jre, libjhdf5-java
+Description: Distribution and Exchange subsystem deployed to tomcat

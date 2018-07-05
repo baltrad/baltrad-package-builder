@@ -9,8 +9,8 @@ X-Python-Version: >=2.7
 
 Package: baltrad-db
 Architecture: any
-#jprops, 
-Depends: ${shlibs:Depends}, ${misc:Depends}, python, python-progressbar, python-psycopg2, python-migrate, python-werkzeug, python-daemon (>=1.6.0), python-keyczar (>=0.7.1), python-distribute, postgresql, libpostgresql-jdbc-java, python-cherrypy3
+#jprops, , python-daemon
+Depends: ${shlibs:Depends}, ${misc:Depends}, python, python-progressbar, python-psycopg2, python-migrate, python-werkzeug, python-keyczar (>=0.7.1), python-distribute, postgresql, libpostgresql-jdbc-java, python-cherrypy3
 Description: High Level Interface to the HDF5 File Format
 
 Package: baltrad-db-java

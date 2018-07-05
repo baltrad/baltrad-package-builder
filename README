@@ -3,6 +3,8 @@ to build the various packages.
 
 On Ubuntu 16.04/18.04
 
+sudo apt-get install libpq-dev
+
 %> sudo apt-get install git
 %> sudo apt-get install python
 %> sudo apt-get install devscripts build-essential lintian
@@ -61,3 +63,30 @@ baltrad.bdb.server.auth.keyczar.keys.test=test.pub
 
 BWRWP:
 , libatlas-base-dev
+
+
+DEX:
+sudo apt-get install libjhdf4-java libjhdf5-java
+
+('creating private key in', '/opt/bltupgradetest/etc/bltnode-keys/anders-nzxt.priv')
+('exporting public key to', '/opt/bltupgradetest/etc/bltnode-keys/anders-nzxt.pub')
+('creating keystore file', '/opt/bltupgradetest/etc/bltnode-keys/keystore.jks')
+
+
+
+OTHER:
+
+anders@anders-7480:/projects/baltrad/baltrad-package-builder$ sudo mkdir /var/lib/baltrad/etc
+anders@anders-7480:/projects/baltrad/baltrad-package-builder$ sudo mkdir /var/lib/baltrad/etc/bltnode-keys
+anders@anders-7480:/projects/baltrad/baltrad-package-builder$ sudo mkdir /var/lib/baltrad/etc/bltnode-keys/anders7480.priv
+anders@anders-7480:/projects/baltrad/baltrad-package-builder$ sudo mkdir /var/lib/baltrad/etc/bltnode-keys/anders7480.pub
+anders@anders-7480:/projects/baltrad/baltrad-package-builder$ sudo python -m keyczar.keyczart create --location=/var/lib/baltrad/etc/bltnode-keys/anders7480.priv --purpose=sign --name=anders7480 --asymmetric=dsa
+anders@anders-7480:/projects/baltrad/baltrad-package-builder$ sudo python -m keyczar.keyczart addkey --location=/var/lib/baltrad/etc/bltnode-keys/anders7480.priv --status=primary
+anders@anders-7480:/projects/baltrad/baltrad-package-builder$ sudo python -m keyczar.keyczart pubkey --location=/var/lib/baltrad/etc/bltnode-keys/anders7480.priv --destination=/var/lib/baltrad/etc/bltnode-keys/anders7480.pub --status=primary
+
+
+
+psql "postgresql://baltrad:baltrad@localhost/baltrad" < /opt/baltrad/baltrad-dex/sql/create_dex_schema.sql
+psql "postgresql://baltrad:baltrad@localhost/baltrad" < /opt/baltrad/baltrad-beast/sql/create_db.sql
+
+

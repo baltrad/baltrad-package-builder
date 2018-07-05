@@ -1,0 +1,6 @@
+#! /bin/sh
+set -e
+
+chown -R tomcat8:tomcat8 /var/lib/tomcat8/webapps/BaltradDex
+chown -R root:tomcat8 /etc/baltrad
+service tomcat8 start

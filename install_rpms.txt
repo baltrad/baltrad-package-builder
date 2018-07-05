@@ -1,0 +1,157 @@
+# INSTALL POSTGRESQL
+%> yum install postgresql-devel postgresql-libs
+
+# FIX EPEL SO THAT WE CAN INSTALL PIP
+%> cd /tmp
+%> wget http://mirror-fpt-telecom.fpt.net/fedora/epel/6/i386/epel-release-6-8.noarch.rpm
+%> rpm -ivh epel-release-6-8.noarch.rpm
+
+# INSTALL PIP STUFF
+%> yum install python-pip
+%> yum install python-devel
+%> pip-python install "pycrypto == 2.4.1"
+%> pip-python install "pyasn1 == 0.1.2"
+%> pip-python install "python-keyczar == 0.7b"
+%> pip-python install "jprops == 0.1"
+%> pip-python install "lockfile == 0.9.1"
+%> pip-python install "python-daemon == 1.6"
+%> PATH=/usr/pgsql-9.2/bin:$PATH pip-python install "psycopg2 == 2.2.1"  # To get hold of pg_config
+%> pip-python install "decorator == 3.3.2"
+%> pip-python install "Tempita == 0.5.1"
+%> pip-python install "sqlalchemy == 0.7.4"
+%> pip-python install "sqlalchemy-migrate == 0.7.2"
+%> pip-python install "werkzeug == 0.8.2"
+%> pip-python install "mock == 0.7.2"
+%> pip-python install "nose == 1.1.2"
+%> pip-python install "pyinotify == 0.9.3"
+%> pip-python install "progressbar == 2.2"
+%> pip-python install "cherrypy == 3.2.2"
+
+%> rpm -ivh proj-4.7.0-1.1.x86_64.rpm
+%> rpm -ivh proj-devel-4.7.0-1.1.x86_64.rpm
+%> yum install gcc-gfortran
+%> yum install atlas
+%> yum install numpy
+%> rpm -ivh hdf5-1.8.7-3.1.x86_64.rpm
+%> rpm -ivh hdf5-devel-1.8.7-3.1.x86_64.rpm
+
+# TO GET HDF INTEGRATION INTO TOMCAT
+%> rpm -ivh jhdf5-2.8-11.1.x86_64.rpm
+%> rpm -ivh jhdf-2.8-11.1.x86_64.rpm
+%> rpm -ivh hdf-4.2.5-3.1.x86_64.rpm
+%> yum install libjpeg-devel
+%> rpm -ivh jhdfobj-2.8-11.1.noarch.rpm
+%> rpm -ivh hdfview-2.8-11.1.noarch.rpm
+
+# OUR MODULES
+%> rpm -ivh hlhdf-0.8.1-13.1.x86_64.rpm
+%> rpm -ivh hlhdf-devel-0.8.1-13.1.x86_64.rpm
+%> rpm -ivh hlhdf-python-0.8.1-13.1.x86_64.rpm
+%> rpm -ivh bbufr-1.5-14050624.3.x86_64.rpm
+%> rpm -ivh rave-0.0.296-22.2.x86_64.rpm
+%> rpm -ivh rave-devel-0.0.296-22.2.x86_64.rpm
+%> rpm -ivh beamb-0.0.52-9.1.x86_64.rpm
+%> rpm -ivh beamb-devel-0.0.52-9.1.x86_64.rpm
+%> rpm -ivh bropo-0.0.38-14.2.x86_64.rpm
+%> rpm -ivh bropo-devel-0.0.38-14.2.x86_64.rpm
+%> rpm -ivh baltrad-db-0.0.377-50.1.x86_64.rpm
+%> rpm -ivh baltrad-db-external-0.0.377-50.1.x86_64.rpm
+%> rpm -ivh baltrad-db-java-0.0.377-50.1.x86_64.rpm
+%> rpm -ivh beast-0.0.266-40.1.x86_64.rpm
+%> rpm -ivh beast-external-0.0.266-40.1.x86_64.rpm
+%> rpm -ivh BaltradDex-0.0.388-24.1.x86_64.rpm
+
+# FIRST CONFIGURATION STEPS.
+%> mkdir /opt/baltrad/etc
+%> create /opt/baltrad/etc/bltnode.rc
+%> source /opt/baltrad/etc/bltnode.rc
+
+# CREATE THE DATABASE. (ASSUMING EVERYTHING WORKS AS UTF-8)
+%> su - postgres
+%> psql
+> CREATE USER baltrad WITH PASSWORD 'baltrad';
+> CREATE DATABASE baltrad WITH OWNER baltrad;
+> \q
+> exit
+
+# CREATE THE EXCHANGE KEYS
+%> mkdir -p /opt/baltrad/etc/bltnode-keys/<nodename>.priv
+%> python -m keyczar.keyczart create --location=/opt/baltrad/etc/bltnode-keys/<nodename>.priv \
+  --purpose=sign --name=<nodename> --asymmetric=dsa
+%> chown -R <runasuser>:<runasuser> /opt/baltrad/etc/bltnode-keys/<nodename>.priv
+%> chmod -R 600 /opt/baltrad/etc/bltnode-keys/<nodename>.priv
+
+%> mkdir -p /opt/baltrad/etc/bltnode-keys/<nodename>.pub
+%> python -m keyczar.keyczart pubkey --location=/opt/baltrad/etc/bltnode-keys/<nodename>.priv \
+  --destination=/opt/baltrad/etc/bltnode-keys/<nodename>.pub
+
+##
+# SETUP PYTHON PATHS
+##
+%> echo "/opt/baltrad/rave/Lib" > /usr/lib64/python2.6/site-packages/rave.pth
+%> echo "/opt/baltrad/bropo/share/bropo/pyropo" > /usr/lib64/python2.6/site-packages/bropo.pth
+%> echo "/opt/baltrad/beamb/share/beamb/pybeamb" > /usr/lib64/python2.6/site-packages/beamb.pth
+
+##
+# FIX RAVE. This would probably be better if we could have in /var/lib/baltrad/.... somewhere
+# since we are going to create logs etc.
+##
+%> chown -R baltrad:baltrad /opt/baltrad/rave/etc
+
+##
+# FIX TOMCAT AND ALL THAT STUFF
+##
+%> yum install tomcat6 tomcat6-webapps tomcat6-admin-webapps
+%> cd /usr/share/tomcat6/lib
+%> ln -s /usr/share/java/jhdf.jar .
+%> ln -s /usr/share/java/jhdf5.jar .
+%> ln -s /usr/share/java/jhdf5obj.jar .
+%> ln -s /usr/share/java/jhdfobj.jar .
+%> vi /etc/tomcat/tomcat-users.xml
+%> cd /usr/share/tomcat6/webapps
+%> cp /opt/baltrad/BaltradDex/bin/BaltradDex.war .
+%> mkdir BaltradDex
+%> cd BaltradDex/
+%> jar -xvf ../BaltradDex.war
+
+##
+# Use post install configurator.
+# Edit setup.properties accordingly
+##
+%> python --config=setup.properties --install-database setup
+
+##
+# START BALTRAD BDB-SERVER
+##
+%> /usr/bin/baltrad-bdb-server --conf=bltnode.properties \
+  --pidfile=/opt/baltrad/etc/baltrad-bdb-server.pid \
+  --logfile=/opt/baltrad/etc/baltrad-bdb-server.log
+
+##
+# START TOMCAT
+##
+%> /etc/init.d/tomcat6 start
+
+##
+# IMPORT THE ODIM SOURCE
+##
+%> /usr/bin/baltrad-bdb-client import_sources --url=http://localhost:8090 /opt/baltrad/rave/config/odim_source.xml
+
+##
+# VERIFY THAT BALTRAD DB WORKS
+##
+%> /usr/bin/baltrad-bdb-client --url=http://localhost:8090 list_sources
+
+##
+# START RAVE
+##
+%> /opt/baltrad/rave/bin/rave_pgf start
+
+##
+# Verify that dex is running by navigating to http://localhost:8080
+##
+
+
+
+
+

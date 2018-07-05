@@ -11,6 +11,12 @@ PACKAGE_NAME=$1
 BUILD_NUMBER=$2
 NODE_NAME=$3
 BUILD_NAME=$PACKAGE_NAME
+
+if [ ! -f packages/$PACKAGE_NAME/package.ini ]; then
+  echo "No package named $PACKAGE_NAME"
+  exit 127
+fi
+
 PACKAGE_VERSION=`cat packages/$PACKAGE_NAME/package.ini | grep pkg_version | sed -e"s/pkg_version=//g"`
 GIT_URI=`cat packages/$PACKAGE_NAME/package.ini | grep git_uri | sed -e"s/git_uri=//g"`
 SPECFILE=$PACKAGENAME/`cat packages/$PACKAGE_NAME/package.ini | grep spec_file | sed -e"s/spec_file=//g"`
@@ -20,7 +26,7 @@ if [ "$TBUILD_NAME" != "" ]; then
   BUILD_NAME=$TBUILD_NAME
 fi
 
-if [ "$PACKAGE_VERSION" = "" -o "$GIT_URI" = "" -o "$SPECFILE" = "" -o "$INSTALL_ARTIFACTS" = "" ]; then
+if [ "$PACKAGE_VERSION" = "" -o "$GIT_URI" = "" -o "$INSTALL_ARTIFACTS" = "" ]; then
   echo "Could not extract information from packages/$PACKAGE_NAME/package.ini"
   exit 127
 fi

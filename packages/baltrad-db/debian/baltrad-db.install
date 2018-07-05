@@ -13,6 +13,6 @@ usr/local/lib/python2.7/dist-packages/baltrad/bdbserver/sqla/migrate/migrate.cfg
 usr/local/lib/python2.7/dist-packages/baltrad/bdbserver/sqla/migrate/versions/*.py usr/lib/python2.7/dist-packages/baltrad/bdbserver/sqla/migrate/versions
 usr/local/lib/python2.7/dist-packages/baltrad/bdbserver/web/*.py usr/lib/python2.7/dist-packages/baltrad/bdbserver/web
 usr/local/lib/python2.7/dist-packages/baltrad.*.pth usr/lib/python2.7/dist-packages
-usr/local/lib/python2.7/dist-packages/baltrad.bdbcommon-0.1*dev0.egg-info usr/lib/python2.7/dist-packages
-usr/local/lib/python2.7/dist-packages/baltrad.bdbserver-0.1*dev0.egg-info usr/lib/python2.7/dist-packages
-usr/local/lib/python2.7/dist-packages/baltrad.bdbclient-0.1*dev0.egg-info usr/lib/python2.7/dist-packages
+usr/local/lib/python2.7/dist-packages/baltrad.bdbcommon-0.1*dev0*.egg-info usr/lib/python2.7/dist-packages
+usr/local/lib/python2.7/dist-packages/baltrad.bdbserver-0.1*dev0*.egg-info usr/lib/python2.7/dist-packages
+usr/local/lib/python2.7/dist-packages/baltrad.bdbclient-0.1*dev0*.egg-info usr/lib/python2.7/dist-packages

@@ -17,9 +17,24 @@ DEBROOT=$(CURDIR)/debian/tmp
 %:
 	dh $@
 override_dh_auto_clean:
-	
+
+override_dh_installdirs:
+	mkdir -p $(DEBROOT)/var/lib/tomcat8/webapps/BaltradDex
+	mkdir -p $(DEBROOT)/etc/baltrad/bltnode-keys
+#	ls -lR
+
 override_dh_auto_build:
 	ant -Dbeast.path=/opt/baltrad/baltrad-beast -Dbaltrad.db.path="/opt/baltrad" -Djavahdf.path=/usr/share/java
-	ls -lR
+
 override_dh_auto_install:
 	ant install -Dapp.dist.dir.name=baltrad-dex -Dbeast.path=/opt/baltrad/baltrad-beast -Dbaltrad.db.path="/opt/baltrad" -Djavahdf.path=/usr/share/java -Dinstall.prefix=$(INSTALLROOT)/opt/baltrad
+	cd $(DEBROOT)/var/lib/tomcat8/webapps/BaltradDex && jar -xvf $(INSTALLROOT)/opt/baltrad/baltrad-dex/bin/BaltradDex.war
+	echo '<?xml version="1.0" encoding="UTF-8"?>' > $(INSTALLROOT)/var/lib/tomcat8/webapps/BaltradDex/META-INF/context.xml
+	echo '<Context path="/BaltradDex">' >> $(INSTALLROOT)/var/lib/tomcat8/webapps/BaltradDex/META-INF/context.xml
+	echo '  <Resources allowLinking="true" />' >> $(INSTALLROOT)/var/lib/tomcat8/webapps/BaltradDex/META-INF/context.xml
+	echo '</Context>' >> $(INSTALLROOT)/var/lib/tomcat8/webapps/BaltradDex/META-INF/context.xml
+
+override_dh_install:
+	dh_install --sourcedir=$(INSTALLROOT)
+	dh_link
+
