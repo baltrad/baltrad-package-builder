@@ -89,4 +89,10 @@ anders@anders-7480:/projects/baltrad/baltrad-package-builder$ sudo python -m key
 psql "postgresql://baltrad:baltrad@localhost/baltrad" < /opt/baltrad/baltrad-dex/sql/create_dex_schema.sql
 psql "postgresql://baltrad:baltrad@localhost/baltrad" < /opt/baltrad/baltrad-beast/sql/create_db.sql
 
+sudo vi /etc/tomcat7/server.xml
+    <Connector port="8443" protocol="org.apache.coyote.http11.Http11Protocol" SSLEnabled="true"
+               maxThreads="150" scheme="https" secure="true"
+               clientAuth="false" sslProtocol="TLS" sslEnabledProtocols="TLSv1,TLSv1.1,TLSv1.2,SSLv2Hello"
+               keystoreFile="/etc/baltrad/bltnode-keys/keystore.jks" keystorePass="secret" />
+
 

@@ -1,6 +1,9 @@
 #! /bin/sh
 set -e
+    
+chown -R tomcat7:tomcat7 /var/lib/tomcat7/webapps/BaltradDex
+chown -R root:tomcat7 /etc/baltrad
+# We set tomcat7 as owner of baltrad-folder
+chown -R root:tomcat7 /var/lib/baltrad
 
-chown -R tomcat8:tomcat8 /var/lib/tomcat8/webapps/BaltradDex
-chown -R root:tomcat8 /etc/baltrad
-service tomcat8 start
+service tomcat7 start

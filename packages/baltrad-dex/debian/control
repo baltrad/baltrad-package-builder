@@ -12,5 +12,5 @@ Description: Distribution and Exchange subsystem
 
 Package: baltrad-dex-tomcat
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, openjdk-8-jre, libjhdf5-java
+Depends: ${shlibs:Depends}, ${misc:Depends}, openjdk-8-jre, libjhdf5-java, tomcat7
 Description: Distribution and Exchange subsystem deployed to tomcat
