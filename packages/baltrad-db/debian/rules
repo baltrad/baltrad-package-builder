@@ -18,12 +18,13 @@ JAVACLIENT=$(CURDIR)/client/java
 DEBROOT=$(CURDIR)/debian/tmp
 
 %:
-	dh $@ --with python2
+	dh $@ --with python2 --with quilt
 override_dh_auto_build:
 	cd $(COMMONDIR); python setup.py build
 	cd $(SERVERDIR); python setup.py build
 	cd $(PYTHONCLIENT); python setup.py build
 	cd $(JAVACLIENT); ant
+
 override_dh_auto_install:
 	cd $(COMMONDIR); python setup.py install --skip-build --root $(CURDIR)/debian/tmp
 	cd $(SERVERDIR); python setup.py install --skip-build --root $(CURDIR)/debian/tmp
@@ -33,4 +34,4 @@ override_dh_auto_install:
 	mkdir -p $(DEBROOT)/opt/baltrad/share/baltrad-bdb/java/libs
 	cp -p $(JAVACLIENT)/lib/commons/commons-lang3-3.1.jar $(DEBROOT)/opt/baltrad/share/baltrad-bdb/java/libs
 	cp -p $(JAVACLIENT)/lib/joda-time/joda-time-2.0.jar $(DEBROOT)/opt/baltrad/share/baltrad-bdb/java/libs
-	ls -lR $(DEBROOT)
+	dh_quilt_unpatch
