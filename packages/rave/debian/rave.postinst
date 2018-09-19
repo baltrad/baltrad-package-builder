@@ -1,0 +1,5 @@
+#! /bin/sh
+set -e
+    
+chown -R root:baltrad /etc/baltrad/rave
+chown -R baltrad:baltrad /var/baltrad/rave
