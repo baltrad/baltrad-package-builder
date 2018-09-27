@@ -1,0 +1,13 @@
+diff --git a/setup.py b/setup.py
+index fda6c73..ad5d479 100755
+--- a/setup.py
++++ b/setup.py
+@@ -5,7 +5,7 @@ import sys
+ REQUIRED_PACKAGES= [
+     "pyasn1",
+     "pycrypto >= 2.4",
+-    "python-keyczar >= 0.7b",
++    "python-keyczar >= 0.71h",
+ ]
+ if sys.version_info > (3,):
+     REQUIRED_PACKAGES= [

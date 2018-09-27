@@ -1,0 +1,5 @@
+/usr/share/java/jhdf4obj.jar /usr/share/baltrad/baltrad-node-tomcat/lib/jhdf4obj.jar
+/usr/share/java/jhdf5.jar /usr/share/baltrad/baltrad-node-tomcat/lib/jhdf5.jar
+/usr/share/java/jhdf5obj.jar /usr/share/baltrad/baltrad-node-tomcat/lib/jhdf5obj.jar
+/usr/share/java/jhdf.jar /usr/share/baltrad/baltrad-node-tomcat/lib/jhdf.jar
+/usr/share/java/jhdfobj.jar /usr/share/baltrad/baltrad-node-tomcat/lib/jhdfobj.jar

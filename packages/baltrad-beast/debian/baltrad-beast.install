@@ -1,0 +1,6 @@
+usr/share/baltrad/baltrad-beast/bin/beast.jar
+usr/share/baltrad/baltrad-beast/bin/pgfwkplugin
+usr/share/baltrad/baltrad-beast/bin/xmlrpcserver
+usr/share/baltrad/baltrad-beast/etc/*
+usr/share/baltrad/baltrad-beast/examples/*
+usr/share/baltrad/baltrad-beast/sql/*

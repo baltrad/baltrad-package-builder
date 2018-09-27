@@ -9,8 +9,7 @@
 # Uncomment this to turn on verbose mode.
 export DH_VERBOSE=1
 export DH_OPTIONS=-v
-JAVA_HOME=/usr/lib/jvm/default-java
-INSTALLROOT=/usr/src/packages/BUILD/debian/tmp
+export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
 COMMONDIR=$(CURDIR)/common
 SERVERDIR=$(CURDIR)/server
 PYTHONCLIENT=$(CURDIR)/client/python
@@ -29,9 +28,12 @@ override_dh_auto_install:
 	cd $(COMMONDIR); python setup.py install --skip-build --root $(CURDIR)/debian/tmp
 	cd $(SERVERDIR); python setup.py install --skip-build --root $(CURDIR)/debian/tmp
 	cd $(PYTHONCLIENT); python setup.py install --skip-build --root $(CURDIR)/debian/tmp
-	mkdir -p $(DEBROOT)/opt/baltrad/share/baltrad-bdb/java
-	cd $(JAVACLIENT); cp -p dist/*.jar $(DEBROOT)/opt/baltrad/share/baltrad-bdb/java/
-	mkdir -p $(DEBROOT)/opt/baltrad/share/baltrad-bdb/java/libs
-	cp -p $(JAVACLIENT)/lib/commons/commons-lang3-3.1.jar $(DEBROOT)/opt/baltrad/share/baltrad-bdb/java/libs
-	cp -p $(JAVACLIENT)/lib/joda-time/joda-time-2.0.jar $(DEBROOT)/opt/baltrad/share/baltrad-bdb/java/libs
+	mkdir -p $(DEBROOT)/usr/share/baltrad/baltrad-db/java
+	cd $(JAVACLIENT); cp -p dist/*.jar $(DEBROOT)/usr/share/baltrad/baltrad-db/java/
+	mkdir -p $(DEBROOT)/usr/share/baltrad/baltrad-db/java/libs
+	cp -p $(JAVACLIENT)/lib/commons/commons-lang3-3.1.jar $(DEBROOT)/usr/share/baltrad/baltrad-db/java/libs
+	cp -p $(JAVACLIENT)/lib/joda-time/joda-time-2.0.jar $(DEBROOT)/usr/share/baltrad/baltrad-db/java/libs
+	mkdir -p $(DEBROOT)/var/run/baltrad
+	mkdir -p $(DEBROOT)/var/log/baltrad
+	
 	dh_quilt_unpatch

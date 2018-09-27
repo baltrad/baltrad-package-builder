@@ -17,17 +17,30 @@ if [ ! -f packages/$PACKAGE_NAME/package.ini ]; then
   exit 127
 fi
 
-PACKAGE_VERSION=`cat packages/$PACKAGE_NAME/package.ini | grep pkg_version | sed -e"s/pkg_version=//g"`
-GIT_URI=`cat packages/$PACKAGE_NAME/package.ini | grep git_uri | sed -e"s/git_uri=//g"`
-SPECFILE=$PACKAGENAME/`cat packages/$PACKAGE_NAME/package.ini | grep spec_file | sed -e"s/spec_file=//g"`
-INSTALL_ARTIFACTS=`cat packages/$PACKAGE_NAME/package.ini | grep install_artifacts | sed -e"s/install_artifacts=//g"`
-TBUILD_NAME=`cat packages/$PACKAGE_NAME/package.ini | grep pkg_name | sed -e"s/pkg_name=//g"`
+PACKAGE_VERSION=`cat packages/$PACKAGE_NAME/package.ini | egrep -e "^pkg_version" | sed -e"s/pkg_version=//g"`
+GIT_URI=`cat packages/$PACKAGE_NAME/package.ini | egrep -e "^git_uri" | sed -e"s/git_uri=//g"`
+TAR_BALL=`cat packages/$PACKAGE_NAME/package.ini | egrep -e "^tar_ball" | sed -e"s/tar_ball=//g"`
+TAR_STRIP_ROOT=`cat packages/$PACKAGE_NAME/package.ini | egrep -e "^tar_strip_root" | sed -e"s/tar_strip_root=//g"`
+SPECFILE=$PACKAGENAME/`cat packages/$PACKAGE_NAME/package.ini | egrep -e "^spec_file" | sed -e"s/spec_file=//g"`
+INSTALL_ARTIFACTS=`cat packages/$PACKAGE_NAME/package.ini | egrep -e "^install_artifacts" | sed -e"s/install_artifacts=//g"`
+TBUILD_NAME=`cat packages/$PACKAGE_NAME/package.ini | egrep -e "^pkg_name" | sed -e"s/pkg_name=//g"`
+
 if [ "$TBUILD_NAME" != "" ]; then
   BUILD_NAME=$TBUILD_NAME
 fi
 
-if [ "$PACKAGE_VERSION" = "" -o "$GIT_URI" = "" -o "$INSTALL_ARTIFACTS" = "" ]; then
+if [ "$PACKAGE_VERSION" = "" -o "$INSTALL_ARTIFACTS" = "" ]; then
   echo "Could not extract information from packages/$PACKAGE_NAME/package.ini"
+  exit 127
+fi
+
+if [ "$GIT_URI" = "" -a "$TAR_BALL" = "" ]; then
+  echo "Could not extract information from packages/$PACKAGE_NAME/package.ini"
+  exit 127
+fi
+
+if [ "$GIT_URI" != "" -a "$TAR_BALL" != "" ]; then
+  echo "Can not specify both tar_ball and git_uri in packages/$PACKAGE_NAME/package.ini"
   exit 127
 fi
 
@@ -130,18 +143,35 @@ OS_VARIANT=`get_os_version`
 echo "Building $BUILD_NAME-$PACKAGE_VERSION-$BUILD_NUMBER on $OS_VARIANT on node $NODE_NAME"
 
 cd packages/$PACKAGE_NAME
+
+# If tar ball, then always remove previous build
+if [ "$TAR_BALL" != "" ]; then
+  if [ -d "build/$BUILD_NAME" ]; then
+    \rm -fr "build/$BUILD_NAME" || exit 127
+  fi
+fi
+
 if [ ! -d build/$BUILD_NAME ]; then
   if [ ! -d build ]; then
     mkdir build || exit 127
   fi
   cd build || exit 127
-  git clone $GIT_URI $BUILD_NAME || exit 127
+  if [ "$TAR_BALL" != "" ]; then
+    mkdir $BUILD_NAME || exit 127
+    if [ "$TAR_STRIP_ROOT" = "true" ]; then
+      tar -xzf "../$TAR_BALL" --strip 1 --directory $BUILD_NAME || exit 127
+    else
+      tar -xzf "../$TAR_BALL" --directory $BUILD_NAME || exit 127
+    fi 
+  else
+    git clone $GIT_URI $BUILD_NAME || exit 127
+  fi
   cd $BUILD_NAME
 else
   cd build/$BUILD_NAME
-  git checkout . || exit 127 # REMOVE ALL OLD STUFF
-  git checkout master || exit 127
-  git pull || exit 127
+  #git checkout . || exit 127 # REMOVE ALL OLD STUFF
+  #git checkout master || exit 127
+  #git pull || exit 127
 fi
 
 if [ "$OS_VARIANT" = "Ubuntu-16.04" -o "$OS_VARIANT" = "Ubuntu-18.04" ]; then

@@ -1,0 +1,5 @@
+baltrad-node-tomcat (8.5.34-1) unstable; urgency=medium
+
+  * Initial release (Closes: #nnnn)  <nnnn is the bug number of your ITP>
+
+ -- anders <anders@baltrad.eu>  Tue, 25 Sep 2018 16:08:24 +0200

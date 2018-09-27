@@ -16,3 +16,5 @@ usr/local/lib/python2.7/dist-packages/baltrad.*.pth usr/lib/python2.7/dist-packa
 usr/local/lib/python2.7/dist-packages/baltrad.bdbcommon-0.1*dev0*.egg-info usr/lib/python2.7/dist-packages
 usr/local/lib/python2.7/dist-packages/baltrad.bdbserver-0.1*dev0*.egg-info usr/lib/python2.7/dist-packages
 usr/local/lib/python2.7/dist-packages/baltrad.bdbclient-0.1*dev0*.egg-info usr/lib/python2.7/dist-packages
+var/log/baltrad
+var/run/baltrad

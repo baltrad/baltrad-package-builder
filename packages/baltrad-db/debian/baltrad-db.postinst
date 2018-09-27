@@ -1,0 +1,27 @@
+#!/bin/sh
+
+set -e
+
+if [ "$1" = configure ]; then
+  if ! getent passwd baltrad > /dev/null; then
+    adduser --system --home /var/lib/baltrad --no-create-home \
+      --shell /bin/bash --group --gecos "Baltrad user" baltrad
+  fi
+    
+  if ! getent group baltrad > /dev/null; then
+    addgroup --system postgres
+  fi
+  
+  if ! id -Gn baltrad | grep -qw baltrad; then
+    adduser baltrad baltrad
+  fi
+
+  mkdir -p /var/lib/baltrad
+  su -s /bin/sh baltrad -c "test -O /var/lib/baltrad &&
+    test -G /var/lib/baltrad" || chown baltrad:baltrad /var/lib/baltrad
+
+  chmod 1775 /var/log/baltrad
+  chmod 1775 /var/run/baltrad
+  chown root:baltrad /var/log/baltrad
+  chown root:baltrad /var/run/baltrad
+fi

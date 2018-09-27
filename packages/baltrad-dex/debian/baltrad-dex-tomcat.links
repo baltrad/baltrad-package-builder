@@ -1,9 +1,4 @@
-/etc/baltrad/dex.properties /var/lib/tomcat7/webapps/BaltradDex/dex.properties
-/etc/baltrad/db.properties /var/lib/tomcat7/webapps/BaltradDex/db.properties
-/etc/baltrad/dex.log4j.properties /var/lib/tomcat7/webapps/BaltradDex/dex.log4j.properties
-/etc/baltrad/dex.fc.properties /var/lib/tomcat7/webapps/BaltradDex/WEB-INF/classes/resources/dex.fc.properties
-/usr/share/java/jhdf4obj.jar /var/lib/tomcat7/webapps/BaltradDex/WEB-INF/lib/jhdf4obj.jar
-/usr/share/java/jhdf5.jar /var/lib/tomcat7/webapps/BaltradDex/WEB-INF/lib/jhdf5.jar
-/usr/share/java/jhdf5obj.jar /var/lib/tomcat7/webapps/BaltradDex/WEB-INF/lib/jhdf5obj.jar
-/usr/share/java/jhdf.jar /var/lib/tomcat7/webapps/BaltradDex/WEB-INF/lib/jhdf.jar
-/usr/share/java/jhdfobj.jar /var/lib/tomcat7/webapps/BaltradDex/WEB-INF/lib/jhdfobj.jar
+/etc/baltrad/dex.properties /var/lib/baltrad/baltrad-node-tomcat/webapps/BaltradDex/dex.properties
+/etc/baltrad/db.properties /var/lib/baltrad/baltrad-node-tomcat/webapps/BaltradDex/db.properties
+/etc/baltrad/dex.log4j.properties /var/lib/baltrad/baltrad-node-tomcat/webapps/BaltradDex/dex.log4j.properties
+/etc/baltrad/dex.fc.properties /var/lib/baltrad/baltrad-node-tomcat/webapps/BaltradDex/WEB-INF/classes/resources/dex.fc.properties

@@ -1,0 +1,11 @@
+Source: baltrad-node-tomcat
+Section: unknown
+Priority: optional
+Maintainer: anders <anders@baltrad.eu>
+Build-Depends: debhelper (>= 8.0.0), libjhdf5-java
+
+Package: baltrad-node-tomcat
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, openjdk-8-jre, libjhdf5-java
+Description: Tomcat used for a baltrad node
+ This is a rebundling of Apache Tomcat for beeing used as a baltrad node

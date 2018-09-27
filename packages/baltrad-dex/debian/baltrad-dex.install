@@ -1,2 +1,2 @@
-opt/baltrad/baltrad-dex/bin/BaltradDex.war
-opt/baltrad/baltrad-dex/sql/*.sql
+usr/share/baltrad/baltrad-dex/bin/BaltradDex.war
+usr/share/baltrad/baltrad-dex/sql/*.sql

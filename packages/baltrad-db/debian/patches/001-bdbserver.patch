@@ -1,18 +1,19 @@
 diff --git a/server/setup.py b/server/setup.py
-index ea05f1a..29ff1a8 100755
+index ea05f1a..26b942e 100755
 --- a/server/setup.py
 +++ b/server/setup.py
-@@ -12,9 +12,9 @@ REQUIRED_PACKAGES= [
+@@ -11,10 +11,10 @@ REQUIRED_PACKAGES= [
+     "pyasn1",
      "pycrypto >= 2.4",
      "python-daemon >= 1.6",
-     "python-keyczar >= 0.7b",
+-    "python-keyczar >= 0.7b",
 -    "SQLAlchemy >= 1.0.13",
 -    "sqlalchemy-migrate >= 0.10.0",
 -    "werkzeug >= 0.14"
++    "python-keyczar >= 0.71h",
 +    "SQLAlchemy >= 0.7",
 +    "sqlalchemy-migrate >= 0.7.2",
 +    "werkzeug >= 0.8"
  ]
  if sys.version_info > (3,):
      REQUIRED_PACKAGES= [
-

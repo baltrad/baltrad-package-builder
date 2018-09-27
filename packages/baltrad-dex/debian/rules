@@ -9,7 +9,7 @@
 # Uncomment this to turn on verbose mode.
 export DH_VERBOSE=1
 export DH_OPTIONS=-v
-JAVA_HOME=/usr/lib/jvm/default-java
+export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
 #INSTALLROOT=/usr/src/packages/BUILD/debian/tmp
 INSTALLROOT=$(CURDIR)/debian/tmp
 DEBROOT=$(CURDIR)/debian/tmp
@@ -19,19 +19,19 @@ DEBROOT=$(CURDIR)/debian/tmp
 override_dh_auto_clean:
 
 override_dh_installdirs:
-	mkdir -p $(DEBROOT)/var/lib/tomcat7/webapps/BaltradDex
+	mkdir -p $(DEBROOT)/var/lib/baltrad/baltrad-node-tomcat/webapps/BaltradDex
 	mkdir -p $(DEBROOT)/var/lib/baltrad/bdb_storage
 	mkdir -p $(DEBROOT)/etc/baltrad/bltnode-keys
 #	ls -lR
 
 override_dh_auto_build:
-	ant -Dbeast.path=/opt/baltrad/baltrad-beast -Dbaltrad.db.path="/opt/baltrad" -Djavahdf.path=/usr/share/java
+	ant -Dbeast.path=/usr/share/baltrad/baltrad-beast -Dbaltrad.db.path="/usr/share/baltrad" -Dbaltrad.db.java.path="/usr/share/baltrad/baltrad-db/java" -Djavahdf.path=/usr/share/java
 
 override_dh_auto_install:
-	ant install -Dapp.dist.dir.name=baltrad-dex -Dbeast.path=/opt/baltrad/baltrad-beast -Dbaltrad.db.path="/opt/baltrad" -Djavahdf.path=/usr/share/java -Dinstall.prefix=$(INSTALLROOT)/opt/baltrad
-	cd $(DEBROOT)/var/lib/tomcat7/webapps/BaltradDex && jar -xvf $(INSTALLROOT)/opt/baltrad/baltrad-dex/bin/BaltradDex.war
-	echo '<?xml version="1.0" encoding="UTF-8"?>' > $(INSTALLROOT)/var/lib/tomcat7/webapps/BaltradDex/META-INF/context.xml
-	echo '<Context allowLinking="true" path="/BaltradDex" />' >> $(INSTALLROOT)/var/lib/tomcat7/webapps/BaltradDex/META-INF/context.xml
+	ant install -Dapp.dist.dir.name=baltrad-dex -Dbeast.path=/usr/share/baltrad/baltrad-beast -Dbaltrad.db.path="/usr/share/baltrad" -Dbaltrad.db.java.path="/usr/share/baltrad/baltrad-db/java" -Djavahdf.path=/usr/share/java -Dinstall.prefix=$(INSTALLROOT)/usr/share/baltrad
+	cd $(DEBROOT)/var/lib/baltrad/baltrad-node-tomcat/webapps/BaltradDex && jar -xvf $(INSTALLROOT)/usr/share/baltrad/baltrad-dex/bin/BaltradDex.war
+	echo '<?xml version="1.0" encoding="UTF-8"?>' > $(INSTALLROOT)/var/lib/baltrad/baltrad-node-tomcat/webapps/BaltradDex/META-INF/context.xml
+	echo '<Context allowLinking="true" path="/BaltradDex" />' >> $(INSTALLROOT)/var/lib/baltrad/baltrad-node-tomcat/webapps/BaltradDex/META-INF/context.xml
 
 override_dh_install:
 	dh_install --sourcedir=$(INSTALLROOT)

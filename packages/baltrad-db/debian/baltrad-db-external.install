@@ -1,2 +1,2 @@
-opt/baltrad/share/baltrad-bdb/java/libs/commons-lang3-3.1.jar
-opt/baltrad/share/baltrad-bdb/java/libs/joda-time-2.0.jar
+usr/share/baltrad/baltrad-db/java/libs/commons-lang3-3.1.jar
+usr/share/baltrad/baltrad-db/java/libs/joda-time-2.0.jar

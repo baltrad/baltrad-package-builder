@@ -1,9 +1,41 @@
 #! /bin/sh
 set -e
-    
-chown -R tomcat7:tomcat7 /var/lib/tomcat7/webapps/BaltradDex
-chown -R root:tomcat7 /etc/baltrad
-# We set tomcat7 as owner of baltrad-folder
-chown -R root:tomcat7 /var/lib/baltrad
 
-service tomcat7 start
+if [ "$1" = configure ]; then
+  if ! getent passwd baltrad > /dev/null; then
+    adduser --system --home /var/lib/baltrad --no-create-home \
+      --shell /bin/bash --group --gecos "Baltrad user" baltrad
+  fi
+    
+  if ! getent group baltrad > /dev/null; then
+    addgroup --system postgres
+  fi
+  
+  if ! id -Gn baltrad | grep -qw baltrad; then
+    adduser baltrad baltrad
+  fi
+
+  mkdir -p /var/lib/baltrad
+  su -s /bin/sh baltrad -c "test -O /var/lib/baltrad &&
+    test -G /var/lib/baltrad" || chown baltrad:baltrad /var/lib/baltrad
+
+  chmod 1775 /var/log/baltrad
+  chmod 1775 /var/run/baltrad
+  chown root:baltrad /var/log/baltrad
+  chown root:baltrad /var/run/baltrad
+
+  chown -R baltrad:baltrad /var/lib/baltrad/baltrad-node-tomcat/webapps/BaltradDex
+  chown root:baltrad /etc/baltrad/dex.properties
+  chown root:baltrad /etc/baltrad/dex.log4j.properties
+  chown root:baltrad /etc/baltrad/db.properties
+  chown root:baltrad /etc/baltrad/dex.fc.properties
+  chown root:baltrad /etc/baltrad/bltnode-keys
+  chmod 660 /etc/baltrad/dex.properties
+  chmod 660 /etc/baltrad/dex.log4j.properties
+  chmod 660 /etc/baltrad/db.properties
+  chmod 660 /etc/baltrad/dex.fc.properties
+  chmod 770 /etc/baltrad/bltnode-keys
+  chown -R root:baltrad var/lib/baltrad/baltrad-node-tomcat/webapps/BaltradDex
+fi
+    
+#service baltrad-node start
