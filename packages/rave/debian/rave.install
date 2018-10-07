@@ -9,7 +9,7 @@ usr/lib/rave/etc/rave_pgf_quality_registry.xml etc/baltrad/rave/etc
 usr/lib/rave/etc/rave_pgf_registry.xml etc/baltrad/rave/etc
 usr/lib/rave/etc/rave_tile_registry.xml etc/baltrad/rave/etc
 usr/lib/rave/etc/rave.pth usr/lib/python2.7/dist-packages
-usr/lib/rave/etc/rave_pgf_queue.xml var/baltrad/rave
+usr/lib/rave/etc/rave_pgf_queue.xml var/lib/baltrad
 etc/ld.so.conf.d/rave.conf
 etc/init.d/raved
 etc/baltrad/rave/Lib

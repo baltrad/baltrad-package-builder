@@ -1,0 +1,52 @@
+diff --git a/Lib/rave_defines.py b/Lib/rave_defines.py
+index 941bcc8..484d13f 100644
+--- a/Lib/rave_defines.py
++++ b/Lib/rave_defines.py
+@@ -78,7 +78,7 @@ ZR_A = 200.0
+ ZR_b = 1.5
+ 
+ # Gauge adjustment - migrated from NORDRAD2
+-GADJUST_STATFILE = RAVEETC + '/gadjust.stat'
++GADJUST_STATFILE = "/var/lib/baltrad/gadjust.stat"
+ DEFAULTA = 0.323868068019
+ DEFAULTB = -0.00107776407064
+ DEFAULTC = 1.77500903316e-05
+@@ -87,24 +87,24 @@ TIMELIMIT_CLIMATOLOGIC_COEFF = 48 # how many hours back in time we can use gener
+ 
+ # SAF-NWC MSG CT filter
+ CT_FTEMPLATE = "SAFNWC_MSG?_CT___%s_FES_________.h5"
+-CTPATH = "/opt/baltrad/MSG_CT"
++CTPATH = "/var/lib/baltrad/MSG_CT"
+ CTDELTA = datetime.timedelta(minutes=15)
+ CT_MAX_DELTAS = 3  # look backwards in time for ct_max_deltas * ctdelta
+ 
+ # Statistics
+-TFILE = RAVECONFIG + "/t-critical.pickle"
+-TFILE_TEMPLATE = RAVECONFIG + "/t-critical.txt"
++TFILE = "/var/lib/baltrad/t-critical.pickle"
++TFILE_TEMPLATE = "/var/lib/baltrad/t-critical.txt"
+ 
+ # Projection and area registries
+ PROJECTION_REGISTRY = os.path.join(RAVECONFIG, 'projection_registry.xml')
+ AREA_REGISTRY = os.path.join(RAVECONFIG, 'area_registry.xml')
+ 
+ # XML-RPC server variables
+-PIDFILE = os.path.join(RAVEETC, 'rave_pgf_server.pid')
++PIDFILE = "/var/run/baltrad/rave_pgf_server.pid"
+ PGF_HOST = 'localhost'
+ PGF_PORT = 8085
+ PGFs = 4
+-STDOE = os.path.join(RAVEETC, 'rave_pgf_stdout_stderr.log')
++STDOE = "/var/log/baltrad/rave_pgf_stdout_stderr.log"
+ 
+ DEX_SPOE = 'http://localhost:8084/BaltradDex'
+ DEX_CHANNEL = 'default_products'
+@@ -127,7 +127,7 @@ PGF_TAG = 'bltgenerate'  # used for sending files to the DEX
+ # Logging - little of this is relevant if SysLog is used or the OS rotates the logs.
+ LOGID = 'PGF[rave.baltrad.eu]'
+ LOGPORT = 8089
+-LOGFILE     = os.path.join(RAVEETC, "rave_pgf.log") # Default logger is to syslog.
++LOGFILE     = "/var/log/baltrad/rave_pgf.log" # Default logger is to syslog.
+ LOGFILESIZE = 5000000  # 5 Mb each
+ LOGFILES    = 5
+ LOGFACILITY = "local3"

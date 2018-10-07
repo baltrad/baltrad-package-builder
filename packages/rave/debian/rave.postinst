@@ -1,5 +1,49 @@
 #! /bin/sh
-set -e
     
-chown -R root:baltrad /etc/baltrad/rave
-chown -R baltrad:baltrad /var/baltrad/rave
+if [ "$1" = configure ]; then
+  if ! getent passwd baltrad > /dev/null; then
+    adduser --system --home /var/lib/baltrad --no-create-home \
+      --shell /bin/bash --group --gecos "Baltrad user" baltrad
+  fi
+    
+  if ! getent group baltrad > /dev/null; then
+    addgroup --system baltrad
+  fi
+  
+  if ! id -Gn baltrad | grep -qw baltrad; then
+    adduser baltrad baltrad
+  fi
+
+  su -s /bin/sh baltrad -c "test -O /var/lib/baltrad &&
+    test -G /var/lib/baltrad" || chown baltrad:baltrad /var/lib/baltrad
+
+  chmod 1775 /var/log/baltrad
+  chmod 1775 /var/run/baltrad
+  chmod 1775 /var/cache/baltrad-node-tomcat
+
+  chown baltrad:baltrad /var/lib/baltrad/rave_pgf_queue.xml  
+  chown root:baltrad /var/log/baltrad
+  chown root:baltrad /var/run/baltrad
+  chown -R root:baltrad /etc/baltrad/rave
+  chown 664 /etc/baltrad/rave/Lib/rave_defines.py
+  
+  chown root:baltrad /etc/baltrad/baltrad-node-tomcat/catalina.properties
+  chown root:baltrad /etc/baltrad/baltrad-node-tomcat/context.xml
+  chown root:baltrad /etc/baltrad/baltrad-node-tomcat/jaspic-providers.xml
+  chown root:baltrad /etc/baltrad/baltrad-node-tomcat/jaspic-providers.xsd
+  chown root:baltrad /etc/baltrad/baltrad-node-tomcat/logging.properties
+  chown root:baltrad /etc/baltrad/baltrad-node-tomcat/server.xml
+  chown root:baltrad /etc/baltrad/baltrad-node-tomcat/tomcat-users.xml
+  chown root:baltrad /etc/baltrad/baltrad-node-tomcat/tomcat-users.xsd
+  chown root:baltrad /etc/baltrad/baltrad-node-tomcat/web.xml
+
+  chmod 640 /etc/baltrad/baltrad-node-tomcat/catalina.properties
+  chmod 640 /etc/baltrad/baltrad-node-tomcat/context.xml
+  chmod 640 /etc/baltrad/baltrad-node-tomcat/jaspic-providers.xml
+  chmod 640 /etc/baltrad/baltrad-node-tomcat/jaspic-providers.xsd
+  chmod 640 /etc/baltrad/baltrad-node-tomcat/logging.properties
+  chmod 640 /etc/baltrad/baltrad-node-tomcat/server.xml
+  chmod 640 /etc/baltrad/baltrad-node-tomcat/tomcat-users.xml
+  chmod 640 /etc/baltrad/baltrad-node-tomcat/tomcat-users.xsd
+  chmod 640 /etc/baltrad/baltrad-node-tomcat/web.xml
+fi

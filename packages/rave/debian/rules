@@ -23,13 +23,17 @@ override_dh_installdirs:
 	mkdir -p $(INSTALLROOT)/etc/init.d
 	mkdir -p $(INSTALLROOT)/etc/ld.so.conf.d/baltrad/rave
 	mkdir -p $(INSTALLROOT)/etc/baltrad/rave/Lib
+	mkdir -p $(INSTALLROOT)/var/run/baltrad
+	mkdir -p $(INSTALLROOT)/var/log/baltrad
+	mkdir -p $(INSTALLROOT)/var/lib/baltrad
+	mkdir -p $(INSTALLROOT)/var/lib/baltrad/MSG_CT
 	echo "/usr/lib/rave/lib">> $(INSTALLROOT)/etc/ld.so.conf.d/rave.conf
 	echo "/usr/lib/rave/Lib">> $(INSTALLROOT)/etc/ld.so.conf.d/rave.conf
 override_dh_auto_install:
 	mkdir -p $(INSTALLROOT)/usr/lib
 	$(MAKE) DESTDIR=$(INSTALLROOT) prefix=/usr/lib/rave install
 	cp etc/raved $(INSTALLROOT)/etc/init.d/
-	mv Lib/rave_defines.py $(INSTALLROOT)/etc/baltrad/rave/Lib/
+	mv $(INSTALLROOT)/usr/lib/rave/Lib/rave_defines.py $(INSTALLROOT)/etc/baltrad/rave/Lib/
 	dh_quilt_unpatch
 override_dh_shlibdeps:
 	dh_shlibdeps -l $(INSTALLROOT)/usr/lib/rave/Lib:$(INSTALLROOT)/usr/lib/rave/lib:/usr/lib/hlhdf/default/lib

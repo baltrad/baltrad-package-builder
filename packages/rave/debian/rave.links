@@ -1,4 +1,4 @@
-/var/baltrad/rave/rave_pgf_queue.xml /usr/lib/rave/etc/rave_pgf_queue.xml
+/var/lib/baltrad/rave_pgf_queue.xml /usr/lib/rave/etc/rave_pgf_queue.xml
 /etc/baltrad/rave/etc/rave_pgf_quality_registry.xml /usr/lib/rave/etc/rave_pgf_quality_registry.xml
 /etc/baltrad/rave/etc/rave_pgf_registry.xml /usr/lib/rave/etc/rave_pgf_registry.xml
 /etc/baltrad/rave/etc/rave_tile_registry.xml /usr/lib/rave/etc/rave_tile_registry.xml

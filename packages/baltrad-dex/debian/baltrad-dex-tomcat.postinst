@@ -8,7 +8,7 @@ if [ "$1" = configure ]; then
   fi
     
   if ! getent group baltrad > /dev/null; then
-    addgroup --system postgres
+    addgroup --system baltrad
   fi
   
   if ! id -Gn baltrad | grep -qw baltrad; then
