@@ -1,2 +1,4 @@
-/opt/baltrad/hlhdf/lib/libhlhdf.so  /usr/lib/libhlhdf.so
-
+/usr/lib/hlhdf/lib/libhlhdf.so  /usr/lib/libhlhdf.so
+/usr/lib/hlhdf/bin/hldec /usr/bin/hldec
+/usr/lib/hlhdf/bin/hlenc /usr/bin/hlenc
+/usr/lib/hlhdf/bin/hllist /usr/lib/hllist

@@ -1,13 +1,15 @@
-opt/baltrad/rave/Lib/*.py
-opt/baltrad/rave/Lib/_*.so
-opt/baltrad/rave/lib/*.so
-opt/baltrad/rave/bin/*
-opt/baltrad/rave/mkf/def.mk
-opt/baltrad/rave/rave.xbm
-opt/baltrad/rave/config etc/baltrad/rave
-opt/baltrad/rave/etc/rave_pgf_quality_registry.xml etc/baltrad/rave/etc
-opt/baltrad/rave/etc/rave_pgf_registry.xml etc/baltrad/rave/etc
-opt/baltrad/rave/etc/rave_tile_registry.xml etc/baltrad/rave/etc
-opt/baltrad/rave/etc/rave.pth usr/lib/python2.7/dist-packages
-opt/baltrad/rave/etc/rave_pgf_queue.xml var/baltrad/rave
+usr/lib/rave/Lib/*.py
+usr/lib/rave/Lib/_*.so
+usr/lib/rave/lib/*.so
+usr/lib/rave/bin/*
+usr/lib/rave/mkf/def.mk
+usr/lib/rave/rave.xbm
+usr/lib/rave/config etc/baltrad/rave
+usr/lib/rave/etc/rave_pgf_quality_registry.xml etc/baltrad/rave/etc
+usr/lib/rave/etc/rave_pgf_registry.xml etc/baltrad/rave/etc
+usr/lib/rave/etc/rave_tile_registry.xml etc/baltrad/rave/etc
+usr/lib/rave/etc/rave.pth usr/lib/python2.7/dist-packages
+usr/lib/rave/etc/rave_pgf_queue.xml var/baltrad/rave
 etc/ld.so.conf.d/rave.conf
+etc/init.d/raved
+etc/baltrad/rave/Lib

@@ -9,23 +9,23 @@
 # Uncomment this to turn on verbose mode.
 export DH_VERBOSE=1
 export DH_OPTIONS=-v
-#BUILDROOT=/usr/src/packages/BUILD/debian/tmp
-BUILDROOT=/tmp/baltrad-builds
+INSTALLROOT=$(CURDIR)/debian/tmp
+
 %:
 	dh $@ --with autoreconf
 override_dh_auto_configure:
-	CFLAGS=-I/usr/include/hdf5/serial LDFLAGS="-L/usr/lib/x86_64-linux-gnu/hdf5/serial -L/lib/x86_64-linux-gnu" ./configure --prefix=$(BUILDROOT)/opt/baltrad/bbufr 
+	CFLAGS=-I/usr/include/hdf5/serial LDFLAGS="-L/usr/lib/x86_64-linux-gnu/hdf5/serial -L/lib/x86_64-linux-gnu" ./configure --prefix=$(BUILDROOT)/usr/lib/bbufr 
 
 override_dh_auto_build:
 	make
 override_dh_auto_test:
 	
 override_dh_auto_install:
-	$(MAKE) DESTDIR=$(BUILDROOT) prefix=/opt/baltrad/bbufr install
+	$(MAKE) DESTDIR=$(INSTALLROOT) prefix=/usr/lib/bbufr install
 
 override_dh_installdirs:
-	mkdir -p $(BUILDROOT)/opt/baltrad/bbufr
+	mkdir -p $(INSTALLROOT)/usr/lib/bbufr
 
 override_dh_install:
-	dh_install --sourcedir=$(BUILDROOT)
+	dh_install --sourcedir=$(INSTALLROOT)
 

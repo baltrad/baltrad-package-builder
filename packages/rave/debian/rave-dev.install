@@ -1,2 +1,2 @@
-opt/baltrad/rave/include/python/*.h
-opt/baltrad/rave/include/*.h
+usr/lib/rave/include/python/*.h
+usr/lib/rave/include/*.h

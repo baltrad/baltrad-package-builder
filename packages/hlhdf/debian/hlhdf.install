@@ -1,7 +1,6 @@
-opt/baltrad/hlhdf/bin/hldec
-opt/baltrad/hlhdf/bin/hlenc
-opt/baltrad/hlhdf/bin/hlinstall.sh
-opt/baltrad/hlhdf/bin/hllist
-opt/baltrad/hlhdf/lib/libhlhdf.so
-opt/baltrad/hlhdf/mkf/hldef.mk
-
+usr/lib/hlhdf/bin/hldec
+usr/lib/hlhdf/bin/hlenc
+usr/lib/hlhdf/bin/hlinstall.sh
+usr/lib/hlhdf/bin/hllist
+usr/lib/hlhdf/lib/libhlhdf.so
+usr/lib/hlhdf/mkf/hldef.mk
