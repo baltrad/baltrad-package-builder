@@ -1,0 +1,125 @@
+--- bin/baltrad-node	2018-10-07 10:35:49.434564769 +0200
++++ bin/baltrad-node	2018-10-07 10:35:29.918977872 +0200
+@@ -0,0 +1,122 @@
++#!/bin/sh
++#
++# /etc/init.d/baltrad-node -- startup script for the baltrad node
++#
++### BEGIN INIT INFO
++# Provides:          baltrad-node
++# Required-Start:    $local_fs $remote_fs $network
++# Required-Stop:     $local_fs $remote_fs $network
++# Should-Start:      $named
++# Should-Stop:       $named
++# Default-Start:     2 3 4 5
++# Default-Stop:      0 1 6
++# Short-Description: Start Baltrad node.
++# Description:       Start the Tomcat servlet engine used by baltrad node.
++### END INIT INFO
++
++PATH=/bin:/usr/bin:/sbin:/usr/sbin
++CATALINA_HOME=/usr/share/baltrad/baltrad-node-tomcat
++CATALINA_BASE=/var/lib/baltrad/baltrad-node-tomcat
++CATALINA_PID="/var/run/baltrad/baltrad-node-tomcat.pid"
++CATALINA_SH="$CATALINA_HOME/bin/catalina.sh"
++JAVA_OPTS="-Djava.awt.headless=true -Dfile.encoding=UTF-8 -server -Xms1536m -Xmx1536m -XX:NewSize=256m -XX:MaxNewSize=256m -XX:+DisableExplicitGC"
++
++BALTRAD_USER=baltrad
++BALTRAD_GROUP=baltrad
++
++if [ `id -u` -ne 0 ]; then
++  echo "You need root privileges to run this script"
++  exit 1
++fi
++
++# Make sure tomcat is started with system locale
++if [ -r /etc/default/locale ]; then
++	. /etc/default/locale
++	export LANG
++fi
++
++find_java_home()
++{
++  for jv in 8 7; do
++    tmpdir=/usr/lib/jvm/java-${jv}-openjdk-amd64
++    if [ -d "${tmpdir}" ]; then
++      if [ -x "${tmpdir}/jre/bin/java" ]; then
++        JAVA_HOME="${tmpdir}/jre"
++        return
++      elif [ -x "${tmpdir}/bin/java" ]; then
++        JAVA_HOME="${tmpdir}"
++        return
++      fi
++    fi
++  done
++}
++JAVA_HOME=
++find_java_home
++if [ -z "$JAVA_HOME" ]; then
++  log_failure_msg "No JAVA_HOME found"
++fi
++export JAVA_HOME
++
++catalina_sh() {
++  COMMAND="set -a; JAVA_HOME=\"$JAVA_HOME\"; \
++	CATALINA_HOME=\"$CATALINA_HOME\"; \
++	CATALINA_BASE=\"$CATALINA_BASE\"; \
++	JAVA_OPTS=\"$JAVA_OPTS\"; \
++	CATALINA_PID=\"$CATALINA_PID\"; \
++	CATALINA_TMPDIR=\"$CATALINA_TMPDIR\"; \
++	LANG=\"$LANG\"; \
++	\"$CATALINA_SH\" $@"
++  
++  #echo "$COMMAND"
++  #touch "$CATALINA_PID" "$CATALINA_BASE"/logs/catalina.out
++  su $BALTRAD_USER -s /bin/bash -c "$COMMAND"
++  status="$?"
++  return $status
++}
++
++case "$1" in
++  start)
++    echo "Starting Baltrad node..."
++    catalina_sh start
++    if [ $? -ne 0 ]; then
++      echo "failed."
++    else
++      echo "done."
++    fi
++ 	;;
++  stop)
++    echo "Stopping Baltrad node..."
++    if [ -f "$CATALINA_PID" ]; then
++      SERVER_PID=`cat $CATALINA_PID`
++      EXISTS=`ps --pid $SERVER_PID -o comm=`
++      if [ "$EXISTS" = "java" ]; then
++        catalina_sh stop
++      fi
++      rm -f "$CATALINA_PID"
++    fi
++	;;
++  status)
++    if [ -f "$CATALINA_PID" ]; then
++      SERVER_PID=`cat $CATALINA_PID`
++      EXISTS=`ps --pid $SERVER_PID -o comm=`
++      if [ "$EXISTS" = "java" ]; then
++        echo "Running"
++      else
++        echo "Stopped"
++      fi
++    else
++      echo "Stopped"
++    fi
++    ;;
++  restart)
++    $0 stop
++    sleep 1
++    $0 start
++	;;
++  *)
++    echo "Usage: $0 {start|stop|status|restart}"
++	exit 1
++	;;
++esac
++
++exit 0

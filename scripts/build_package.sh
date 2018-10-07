@@ -169,9 +169,9 @@ if [ ! -d build/$BUILD_NAME ]; then
   cd $BUILD_NAME
 else
   cd build/$BUILD_NAME
-  #git checkout . || exit 127 # REMOVE ALL OLD STUFF
-  #git checkout master || exit 127
-  #git pull || exit 127
+  git checkout . || exit 127 # REMOVE ALL OLD STUFF
+  git checkout master || exit 127
+  git pull || exit 127
 fi
 
 if [ "$OS_VARIANT" = "Ubuntu-16.04" -o "$OS_VARIANT" = "Ubuntu-18.04" ]; then

@@ -5,7 +5,7 @@ JAVA_HOME=/usr/lib/jvm/default-java
 INSTALLROOT=$(CURDIR)/debian/tmp
 
 %:
-	dh $@
+	dh $@ --with quilt
 override_dh_auto_clean:
 
 override_dh_installdirs:
@@ -14,11 +14,16 @@ override_dh_installdirs:
 	mkdir -p $(INSTALLROOT)/var/lib/baltrad/baltrad-node-tomcat/policy
 	mkdir -p $(INSTALLROOT)/var/lib/baltrad/baltrad-node-tomcat/webapps
 	mkdir -p $(INSTALLROOT)/var/log/baltrad/baltrad-node-tomcat
+	mkdir -p $(INSTALLROOT)/var/cache/baltrad-node-tomcat
 	mkdir -p $(INSTALLROOT)/etc/baltrad/baltrad-node-tomcat
+	mkdir -p $(INSTALLROOT)/etc/init.d
 
 override_dh_auto_build:
 
 override_dh_auto_install:
+	cp bin/baltrad-node $(INSTALLROOT)/etc/init.d/
+	chmod a+x $(INSTALLROOT)/etc/init.d/baltrad-node
+	rm -f bin/baltrad-node
 	cp -r bin $(INSTALLROOT)/usr/share/baltrad/baltrad-node-tomcat/
 	cp -r lib $(INSTALLROOT)/usr/share/baltrad/baltrad-node-tomcat/
 	cp conf/catalina.policy $(INSTALLROOT)/var/lib/baltrad/baltrad-node-tomcat/policy/
@@ -30,7 +35,8 @@ override_dh_auto_install:
 	cp -r webapps/ROOT $(INSTALLROOT)/var/lib/baltrad/baltrad-node-tomcat/webapps/
 	cp -r webapps/docs $(INSTALLROOT)/var/lib/baltrad/baltrad-node-tomcat/webapps/
 	ln -s  ../../../log/baltrad/baltrad-node-tomcat $(INSTALLROOT)/var/lib/baltrad/baltrad-node-tomcat/logs
-	ln -s ../../../../etc/baltrad/baltrad-node-tomcat $(INSTALLROOT)/var/lib/baltrad/baltrad-node-tomcat/conf 
+	ln -s ../../../../etc/baltrad/baltrad-node-tomcat $(INSTALLROOT)/var/lib/baltrad/baltrad-node-tomcat/conf
+	ln -s ../../../cache/baltrad-node-tomcat $(INSTALLROOT)/var/lib/baltrad/baltrad-node-tomcat/work
 	cp LICENSE $(INSTALLROOT)/usr/share/baltrad/baltrad-node-tomcat/
 	cp NOTICE $(INSTALLROOT)/usr/share/baltrad/baltrad-node-tomcat/
 	cp README.md $(INSTALLROOT)/usr/share/baltrad/baltrad-node-tomcat/

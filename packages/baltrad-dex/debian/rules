@@ -15,7 +15,7 @@ INSTALLROOT=$(CURDIR)/debian/tmp
 DEBROOT=$(CURDIR)/debian/tmp
 
 %:
-	dh $@
+	dh $@ --with quilt
 override_dh_auto_clean:
 
 override_dh_installdirs:
@@ -31,7 +31,8 @@ override_dh_auto_install:
 	ant install -Dapp.dist.dir.name=baltrad-dex -Dbeast.path=/usr/share/baltrad/baltrad-beast -Dbaltrad.db.path="/usr/share/baltrad" -Dbaltrad.db.java.path="/usr/share/baltrad/baltrad-db/java" -Djavahdf.path=/usr/share/java -Dinstall.prefix=$(INSTALLROOT)/usr/share/baltrad
 	cd $(DEBROOT)/var/lib/baltrad/baltrad-node-tomcat/webapps/BaltradDex && jar -xvf $(INSTALLROOT)/usr/share/baltrad/baltrad-dex/bin/BaltradDex.war
 	echo '<?xml version="1.0" encoding="UTF-8"?>' > $(INSTALLROOT)/var/lib/baltrad/baltrad-node-tomcat/webapps/BaltradDex/META-INF/context.xml
-	echo '<Context allowLinking="true" path="/BaltradDex" />' >> $(INSTALLROOT)/var/lib/baltrad/baltrad-node-tomcat/webapps/BaltradDex/META-INF/context.xml
+	echo '<Context path="/BaltradDex"><Resources allowLinking="true"/></Context>' >> $(INSTALLROOT)/var/lib/baltrad/baltrad-node-tomcat/webapps/BaltradDex/META-INF/context.xml
+	dh_quilt_unpatch
 
 override_dh_install:
 	dh_install --sourcedir=$(INSTALLROOT)

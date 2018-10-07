@@ -1,0 +1,14 @@
+--- conf/server.xml	2018-10-07 11:34:13.531747234 +0200
++++ conf/server.xml	2018-10-07 11:36:23.532951737 +0200
+@@ -84,6 +84,10 @@
+          Either JSSE or OpenSSL style configuration may be used regardless of
+          the SSLImplementation selected. JSSE style configuration is used below.
+     -->
++    <Connector port="8443" protocol="org.apache.coyote.http11.Http11Protocol" SSLEnabled="true"
++               maxThreads="150" scheme="https" secure="true"
++               clientAuth="false" sslProtocol="TLS" sslEnabledProtocols="TLSv1,TLSv1.1,TLSv1.2,SSLv2Hello"
++               keystoreFile="/etc/baltrad/bltnode-keys/keystore.jks" keystorePass="secret" />
+     <!--
+     <Connector port="8443" protocol="org.apache.coyote.http11.Http11NioProtocol"
+                maxThreads="150" SSLEnabled="true">
+
