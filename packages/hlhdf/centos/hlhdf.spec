@@ -1,5 +1,5 @@
 %{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib(1)")}
-%define _prefix /opt/baltrad/%{name}
+%define _prefix /usr/lib/%{name}
 
 Name: hlhdf
 Version: 0.8.9
@@ -41,22 +41,21 @@ HL-HDF Python bindings
 
 
 %build
-%configure
+%configure --prefix=/usr/lib/hlhdf
 make
 
 %install
 # FIXME: Why is this mkdir necessary?
 # With full _prefix the custom installscripts think there was already an old version
 # present and does some special things we may not want (migration to newer version)
-mkdir -p %{buildroot}/opt/baltrad
-#mkdir -p %{buildroot}%{_sysconfdir}/ld.so.conf.d
+mkdir -p %{buildroot}/usr/lib/hlhdf
 
 make install DESTDIR=%{buildroot}
 mkdir -p %{buildroot}%{python_sitearch}
 mv %{buildroot}%{_prefix}/lib/_pyhl.so %{buildroot}%{python_sitearch}/
 install -p -D -m 0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/ld.so.conf.d/hlhdf-python.conf
 mkdir -p %{buildroot}/usr/lib
-ln -sf ../../opt/baltrad/hlhdf/lib/libhlhdf.so %{buildroot}/usr/lib/libhlhdf.so
+ln -sf ../../usr/lib/hlhdf/lib/libhlhdf.so %{buildroot}/usr/lib/libhlhdf.so
 
 %post -p /sbin/ldconfig
 

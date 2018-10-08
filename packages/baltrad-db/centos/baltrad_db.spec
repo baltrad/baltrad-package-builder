@@ -1,5 +1,5 @@
 %{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
-%define _prefix /opt/baltrad
+%define _prefix /usr
 
 Name: baltrad-db
 Version: %{version}
@@ -72,18 +72,43 @@ ls -lR
 
 %install
 cd common
+mkdir -p $RPM_BUILD_ROOT/etc/init.d
 %{__python} setup.py install --skip-build --root $RPM_BUILD_ROOT
 cd ../server
 %{__python} setup.py install --skip-build --root $RPM_BUILD_ROOT
+cp etc/bdbserver $RPM_BUILD_ROOT/etc/init.d/ 
 cd ../client/python
 %{__python} setup.py install --skip-build --root $RPM_BUILD_ROOT
 cd ../../client/java
-mkdir -p $RPM_BUILD_ROOT%{_prefix}/share/baltrad-bdb/java
-cp -p dist/*.jar $RPM_BUILD_ROOT%{_prefix}/share/baltrad-bdb/java/
-mkdir -p $RPM_BUILD_ROOT%{_prefix}/share/baltrad-bdb/java/libs
+mkdir -p $RPM_BUILD_ROOT%{_prefix}/share/baltrad/baltrad-db/java
+cp -p dist/*.jar $RPM_BUILD_ROOT%{_prefix}/share/baltrad/baltrad-db/java/
+mkdir -p $RPM_BUILD_ROOT%{_prefix}/share/baltrad/baltrad-db/java/libs
 # FIXME: License files?
-cp -p lib/commons/commons-lang3-3.1.jar $RPM_BUILD_ROOT%{_prefix}/share/baltrad-bdb/java/libs
-cp -p lib/joda-time/joda-time-2.0.jar $RPM_BUILD_ROOT%{_prefix}/share/baltrad-bdb/java/libs
+cp -p lib/commons/commons-lang3-3.1.jar $RPM_BUILD_ROOT%{_prefix}/share/baltrad/baltrad-db/java/libs
+cp -p lib/joda-time/joda-time-2.0.jar $RPM_BUILD_ROOT%{_prefix}/share/baltrad/baltrad-db/java/libs
+
+%post
+if ! getent passwd baltrad > /dev/null; then
+  adduser --system --home /var/lib/baltrad --no-create-home \
+    --shell /bin/bash -g baltrad baltrad
+fi
+    
+if ! getent group baltrad > /dev/null; then
+  groupadd --system baltrad
+fi
+  
+if ! id -Gn baltrad | grep -qw baltrad; then
+  adduser baltrad baltrad
+fi
+
+mkdir -p /var/lib/baltrad
+su -s /bin/sh baltrad -c "test -O /var/lib/baltrad &&
+  test -G /var/lib/baltrad" || chown baltrad:baltrad /var/lib/baltrad
+
+chmod 1775 /var/log/baltrad
+chmod 1775 /var/run/baltrad
+chown root:baltrad /var/log/baltrad
+chown root:baltrad /var/run/baltrad
 
 %files
 # Why is %{_prefix} in buildroot?
@@ -93,6 +118,7 @@ cp -p lib/joda-time/joda-time-2.0.jar $RPM_BUILD_ROOT%{_prefix}/share/baltrad-bd
 /usr/bin/baltrad-bdb-server
 /usr/bin/baltrad-bdb-upgrade
 /usr/bin/baltrad-bdb-migrate-db
+/etc/init.d/bdbserver
 %{python_sitelib}/baltrad/bdbcommon/*.py
 %{python_sitelib}/baltrad/bdbcommon/*.pyc
 %{python_sitelib}/baltrad/bdbcommon/*.pyo
@@ -123,8 +149,8 @@ cp -p lib/joda-time/joda-time-2.0.jar $RPM_BUILD_ROOT%{_prefix}/share/baltrad-bd
 %{python_sitelib}/baltrad.*dev-*.egg-info/*
 
 %files java
-%{_prefix}/share/baltrad-bdb/java/*.jar
+%{_prefix}/share/baltrad/baltrad-db/java/*.jar
 
 %files external
-%{_prefix}/share/baltrad-bdb/java/libs/commons-lang3-3.1.jar
-%{_prefix}/share/baltrad-bdb/java/libs/joda-time-2.0.jar
+%{_prefix}/share/baltrad/baltrad-db/java/libs/commons-lang3-3.1.jar
+%{_prefix}/share/baltrad/baltrad-db/java/libs/joda-time-2.0.jar

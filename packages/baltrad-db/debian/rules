@@ -27,6 +27,8 @@ override_dh_auto_build:
 override_dh_auto_install:
 	cd $(COMMONDIR); python setup.py install --skip-build --root $(CURDIR)/debian/tmp
 	cd $(SERVERDIR); python setup.py install --skip-build --root $(CURDIR)/debian/tmp
+	mkdir -p $(DEBROOT)/etc/init.d
+	cp $(SERVERDIR)/etc/bdbserver $(DEBROOT)/etc/init.d/
 	cd $(PYTHONCLIENT); python setup.py install --skip-build --root $(CURDIR)/debian/tmp
 	mkdir -p $(DEBROOT)/usr/share/baltrad/baltrad-db/java
 	cd $(JAVACLIENT); cp -p dist/*.jar $(DEBROOT)/usr/share/baltrad/baltrad-db/java/
