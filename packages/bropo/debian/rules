@@ -9,30 +9,33 @@
 # Uncomment this to turn on verbose mode.
 export DH_VERBOSE=1
 export DH_OPTIONS=-v
-#BUILDROOT=/usr/src/packages/BUILD/debian/tmp
-BUILDROOT=/tmp/baltrad-builds
+INSTALLROOT=$(CURDIR)/debian/tmp
+
 %:
 	dh $@ --with python2
 override_dh_auto_configure:
-	./configure --prefix=/opt/baltrad/bropo --with-rave=/opt/baltrad/rave
+	./configure --prefix=/usr/lib/bropo --with-rave=/usr/lib/rave
 override_dh_auto_build:
 	make
 override_dh_installdirs:
-	mkdir -p $(BUILDROOT)/opt/baltrad/bropo
-	echo "/opt/baltrad/bropo/lib">> $(BUILDROOT)/etc/ld.so.conf.d/bropo.conf
+	mkdir -p $(INSTALLROOT)/usr/lib/bropo
+	mkdir -p $(INSTALLROOT)/etc/baltrad/bropo
+	mkdir -p $(INSTALLROOT)/etc/ld.so.conf.d/	
+	echo "/usr/lib/bropo/lib">> $(INSTALLROOT)/etc/ld.so.conf.d/bropo.conf
 override_dh_auto_install:
-	$(MAKE) DESTDIR=$(BUILDROOT) prefix=/opt/baltrad/bropo install
+	$(MAKE) DESTDIR=$(INSTALLROOT) prefix=/usr/lib/bropo install
+	cp config/ropo_options.xml $(INSTALLROOT)/etc/baltrad/bropo/
 override_dh_auto_clean:
 	
 override_dh_auto_test:
 	
 override_dh_shlibdeps:
-	dh_shlibdeps -l /opt/baltrad/hlhdf/default/lib:$(BUILDROOT)/opt/baltrad/bropo/lib:/opt/baltrad/rave/Lib:/opt/baltrad/rave/lib
+	dh_shlibdeps -l /usr/lib/hlhdf/default/lib:$(BUILDROOT)/usr/lib/bropo/lib:/usr/lib/rave/Lib:/usr/lib/rave/lib
 
 override_dh_install:
 	dh_python2
 	dh_numpy
-	dh_install --sourcedir=$(BUILDROOT)
+	dh_install --sourcedir=$(INSTALLROOT)
 	dh_link
 
 build:

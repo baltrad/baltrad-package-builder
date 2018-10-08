@@ -1,0 +1,17 @@
+#! /bin/sh
+    
+if [ "$1" = configure ]; then
+  ldconfig
+  
+  TMPNAME=`tempfile`.py
+  
+  cat <<EOF > $TMPNAME
+from rave_pgf_quality_registry_mgr import rave_pgf_quality_registry_mgr
+a = rave_pgf_quality_registry_mgr("/etc/baltrad/rave/etc/rave_pgf_quality_registry.xml")
+a.remove_plugin("ropo")
+a.add_plugin("ropo", "ropo_quality_plugin", "ropo_quality_plugin")
+a.save("/etc/baltrad/rave/etc/rave_pgf_quality_registry.xml")
+EOF
+  python $TMPNAME
+  \rm -f $TMPNAME
+fi

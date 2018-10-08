@@ -19,7 +19,7 @@ override_dh_auto_build:
 	make
 override_dh_installdirs:
 	mkdir -p $(INSTALLROOT)/etc/ld.so.conf.d/baltrad/hlhdf 
-	echo "/usr/lib/hlhdf/default/lib" > $(INSTALLROOT)/etc/ld.so.conf.d/hlhdf.conf
+	echo "/usr/lib/hlhdf/lib" > $(INSTALLROOT)/etc/ld.so.conf.d/hlhdf.conf
 override_dh_auto_install:
 	mkdir -p $(INSTALLROOT)/usr/lib/hlhdf
 	$(MAKE) DESTDIR=$(INSTALLROOT) prefix=/usr/lib/hlhdf install
