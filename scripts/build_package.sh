@@ -115,10 +115,16 @@ prepare_and_build_centos()
     cp -f "$1"/*.patch "$RPM_TOP_DIR/SOURCES/"
   fi
   #HOW DO WE DETERMINE BUILDROOT? NOW, just fake it...
-  git archive --format="tar.gz" --prefix="$3-$4/" master -o "$RPM_TOP_DIR/SOURCES/$3-$4.tar.gz"
-  if [ $? -ne 0 ]; then
-    echo "Failed to create source archive..."
-    exit 127
+  if [ "$7" = "false" ]; then # If not tar ball should be created from folder, it must be a git archive
+    git archive --format="tar.gz" --prefix="$3-$4/" master -o "$RPM_TOP_DIR/SOURCES/$3-$4.tar.gz"
+    if [ $? -ne 0 ]; then
+      echo "Failed to create source archive..."
+      exit 127
+    fi
+  else
+    cd ..
+    tar -cvzf "$RPM_TOP_DIR/SOURCES/$3-$4.tar.gz" "$3"
+    cd "$3"
   fi
   rpmbuild --define="version $4" --define "snapshot $5" -v -ba "$2" || exit 127
   #if [ "$6" = "true" ]; then
@@ -174,12 +180,17 @@ else
   git pull || exit 127
 fi
 
+CREATE_TAR_FROM_FOLDER=false
+if [ "$TAR_BALL" != "" ]; then
+  CREATE_TAR_FROM_FOLDER=true
+fi
+
 if [ "$OS_VARIANT" = "Ubuntu-16.04" -o "$OS_VARIANT" = "Ubuntu-18.04" ]; then
   echo "Debian build"
   prepare_and_build_debian "$PACKAGEDIR/$PACKAGE_NAME/debian" $BUILD_NAME $PACKAGE_VERSION-$BUILD_NUMBER $INSTALL_ARTIFACTS
 elif [ "$OS_VARIANT" = "CentOS-7" ]; then
   echo "Redhat build"
-  prepare_and_build_centos "$PACKAGEDIR/$PACKAGE_NAME/centos" "$PACKAGEDIR/$PACKAGE_NAME/$SPECFILE" $BUILD_NAME $PACKAGE_VERSION $BUILD_NUMBER $INSTALL_ARTIFACTS
+  prepare_and_build_centos "$PACKAGEDIR/$PACKAGE_NAME/centos" "$PACKAGEDIR/$PACKAGE_NAME/$SPECFILE" $BUILD_NAME $PACKAGE_VERSION $BUILD_NUMBER $INSTALL_ARTIFACTS $CREATE_TAR_FROM_FOLDER
 else
   echo "Unsupported build variant"  
 fi
