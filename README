@@ -107,6 +107,6 @@ RPM:
 %> sudo pip install "pbr>=0.5.21,<1.0"
 %> sudo rpm -ivh packages/baltrad-db/artifacts/baltrad-db*.rpm
 %> sudo su baltrad -s /bin/bash -c "baltrad-bdb-create --conf=/var/lib/baltrad/bltnode.properties"
-
+%> sudo yum install hdf-devel
 
 

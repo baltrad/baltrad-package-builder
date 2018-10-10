@@ -24,6 +24,7 @@ TAR_STRIP_ROOT=`cat packages/$PACKAGE_NAME/package.ini | egrep -e "^tar_strip_ro
 SPECFILE=$PACKAGENAME/`cat packages/$PACKAGE_NAME/package.ini | egrep -e "^spec_file" | sed -e"s/spec_file=//g"`
 INSTALL_ARTIFACTS=`cat packages/$PACKAGE_NAME/package.ini | egrep -e "^install_artifacts" | sed -e"s/install_artifacts=//g"`
 TBUILD_NAME=`cat packages/$PACKAGE_NAME/package.ini | egrep -e "^pkg_name" | sed -e"s/pkg_name=//g"`
+RPM_ARTIFACTS=`cat packages/$PACKAGE_NAME/package.ini | egrep -e "^rpm_artifacts" | sed -e "s/rpm_artifacts=//g"`
 
 if [ "$TBUILD_NAME" != "" ]; then
   BUILD_NAME=$TBUILD_NAME
@@ -106,14 +107,20 @@ prepare_and_build_centos()
   if [ -f "$RPM_TOP_DIR/SOURCES/$2-$3.tar.gz" ]; then
     \rm -f "$RPM_TOP_DIR/SOURCES/$2-$3.tar.gz"
   fi
-  CFILES=`ls -1 "$1"/ | egrep '.conf$' | wc -l`
-  if [ $CFILES -gt 0 ]; then
-    cp -f "$1"/*.conf "$RPM_TOP_DIR/SOURCES/"
-  fi
-  CFILES=`ls -1 "$1"/ | egrep '.patch$' | wc -l`
-  if [ $CFILES -gt 0 ]; then
-    cp -f "$1"/*.patch "$RPM_TOP_DIR/SOURCES/"
-  fi
+  BNAME=`basename $2`
+  FILES=`ls -1 "$1"/ | grep -v "$BNAME"`
+  for f in $FILES; do
+    cp "$1/$f" "$RPM_TOP_DIR/SOURCES/"
+  done
+
+  #CFILES=`ls -1 "$1"/ | egrep '.conf$' | wc -l`
+  #if [ $CFILES -gt 0 ]; then
+  #  cp -f "$1"/*.conf "$RPM_TOP_DIR/SOURCES/"
+  #fi
+  #CFILES=`ls -1 "$1"/ | egrep '.patch$' | wc -l`
+  #if [ $CFILES -gt 0 ]; then
+  #  cp -f "$1"/*.patch "$RPM_TOP_DIR/SOURCES/"
+  #fi
   #HOW DO WE DETERMINE BUILDROOT? NOW, just fake it...
   if [ "$7" = "false" ]; then # If not tar ball should be created from folder, it must be a git archive
     git archive --format="tar.gz" --prefix="$3-$4/" master -o "$RPM_TOP_DIR/SOURCES/$3-$4.tar.gz"
@@ -127,16 +134,29 @@ prepare_and_build_centos()
     cd "$3"
   fi
   rpmbuild --define="version $4" --define "snapshot $5" -v -ba "$2" || exit 127
-  #if [ "$6" = "true" ]; then
-  #  if [ "$RPM_PCK_DIR" != "" ]; then
-  #    sudo rpm -Uvh "$RPM_PCK_DIR/$3*-$4-$5*.$RPM_ARCH_DIR.rpm"
-  #  fi
-  #fi
+
   if [ ! -d ../../artifacts ]; then
     mkdir ../../artifacts || exit 127
   fi
-  if [ "$RPM_PCK_DIR" != "" ]; then
-    mv "$RPM_PCK_DIR"/$3*-$4-$5*.$RPM_ARCH_DIR.rpm ../../artifacts/
+  
+  if [ "$RPM_ARTIFACTS" != "" ]; then
+    RPMS_TOPDIR=`rpmbuild --eval '%_rpmdir'`
+    for X in $RPM_ARTIFACTS; do
+      fname=`echo $X | sed -e "s/<buildver>/$PACKAGE_VERSION-$BUILD_NUMBER/g"`
+      FILES=`ls -1 $RPMS_TOPDIR/$fname`
+      for f in $FILES; do
+        cp "$f" ../../artifacts/
+      done
+    done
+  else
+    #if [ "$6" = "true" ]; then
+    #  if [ "$RPM_PCK_DIR" != "" ]; then
+    #    sudo rpm -Uvh "$RPM_PCK_DIR/$3*-$4-$5*.$RPM_ARCH_DIR.rpm"
+    #  fi
+    #fi
+    if [ "$RPM_PCK_DIR" != "" ]; then
+      mv "$RPM_PCK_DIR"/$3*-$4-$5*.$RPM_ARCH_DIR.rpm ../../artifacts/
+    fi
   fi
 }
 

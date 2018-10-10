@@ -1,0 +1,94 @@
+From e42efab7a7f63e905f92a466acbdbd1767a6517d Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Cl=C3=A9ment=20DAVID?= <davidcl@fedoraproject.org>
+Date: Wed, 25 Jan 2012 18:50:45 +0100
+Subject: [PATCH 2/7] add H4_ prefix to constants
+
+---
+ native/hdflib/hdfsdsImp.c      |    4 ++--
+ native/hdflib/hdfstructsutil.c |    8 ++++----
+ native/hdflib/hdfvdataImp.c    |    4 ++--
+ 3 files changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/native/hdflib/hdfsdsImp.c b/native/hdflib/hdfsdsImp.c
+index ff65e02..b88eb35 100755
+--- a/native/hdflib/hdfsdsImp.c
++++ b/native/hdflib/hdfsdsImp.c
+@@ -149,7 +149,7 @@ jintArray argv)  /* OUT: rank, NT, nattr */
+     int32 *dims;
+     int32 *theArgs;
+ 
+-    cname = (char *)malloc(MAX_NC_NAME+1);
++    cname = (char *)malloc(H4_MAX_NC_NAME+1);
+     if (cname == NULL) {
+         h4outOfMemory(env, "SDgetinfo");
+         return FAIL;
+@@ -160,7 +160,7 @@ jintArray argv)  /* OUT: rank, NT, nattr */
+ 
+     retVal = SDgetinfo((int32)sdsid, cname, &(theArgs[0]), dims,
+             &(theArgs[1]), &(theArgs[2]));
+-    cname[MAX_NC_NAME] = '\0';
++    cname[H4_MAX_NC_NAME] = '\0';
+ 
+     if (retVal == FAIL) {
+         ENVPTR->ReleaseIntArrayElements(ENVPAR dimsizes,(jint *)dims,JNI_ABORT);
+diff --git a/native/hdflib/hdfstructsutil.c b/native/hdflib/hdfstructsutil.c
+index 9e22871..1d48988 100755
+--- a/native/hdflib/hdfstructsutil.c
++++ b/native/hdflib/hdfstructsutil.c
+@@ -411,7 +411,7 @@ jboolean bb;
+ 
+     lens = (jint *)ENVPTR->GetIntArrayElements(ENVPAR (jintArray)larr,&bb);
+ 
+-    for (i = 0; i < MAX_VAR_DIMS; i++) {
++    for (i = 0; i < H4_MAX_VAR_DIMS; i++) {
+         cinf->comp.chunk_lengths[i] = (int32)lens[i];
+     }
+ 
+@@ -452,7 +452,7 @@ jboolean bb;
+ 
+         lens = (jint *)ENVPTR->GetIntArrayElements(ENVPAR (jintArray)larr,&bb);
+ 
+-        for (i = 0; i < MAX_VAR_DIMS; i++) {
++        for (i = 0; i < H4_MAX_VAR_DIMS; i++) {
+             cinf->nbit.chunk_lengths[i] = (int32)lens[i];
+         }
+ 
+@@ -500,11 +500,11 @@ jmethodID jmi;
+ jintArray rarray;
+ jobject compinfo;
+ 
+-    rarray = ENVPTR->NewIntArray(ENVPAR MAX_VAR_DIMS);
++    rarray = ENVPTR->NewIntArray(ENVPAR H4_MAX_VAR_DIMS);
+     if (rarray == NULL) {
+         return JNI_FALSE;
+     }
+-    ENVPTR->SetIntArrayRegion(ENVPAR rarray,0,MAX_VAR_DIMS,(jint *)cinf->chunk_lengths);
++    ENVPTR->SetIntArrayRegion(ENVPAR rarray,0,H4_MAX_VAR_DIMS,(jint *)cinf->chunk_lengths);
+ 
+         /* release rarray? */
+ 
+diff --git a/native/hdflib/hdfvdataImp.c b/native/hdflib/hdfvdataImp.c
+index 80b85d7..36f3a13 100755
+--- a/native/hdflib/hdfvdataImp.c
++++ b/native/hdflib/hdfvdataImp.c
+@@ -357,7 +357,7 @@ jobjectArray sargs) /* OUT: String fields, vdata_name */
+         return FAIL;
+     }
+ 
+-    name = (char *)malloc(MAX_NC_NAME+1);
++    name = (char *)malloc(H4_MAX_NC_NAME+1);
+     if (name == NULL) {
+         free(flds);
+         return FAIL;
+@@ -375,7 +375,7 @@ jobjectArray sargs) /* OUT: String fields, vdata_name */
+         (int32 *)&(theIargs[1]), flds, (int32 *)&(theIargs[2]), name);
+ 
+     flds[MAX_FIELD_SIZE] = '\0';
+-    name[MAX_NC_NAME] = '\0';
++    name[H4_MAX_NC_NAME] = '\0';
+ 
+     if (rval == FAIL) {
+         ENVPTR->ReleaseIntArrayElements(ENVPAR iargs,theIargs,JNI_ABORT);
+-- 
+1.7.7.6
+

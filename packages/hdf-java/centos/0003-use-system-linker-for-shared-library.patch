@@ -1,0 +1,83 @@
+From 2d2bdf8efd831e99a597e3967dd7b3f519bb8190 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Cl=C3=A9ment=20DAVID?= <davidcl@fedoraproject.org>
+Date: Wed, 25 Jan 2012 18:50:56 +0100
+Subject: [PATCH 3/7] use system linker for shared library
+
+---
+ configure.in               |   12 ++++++------
+ native/hdf5lib/Makefile.in |    2 +-
+ 2 files changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/configure.in b/configure.in
+index 203a4e2..c1b4b06 100755
+--- a/configure.in
++++ b/configure.in
+@@ -184,7 +184,7 @@ case "$withval" in
+   *)
+     if test -n "$withval" ; then
+         z_lib="`echo $withval |cut -f2 -d, -s`"
+-  ZLIB=$z_lib"/libz."$LLEXT
++  ZLIB="-lz"
+   HAVE_ZLIB="yes"
+     else
+       ZLIB=""
+@@ -218,7 +218,7 @@ case "$withval" in
+   *)
+     if test -n "$withval" ; then
+         jpeg_lib="`echo $withval |cut -f2 -d, -s`"
+-  JPEGLIB=$jpeg_lib"/libjpeg."$LLEXT
++  JPEGLIB="-ljpeg"
+       dnl AC_MSG_RESULT([jpeg found: $JPEGLIB]);
+   HAVE_JPEG="yes"
+     else
+@@ -370,14 +370,14 @@ case "$withval" in
+   *)
+   if test -n "$withval" ; then
+       hdf5_lib="`echo $withval |cut -f2 -d, -s`"
+-    HDF5LIB=$hdf5_lib"/libhdf.$LLEXT"
++    HDF5LIB="-lhdf5"
+       hdf5_inc="`echo $withval |cut -f1 -d,`"
+       if test -n "$hdf5_inc"; then
+         HDF5INC="$hdf5_inc"
+       fi
+       hdf5_lib="`echo $withval |cut -f2 -d, -s`"
+       if test -n "$hdf5_lib"; then
+-    HDF5LIB=$hdf5_lib
++    HDF5LIB="-lhdf5"
+       fi
+       HAVE_HDF5="yes"
+   else
+@@ -387,7 +387,7 @@ case "$withval" in
+   ;;
+ esac
+ if test -n "$HDF5LIB"; then
+-  LIBS="$HDF5LIB/libhdf5.$LLEXT $LIBS"
++  LIBS="-lhdf5"
+   HAVE_HDF5="yes"
+ fi
+ AC_MSG_RESULT([$HAVE_HDF5])
+@@ -400,7 +400,7 @@ dnl  Check that the libraries that HDF4 needs have been found
+ dnl
+ dnl  Must stop here if something is missing.
+ dnl
+-if test -n "$HDF5LIB"; then
++if test -n "$HDF5LIB" -a -d "$HDF5LIB"; then
+   AC_MSG_CHECKING([dependencies for HDF5 library])
+   DFL=`grep 'filters (external)' $HDF5LIB"/libhdf5.settings" | grep deflate`
+   SZP=`grep 'filters (external)' $HDF5LIB"/libhdf5.settings" | grep szip`
+diff --git a/native/hdf5lib/Makefile.in b/native/hdf5lib/Makefile.in
+index 98da3ac..a4e9f91 100644
+--- a/native/hdf5lib/Makefile.in
++++ b/native/hdf5lib/Makefile.in
+@@ -35,7 +35,7 @@ COPT=@COPT@
+ 
+ CFLAGS = -D_FILE_OFFSET_BITS=64 $(DEFS) -I. -I$(HDF5INC) -I$(JAVAINC1) -I$(JAVAINC2)
+ 
+-LIBS =  $(HDF5LIB)/libhdf5.$(LLEXT) $(ZLIB) $(SZLIB) -lm
++LIBS =  $(HDF5LIB) $(ZLIB) $(SZLIB) -lm
+ 
+ # Macro def: object filename used
+ OBJECTS =  exceptionImp.o h5Constants.o h5Imp.o h5aImp.o h5dImp.o h5eImp.o h5fImp.o h5gImp.o h5iImp.o h5lImp.o h5oImp.o h5pImp.o h5rImp.o h5sImp.o h5tImp.o nativeData.o h5util.o h5zImp.o
+-- 
+1.7.7.6
+

@@ -1,0 +1,16 @@
+#!/bin/sh
+
+CLASSPATH="$CLASSPATH:/usr/share/java/jhdfview.jar"
+
+CLASSPATH="$CLASSPATH:/usr/share/java/jhdf.jar:/usr/share/java/jhdf5.jar"
+
+CLASSPATH="$CLASSPATH:/usr/share/java/jhdfobj.jar"
+CLASSPATH="$CLASSPATH:/usr/share/java/jhdf4obj.jar:/usr/share/java/jhdf5obj.jar"
+
+LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/lib/java:/usr/lib64/java"
+
+export CLASSPATH
+export LD_LIBRARY_PATH
+
+java -Xmx1000m ncsa.hdf.view.HDFView $*
+

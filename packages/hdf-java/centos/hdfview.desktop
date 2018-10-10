@@ -1,0 +1,15 @@
+[Desktop Entry]
+Name=HDFView
+Name[de]=HDFView
+Name[en]=HDFView
+Comment=HDF4/5 Data Browser
+Comment[DE]=HDF4/5 Daten Browser
+Comment[EN]=HDF4/5 Data Browser
+Exec=/usr/bin/hdfview %F
+Icon=hdfview
+Terminal=false
+MimeType=application/x-hdf;application/x-hdf5;
+Type=Application
+X-MultipleArgs=true
+Categories=Science;Physics;DataVisualization;Education;
+
