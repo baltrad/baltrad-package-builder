@@ -1,4 +1,4 @@
-%define _prefix /opt/baltrad/%{name}
+%define _prefix /usr/share/baltrad/%{name}
 
 Name: baltrad-beast
 Version: %{version}
@@ -39,14 +39,11 @@ are provided in the beast package.
 
 %build
 # Use %{_prefix} once known what it should be based on higher level components requirements
-ant -Dbaltraddb.path=/opt/baltrad -Dbaltraddb.bin.path=/usr/bin
-ls -lR
+ant -Dbaltraddb.path=/usr/share/baltrad -Dbaltraddb.java.path=/usr/share/baltrad/baltrad-db/java -Dbaltraddb.bin.path=/usr/bin
 
 %install
-# FIXME: Unstandard jar install path
-ant install-files -Dapp.dist.dir.name=%{name} -Dbaltraddb.path=/opt/baltrad -Dbaltraddb.bin.path=/usr/bin -Dprefix=$RPM_BUILD_ROOT/opt/baltrad
-
-ls -lR $RPM_BUILD_ROOT
+ant install-files -Dapp.dist.dir.name=%{name} -Dbaltraddb.path=/usr/share/baltrad -Dbaltraddb.java.path=/usr/share/baltrad/baltrad-db/java -Dbaltraddb.bin.path=/usr/bin -Dprefix=$RPM_BUILD_ROOT/usr/share/baltrad
+#ls -lR $RPM_BUILD_ROOT
 #mkdir -p $RPM_BUILD_ROOT%{_prefix}/bin
 #cp -p dist/%{name}.jar $RPM_BUILD_ROOT%{_prefix}/bin
 #mkdir -p $RPM_BUILD_ROOT%{_prefix}/libs
