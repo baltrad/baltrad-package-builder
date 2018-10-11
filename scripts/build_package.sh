@@ -191,7 +191,6 @@ else
   git checkout master || exit 127
   git pull || exit 127
 fi
-
 CREATE_TAR_FROM_FOLDER=false
 if [ "$TAR_BALL" != "" ]; then
   CREATE_TAR_FROM_FOLDER=true
