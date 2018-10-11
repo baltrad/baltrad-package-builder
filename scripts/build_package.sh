@@ -113,14 +113,6 @@ prepare_and_build_centos()
     cp "$1/$f" "$RPM_TOP_DIR/SOURCES/"
   done
 
-  #CFILES=`ls -1 "$1"/ | egrep '.conf$' | wc -l`
-  #if [ $CFILES -gt 0 ]; then
-  #  cp -f "$1"/*.conf "$RPM_TOP_DIR/SOURCES/"
-  #fi
-  #CFILES=`ls -1 "$1"/ | egrep '.patch$' | wc -l`
-  #if [ $CFILES -gt 0 ]; then
-  #  cp -f "$1"/*.patch "$RPM_TOP_DIR/SOURCES/"
-  #fi
   #HOW DO WE DETERMINE BUILDROOT? NOW, just fake it...
   if [ "$7" = "false" ]; then # If not tar ball should be created from folder, it must be a git archive
     git archive --format="tar.gz" --prefix="$3-$4/" master -o "$RPM_TOP_DIR/SOURCES/$3-$4.tar.gz"
