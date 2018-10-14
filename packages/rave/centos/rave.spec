@@ -113,7 +113,27 @@ ln -s ../../../../etc/baltrad/rave/config/swedish_areas.xml		%{buildroot}/usr/li
 ln -s ../../../../etc/baltrad/rave/config/swedish_radars.xml		%{buildroot}/usr/lib/rave/config/swedish_radars.xml
 ln -s ../../../../etc/baltrad/rave/Lib/rave_defines.py %{buildroot}/usr/lib/rave/Lib/rave_defines.py
 
-%post -p /sbin/ldconfig
+%post
+/sbin/ldconfig
+TMPNAME=`mktemp /tmp/XXXXXXXXXX.py`
+  
+cat <<EOF > $TMPNAME
+from rave_pgf_registry import PGF_Registry
+a=PGF_Registry(filename="/etc/baltrad/rave/etc/rave_pgf_registry.xml")
+a.deregister('eu.baltrad.beast.generatesite2d')
+a.register('eu.baltrad.beast.generatesite2d', 'rave_pgf_site2D_plugin', 'generate', 'Generate Site2D plugin', 'area,quantity,method,date,time,anomaly-qc,qc-mode,prodpar,applygra,ignore-malfunc,ctfilter,pcsid,algorithm_id', '', 'height,range,zrA,zrb,xscale,yscale')
+a.deregister('eu.baltrad.beast.generatecomposite')
+a.register('eu.baltrad.beast.generatecomposite', 'rave_pgf_composite_plugin', 'generate', 'Generate composite plugin', 'area,quantity,method,date,time,selection,anomaly-qc,qc-mode,reprocess_qfields,prodpar,applygra,ignore-malfunc,ctfilter,qitotal_field,algorithm_id,merge', '', 'height,range,zrA,zrb')
+a.deregister('eu.baltrad.beast.generatevolume')
+a.register('eu.baltrad.beast.generatevolume', 'rave_pgf_volume_plugin', 'generate', 'Polar volume generation from individual scans', 'source,date,time,anomaly-qc,qc-mode,algorithm_id,merge', '', 'height,range,zrA,zrb')
+a.deregister('se.smhi.rave.creategmapimage')
+a.register('se.smhi.rave.creategmapimage', 'googlemap_pgf_plugin', 'generate', 'Google Map Plugin', 'outfile,date,time,algorithm_id', '', '')
+a.deregister('eu.baltrad.beast.applyqc')
+a.register('eu.baltrad.beast.applyqc', 'rave_pgf_apply_qc_plugin', 'generate', 'Apply quality controls on a polar volume', 'date,time,anomaly-qc,algorithm_id', '', '')  
+EOF
+python $TMPNAME
+\rm -f $TMPNAME
+
 %postun -p /sbin/ldconfig
 
 %files
