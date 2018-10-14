@@ -1,0 +1,8 @@
+usr/lib/beamb/bin/beamb
+usr/lib/beamb/lib/libbeamb.so
+usr/lib/beamb/share/beamb/data/gtopo30/*
+usr/lib/beamb/share/beamb/pybeamb/*.so
+usr/lib/beamb/share/beamb/pybeamb/*.py
+var/cache/beamb
+usr/lib/python2.7/site-packages/pybeamb.pth usr/lib/python2.7/dist-packages
+etc/ld.so.conf.d/beamb.conf

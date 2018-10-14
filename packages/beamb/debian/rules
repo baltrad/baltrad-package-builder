@@ -10,36 +10,23 @@
 export DH_VERBOSE=1
 export DH_OPTIONS=-v
 INSTALLROOT=$(CURDIR)/debian/tmp
-
 %:
 	dh $@ --with python2
 override_dh_auto_configure:
-	./configure --prefix=/usr/lib/bropo --with-rave=/usr/lib/rave
-
+	./configure --prefix=/usr/lib/beamb --with-rave=/usr/lib/rave --localstatedir=/var
 override_dh_auto_build:
 	make
 override_dh_installdirs:
-	mkdir -p $(INSTALLROOT)/usr/lib/bropo
-	mkdir -p $(INSTALLROOT)/etc/baltrad/bropo
-	mkdir -p $(INSTALLROOT)/etc/ld.so.conf.d/	
-	echo "/usr/lib/bropo/lib">> $(INSTALLROOT)/etc/ld.so.conf.d/bropo.conf
-	
+	mkdir -p $(INSTALLROOT)/usr/lib/beamb
+	mkdir -p $(INSTALLROOT)/etc/ld.so.conf.d/
+	echo "/usr/lib/beamb/lib">> $(INSTALLROOT)/etc/ld.so.conf.d/beamb.conf
+
 override_dh_auto_install:
-	$(MAKE) DESTDIR=$(INSTALLROOT) prefix=/usr/lib/bropo install
-	cp config/ropo_options.xml $(INSTALLROOT)/etc/baltrad/bropo/
+	$(MAKE) DESTDIR=$(INSTALLROOT) prefix=/usr/lib/beamb install
+	
 override_dh_auto_clean:
 	
 override_dh_auto_test:
 	
 override_dh_shlibdeps:
-	dh_shlibdeps -l /usr/lib/hlhdf/default/lib:$(BUILDROOT)/usr/lib/bropo/lib:/usr/lib/rave/Lib:/usr/lib/rave/lib
-
-override_dh_install:
-	dh_python2
-	dh_numpy
-	dh_install --sourcedir=$(INSTALLROOT)
-	dh_link
-
-build:
-	dh build
-
+	dh_shlibdeps -l /usr/lib/hlhdf/lib:$(INSTALLROOT)/usr/lib/beamb/lib:/usr/lib/rave/Lib:/usr/lib/rave/lib
