@@ -27,26 +27,6 @@ if [ "$1" = configure ]; then
   chown -R root:baltrad /etc/baltrad/rave
   chown 664 /etc/baltrad/rave/Lib/rave_defines.py
   
-  chown root:baltrad /etc/baltrad/baltrad-node-tomcat/catalina.properties
-  chown root:baltrad /etc/baltrad/baltrad-node-tomcat/context.xml
-  chown root:baltrad /etc/baltrad/baltrad-node-tomcat/jaspic-providers.xml
-  chown root:baltrad /etc/baltrad/baltrad-node-tomcat/jaspic-providers.xsd
-  chown root:baltrad /etc/baltrad/baltrad-node-tomcat/logging.properties
-  chown root:baltrad /etc/baltrad/baltrad-node-tomcat/server.xml
-  chown root:baltrad /etc/baltrad/baltrad-node-tomcat/tomcat-users.xml
-  chown root:baltrad /etc/baltrad/baltrad-node-tomcat/tomcat-users.xsd
-  chown root:baltrad /etc/baltrad/baltrad-node-tomcat/web.xml
-
-  chmod 640 /etc/baltrad/baltrad-node-tomcat/catalina.properties
-  chmod 640 /etc/baltrad/baltrad-node-tomcat/context.xml
-  chmod 640 /etc/baltrad/baltrad-node-tomcat/jaspic-providers.xml
-  chmod 640 /etc/baltrad/baltrad-node-tomcat/jaspic-providers.xsd
-  chmod 640 /etc/baltrad/baltrad-node-tomcat/logging.properties
-  chmod 640 /etc/baltrad/baltrad-node-tomcat/server.xml
-  chmod 640 /etc/baltrad/baltrad-node-tomcat/tomcat-users.xml
-  chmod 640 /etc/baltrad/baltrad-node-tomcat/tomcat-users.xsd
-  chmod 640 /etc/baltrad/baltrad-node-tomcat/web.xml
-  
   ldconfig
 
   TMPNAME=`tempfile`.py

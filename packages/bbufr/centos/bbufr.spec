@@ -1,4 +1,4 @@
-%define _prefix /opt/baltrad/bbufr
+%define _prefix /usr/lib/bbufr
 Name:		bbufr
 Version:	2.0.3
 Release:	 %{snapshot}%{?dist}
@@ -27,11 +27,12 @@ BALTRAD interface to EUMETNET OPERA's BUFR software
 %{__aclocal}
 %{__autoconf}
 %{__automake}
-%configure
+%configure --prefix=/usr/lib/bbufr --libdir=/usr/lib/bbufr/lib
 make
 
+
 %install
-mkdir -p %{buildroot}/opt/baltrad
+mkdir -p %{buildroot}/usr/lib
 make install DESTDIR=%{buildroot}
 
 %files
@@ -42,6 +43,6 @@ make install DESTDIR=%{buildroot}
 %{_prefix}/include/bufrlib.h
 %{_prefix}/include/desc.h
 %{_prefix}/include/rlenc.h
-%{_prefix}/%{_lib}/libOperaBufr.a
+%{_prefix}/lib/libOperaBufr.a
 %{_prefix}/share/bbufr/tables
 %changelog

@@ -1,5 +1,5 @@
-%{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib(1)")}
-%define _prefix /opt/baltrad/%{name}
+%{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib(0)")}
+%define _prefix /usr/lib/rave
 
 Name: rave
 Version: %{version}
@@ -9,6 +9,8 @@ License: GPL-3 and LGPL-3
 URL: http://www.baltrad.eu/
 Source0: %{name}-%{version}.tar.gz
 Source1: rave.conf
+Patch1: 001-raved.patch
+Patch2: 002-rave_defines.patch
 BuildRequires: hlhdf-devel
 BuildRequires: hlhdf-python
 BuildRequires: hdf5-devel
@@ -45,10 +47,11 @@ RAVE development headers and libraries.
 
 %prep
 %setup -q
+%patch1 -p1
+%patch2 -p1
 
 %build
-
-%configure --with-hlhdf=/opt/baltrad/hlhdf --with-expat --with-bufr=/opt/baltrad/bbufr
+%configure --prefix=/usr/lib/rave --with-hlhdf=/usr/lib/hlhdf --with-expat --with-bufr=/usr/lib/bbufr
 # --with-netcdf=yes
 make
 
@@ -57,10 +60,58 @@ make
 # FIXME: Why is this mkdir necessary?
 # With full _prefix the custom installscripts think there was already an old version
 # present and does some special things we may not want (migration to newer version)
-rm -rf $RPM_BUILD_ROOT
-mkdir -p %{buildroot}/opt/baltrad
+rm -rf %{buildroot}
+mkdir -p %{buildroot}
+mkdir -p %{buildroot}/usr/lib/rave
+mkdir -p %{buildroot}/etc/init.d
+mkdir -p %{buildroot}/etc/ld.so.conf.d
+mkdir -p %{buildroot}/etc/baltrad/rave/Lib
+mkdir -p %{buildroot}/etc/baltrad/rave/etc
+mkdir -p %{buildroot}/etc/baltrad/rave/config
+mkdir -p %{buildroot}/var/run/baltrad
+mkdir -p %{buildroot}/var/log/baltrad
+mkdir -p %{buildroot}/var/lib/baltrad
+mkdir -p %{buildroot}/var/lib/baltrad/MSG_CT
+mkdir -p %{buildroot}%{python_sitearch}
+echo "/usr/lib/rave/lib">> %{buildroot}/etc/ld.so.conf.d/rave.conf
+echo "/usr/lib/rave/Lib">> %{buildroot}/etc/ld.so.conf.d/rave.conf
 make install DESTDIR=%{buildroot}
 install -p -D -m 0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/ld.so.conf.d/rave.conf
+cp etc/raved %{buildroot}/etc/init.d/
+mv %{buildroot}/usr/lib/rave/Lib/rave_defines.py %{buildroot}/etc/baltrad/rave/Lib/
+mv %{buildroot}/usr/lib/rave/config/*.xml %{buildroot}/etc/baltrad/rave/config/
+mv %{buildroot}/usr/lib/rave/etc/rave_pgf_quality_registry.xml %{buildroot}/etc/baltrad/rave/etc/
+mv %{buildroot}/usr/lib/rave/etc/rave_pgf_registry.xml %{buildroot}/etc/baltrad/rave/etc/
+mv %{buildroot}/usr/lib/rave/etc/rave_tile_registry.xml %{buildroot}/etc/baltrad/rave/etc/
+mv %{buildroot}/usr/lib/rave/etc/rave.pth %{buildroot}%{python_sitearch}
+mv %{buildroot}/usr/lib/rave/etc/rave_pgf_queue.xml %{buildroot}/var/lib/baltrad/
+ln -s ../../../../var/lib/baltrad/rave_pgf_queue.xml %{buildroot}/usr/lib/rave/etc/rave_pgf_queue.xml
+ln -s ../../../../etc/baltrad/rave/etc/rave_pgf_quality_registry.xml %{buildroot}/usr/lib/rave/etc/rave_pgf_quality_registry.xml
+ln -s ../../../../etc/baltrad/rave/etc/rave_pgf_registry.xml %{buildroot}/usr/lib/rave/etc/rave_pgf_registry.xml
+ln -s ../../../../etc/baltrad/rave/etc/rave_tile_registry.xml %{buildroot}/usr/lib/rave/etc/rave_tile_registry.xml
+ln -s ../../../../etc/baltrad/rave/config/area_registry.xml 		%{buildroot}/usr/lib/rave/config/area_registry.xml
+ln -s ../../../../etc/baltrad/rave/config/baltex_areas.xml 		%{buildroot}/usr/lib/rave/config/baltex_areas.xml
+ln -s ../../../../etc/baltrad/rave/config/danish_radars.xml 		%{buildroot}/usr/lib/rave/config/danish_radars.xml
+ln -s ../../../../etc/baltrad/rave/config/dutch_radars.xml 		%{buildroot}/usr/lib/rave/config/dutch_radars.xml
+ln -s ../../../../etc/baltrad/rave/config/estonian_radars.xml 	%{buildroot}/usr/lib/rave/config/estonian_radars.xml
+ln -s ../../../../etc/baltrad/rave/config/finnish_areas.xml		%{buildroot}/usr/lib/rave/config/finnish_areas.xml
+ln -s ../../../../etc/baltrad/rave/config/finnish_radars.xml		%{buildroot}/usr/lib/rave/config/finnish_radars.xml
+ln -s ../../../../etc/baltrad/rave/config/german_radars.xml		%{buildroot}/usr/lib/rave/config/german_radars.xml
+ln -s ../../../../etc/baltrad/rave/config/hac_options.xml		%{buildroot}/usr/lib/rave/config/hac_options.xml
+ln -s ../../../../etc/baltrad/rave/config/norwegian_projections.xml	%{buildroot}/usr/lib/rave/config/norwegian_projections.xml
+ln -s ../../../../etc/baltrad/rave/config/norwegian_radars.xml	%{buildroot}/usr/lib/rave/config/norwegian_radars.xml
+ln -s ../../../../etc/baltrad/rave/config/odim_quantities.xml	%{buildroot}/usr/lib/rave/config/odim_quantities.xml
+ln -s ../../../../etc/baltrad/rave/config/odim_source.xml		%{buildroot}/usr/lib/rave/config/odim_source.xml
+ln -s ../../../../etc/baltrad/rave/config/polish_areas.xml		%{buildroot}/usr/lib/rave/config/polish_areas.xml
+ln -s ../../../../etc/baltrad/rave/config/polish_radars.xml		%{buildroot}/usr/lib/rave/config/polish_radars.xml
+ln -s ../../../../etc/baltrad/rave/config/projection_registry.xml	%{buildroot}/usr/lib/rave/config/projection_registry.xml
+ln -s ../../../../etc/baltrad/rave/config/projections.xml		%{buildroot}/usr/lib/rave/config/projections.xml
+ln -s ../../../../etc/baltrad/rave/config/qitotal_options.xml	%{buildroot}/usr/lib/rave/config/qitotal_options.xml
+ln -s ../../../../etc/baltrad/rave/config/radvol_params.xml		%{buildroot}/usr/lib/rave/config/radvol_params.xml
+ln -s ../../../../etc/baltrad/rave/config/rave_quality_chain_registry.xml	%{buildroot}/usr/lib/rave/config/rave_quality_chain_registry.xml
+ln -s ../../../../etc/baltrad/rave/config/swedish_areas.xml		%{buildroot}/usr/lib/rave/config/swedish_areas.xml
+ln -s ../../../../etc/baltrad/rave/config/swedish_radars.xml		%{buildroot}/usr/lib/rave/config/swedish_radars.xml
+ln -s ../../../../etc/baltrad/rave/Lib/rave_defines.py %{buildroot}/usr/lib/rave/Lib/rave_defines.py
 
 %post -p /sbin/ldconfig
 %postun -p /sbin/ldconfig
@@ -85,7 +136,18 @@ install -p -D -m 0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/ld.so.conf.d/rave.co
 %{_prefix}/etc/rave_pgf
 %{_prefix}/etc/rave_pgf_*.xml
 %{_prefix}/etc/rave_tile_registry.xml
-%{_prefix}/etc/rave.pth
+%{python_sitearch}/rave.pth
+/etc/init.d/raved
+%attr(0664, root, baltrad) /etc/baltrad/rave/Lib/*.py
+%exclude /etc/baltrad/rave/Lib/rave_defines.pyc
+%exclude /etc/baltrad/rave/Lib/rave_defines.pyo
+%attr(0664, root, baltrad) /etc/baltrad/rave/config/*.xml
+%attr(0664, root, baltrad) /etc/baltrad/rave/etc/*.xml
+/etc/ld.so.conf.d/rave.conf
+%attr(775,root,baltrad) /var/run/baltrad
+%attr(-,root,baltrad) /var/log/baltrad
+%attr(-,baltrad,baltrad) /var/lib/baltrad/rave_pgf_queue.xml
+%attr(-,baltrad,baltrad) /var/lib/baltrad/MSG_CT
 
 %config(noreplace) %{python_sitelib}/rave.pth
 %config(noreplace) %{_sysconfdir}/ld.so.conf.d/rave.conf
