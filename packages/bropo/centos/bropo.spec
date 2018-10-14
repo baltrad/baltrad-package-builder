@@ -12,6 +12,7 @@ BuildRequires: rave-devel
 BuildRequires: libpng-devel
 # pyropo
 BuildRequires: python-devel
+Requires: rave
 
 %description
 bRopo is an adaption of the existing FMI software package ROPO.
