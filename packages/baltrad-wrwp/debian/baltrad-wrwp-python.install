@@ -1,0 +1,3 @@
+opt/baltrad/baltrad-wrwp/share/wrwp/pywrwp/_wrwp.so usr/lib/python2.7/dist-packages/pywrp
+opt/baltrad/baltrad-wrwp/share/wrwp/pywrwp/baltrad_wrwp_pgf_plugin.py usr/lib/python2.7/dist-packages/pywrp
+etc/ld.so.conf.d/baltrad-wrp.conf
