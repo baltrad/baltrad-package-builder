@@ -9,20 +9,20 @@
 # Uncomment this to turn on verbose mode.
 export DH_VERBOSE=1
 export DH_OPTIONS=-v
-BUILDROOT=/usr/src/packages/BUILD/debian/tmp
+INSTALLROOT=$(CURDIR)/debian/tmp
 %:
 	dh $@ --with python2
 override_dh_auto_configure:
-	./configure --with-rave=/opt/baltrad/rave --with-lapack=/usr/lib/lapack --with-cblas=/usr/lib/atlas-base/atlas --with-blas=/usr/lib/libblas
+	./configure --prefix=/usr/lib/baltrad-wrwp --with-rave=/usr/lib/rave --with-lapack=/usr/lib/lapack --with-cblas=/usr/lib/atlas-base/atlas --with-blas=/usr/lib/libblas
 override_dh_auto_build:
 	make
 override_dh_auto_install:
-	mkdir -p $(BUILDROOT)/etc/ld.so.conf.d/baltrad/
-	make install
-	echo "/opt/baltrad/baltrad-wrwp/lib/">> $(BUILDROOT)/etc/ld.so.conf.d/baltrad-wrp.conf
+	mkdir -p $(INSTALLROOT)/etc/ld.so.conf.d/baltrad/
+	make DESTDIR=$(INSTALLROOT) install
+	echo "/usr/lib/baltrad-wrwp/lib/">> $(INSTALLROOT)/etc/ld.so.conf.d/baltrad-wrp.conf
 override_dh_auto_clean:
 	
 override_dh_auto_test:
 	
 override_dh_shlibdeps:
-	dh_shlibdeps -l $(BUILDROOT)/opt/baltrad/baltrad-wrwp/lib:/opt/baltrad/hlhdf/default/lib
+	dh_shlibdeps -l $(INSTALLROOT)/usr/lib/baltrad-wrwp/lib:/usr/lib/hlhdf/default/lib
