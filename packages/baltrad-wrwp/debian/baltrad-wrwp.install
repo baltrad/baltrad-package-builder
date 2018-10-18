@@ -1,2 +1,2 @@
-opt/baltrad/baltrad-wrwp/lib/libwrwp.so
-opt/baltrad/baltrad-wrwp/bin/wrwp
+usr/lib/baltrad-wrwp/lib/libwrwp.so
+usr/lib/baltrad-wrwp/bin/wrwp

@@ -17,7 +17,8 @@ override_dh_auto_configure:
 override_dh_auto_build:
 	make
 override_dh_auto_install:
-	mkdir -p $(INSTALLROOT)/etc/ld.so.conf.d/baltrad/
+	mkdir -p $(INSTALLROOT)/etc/ld.so.conf.d
+	mkdir -p $(INSTALLROOT)/usr/lib/python2.7/site-packages/
 	make DESTDIR=$(INSTALLROOT) install
 	echo "/usr/lib/baltrad-wrwp/lib/">> $(INSTALLROOT)/etc/ld.so.conf.d/baltrad-wrp.conf
 override_dh_auto_clean:
