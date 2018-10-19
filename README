@@ -109,5 +109,5 @@ RPM:
 %> sudo rpm -ivh packages/baltrad-db/artifacts/baltrad-db*.rpm
 %> sudo su baltrad -s /bin/bash -c "baltrad-bdb-create --conf=/var/lib/baltrad/bltnode.properties"
 %> sudo yum install hdf-devel
-
+%> yum install atlas-sse3 lapack-devel blas-devel atlas-devel gsl-devel # FOR WRWP
 

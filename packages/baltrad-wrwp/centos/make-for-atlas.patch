@@ -1,0 +1,224 @@
+diff --git a/bin/Makefile b/bin/Makefile
+index 4bfe2ab..aa7a21e 100644
+--- a/bin/Makefile
++++ b/bin/Makefile
+@@ -28,7 +28,7 @@
+ # Fixed definitions
+ CFLAGS=-I../lib $(LAPACKE_INCLUDE_DIR) $(CBLAS_INCLUDE_DIR) $(RAVE_MODULE_CFLAGS)
+ LDFLAGS=-L../lib $(BLAS_LIB_DIR) $(CBLAS_LIB_DIR) $(LAPACK_LIB_DIR) $(LAPACKE_LIB_DIR) $(RAVE_MODULE_LDFLAGS) $(FORTRAN_CLINK_LDFLAG)
+-LIBS= -lwrwp $(RAVE_MODULE_LIBRARIES) -llapacke -llapack -lcblas -lblas $(FORTRAN_CLINK_LIBS) -lm
++LIBS= -lwrwp $(RAVE_MODULE_LIBRARIES) -llapacke -llapack -ltatlas -lblas $(FORTRAN_CLINK_LIBS) -lm
+ 
+ SOURCES= wrwp_main.c
+ OBJECTS= $(SOURCES:.c=.o)
+diff --git a/configure b/configure
+index 4562c3d..45b55fb 100755
+--- a/configure
++++ b/configure
+@@ -4392,13 +4392,13 @@ fi
+ 
+ done
+ 
+-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for cblas_sasum in -lcblas" >&5
+-$as_echo_n "checking for cblas_sasum in -lcblas... " >&6; }
+-if ${ac_cv_lib_cblas_cblas_sasum+:} false; then :
++    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for cblas_sasum in -ltatlas" >&5
++$as_echo_n "checking for cblas_sasum in -ltatlas... " >&6; }
++if ${ac_cv_lib_tatlas_cblas_sasum+:} false; then :
+   $as_echo_n "(cached) " >&6
+ else
+   ac_check_lib_save_LIBS=$LIBS
+-LIBS="-lcblas  $LIBS"
++LIBS="-ltatlas  $LIBS"
+ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+ /* end confdefs.h.  */
+ 
+@@ -4418,17 +4418,17 @@ return cblas_sasum ();
+ }
+ _ACEOF
+ if ac_fn_c_try_link "$LINENO"; then :
+-  ac_cv_lib_cblas_cblas_sasum=yes
++  ac_cv_lib_tatlas_cblas_sasum=yes
+ else
+-  ac_cv_lib_cblas_cblas_sasum=no
++  ac_cv_lib_tatlas_cblas_sasum=no
+ fi
+ rm -f core conftest.err conftest.$ac_objext \
+     conftest$ac_exeext conftest.$ac_ext
+ LIBS=$ac_check_lib_save_LIBS
+ fi
+-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_cblas_cblas_sasum" >&5
+-$as_echo "$ac_cv_lib_cblas_cblas_sasum" >&6; }
+-if test "x$ac_cv_lib_cblas_cblas_sasum" = xyes; then :
++{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_tatlas_cblas_sasum" >&5
++$as_echo "$ac_cv_lib_tatlas_cblas_sasum" >&6; }
++if test "x$ac_cv_lib_tatlas_cblas_sasum" = xyes; then :
+   GOT_CBLAS_LIB=yes
+ fi
+ 
+@@ -4484,13 +4484,13 @@ done
+       if [ "$cblas_lib" != "" ]; then
+         saved_LDFLAGS="$LDFLAGS"
+         LDFLAGS="$LDFLAGS -L$cblas_lib"
+-        { $as_echo "$as_me:${as_lineno-$LINENO}: checking for cblas_sasum in -lcblas" >&5
+-$as_echo_n "checking for cblas_sasum in -lcblas... " >&6; }
+-if ${ac_cv_lib_cblas_cblas_sasum+:} false; then :
++        { $as_echo "$as_me:${as_lineno-$LINENO}: checking for cblas_sasum in -ltatlas" >&5
++$as_echo_n "checking for cblas_sasum in -ltatlas... " >&6; }
++if ${ac_cv_lib_tatlas_cblas_sasum+:} false; then :
+   $as_echo_n "(cached) " >&6
+ else
+   ac_check_lib_save_LIBS=$LIBS
+-LIBS="-lcblas  $LIBS"
++LIBS="-ltatlas  $LIBS"
+ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+ /* end confdefs.h.  */
+ 
+@@ -4510,17 +4510,17 @@ return cblas_sasum ();
+ }
+ _ACEOF
+ if ac_fn_c_try_link "$LINENO"; then :
+-  ac_cv_lib_cblas_cblas_sasum=yes
++  ac_cv_lib_tatlas_cblas_sasum=yes
+ else
+-  ac_cv_lib_cblas_cblas_sasum=no
++  ac_cv_lib_tatlas_cblas_sasum=no
+ fi
+ rm -f core conftest.err conftest.$ac_objext \
+     conftest$ac_exeext conftest.$ac_ext
+ LIBS=$ac_check_lib_save_LIBS
+ fi
+-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_cblas_cblas_sasum" >&5
+-$as_echo "$ac_cv_lib_cblas_cblas_sasum" >&6; }
+-if test "x$ac_cv_lib_cblas_cblas_sasum" = xyes; then :
++{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_tatlas_cblas_sasum" >&5
++$as_echo "$ac_cv_lib_tatlas_cblas_sasum" >&6; }
++if test "x$ac_cv_lib_tatlas_cblas_sasum" = xyes; then :
+   GOT_CBLAS_LIB=yes
+ fi
+ 
+@@ -4530,13 +4530,13 @@ fi
+           LDFLAGS="$saved_LDFLAGS"
+         fi
+       else
+-        { $as_echo "$as_me:${as_lineno-$LINENO}: checking for cblas_sasum in -lcblas" >&5
+-$as_echo_n "checking for cblas_sasum in -lcblas... " >&6; }
+-if ${ac_cv_lib_cblas_cblas_sasum+:} false; then :
++        { $as_echo "$as_me:${as_lineno-$LINENO}: checking for cblas_sasum in -ltatlas" >&5
++$as_echo_n "checking for cblas_sasum in -ltatlas... " >&6; }
++if ${ac_cv_lib_tatlas_cblas_sasum+:} false; then :
+   $as_echo_n "(cached) " >&6
+ else
+   ac_check_lib_save_LIBS=$LIBS
+-LIBS="-lcblas  $LIBS"
++LIBS="-ltatlas  $LIBS"
+ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+ /* end confdefs.h.  */
+ 
+@@ -4556,17 +4556,17 @@ return cblas_sasum ();
+ }
+ _ACEOF
+ if ac_fn_c_try_link "$LINENO"; then :
+-  ac_cv_lib_cblas_cblas_sasum=yes
++  ac_cv_lib_tatlas_cblas_sasum=yes
+ else
+-  ac_cv_lib_cblas_cblas_sasum=no
++  ac_cv_lib_tatlas_cblas_sasum=no
+ fi
+ rm -f core conftest.err conftest.$ac_objext \
+     conftest$ac_exeext conftest.$ac_ext
+ LIBS=$ac_check_lib_save_LIBS
+ fi
+-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_cblas_cblas_sasum" >&5
+-$as_echo "$ac_cv_lib_cblas_cblas_sasum" >&6; }
+-if test "x$ac_cv_lib_cblas_cblas_sasum" = xyes; then :
++{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_tatlas_cblas_sasum" >&5
++$as_echo "$ac_cv_lib_tatlas_cblas_sasum" >&6; }
++if test "x$ac_cv_lib_tatlas_cblas_sasum" = xyes; then :
+   GOT_CBLAS_LIB=yes
+ fi
+ 
+@@ -4578,11 +4578,11 @@ fi
+ esac
+ 
+ if [ "$GOT_CBLAS_INC" = "no" -o "$GOT_CBLAS_LIB" = "no" ]; then
+-  as_fn_error $? "\"Could not successfully find the cblas library\"" "$LINENO" 5
++  as_fn_error $? "\"Could not successfully find the tatlas library\"" "$LINENO" 5
+ fi
+ 
+ LDFLAGS="$CBLAS_LIB_DIR $LDFLAGS"
+-LIBS="-lcblas $LIBS"
++LIBS="-ltatlas $LIBS"
+ 
+ LAPACK_LIB_DIR=
+ GOT_LAPACK_LIB=no
+@@ -6141,3 +6141,4 @@ if test -n "$ac_unrecognized_opts" && test "$enable_option_checking" != no; then
+   { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: unrecognized options: $ac_unrecognized_opts" >&5
+ $as_echo "$as_me: WARNING: unrecognized options: $ac_unrecognized_opts" >&2;}
+ fi
++
+diff --git a/configure.in b/configure.in
+index 9554310..0bd41ad 100644
+--- a/configure.in
++++ b/configure.in
+@@ -495,7 +495,7 @@ AC_ARG_WITH(cblas, [ --with-cblas=ROOT or INC,LIB       Use the cblas library],
+ case $withval in
+   yes)
+     AC_CHECK_HEADERS(cblas.h,GOT_CBLAS_INC=yes)
+-    AC_CHECK_LIB(cblas,cblas_sasum,GOT_CBLAS_LIB=yes)
++    AC_CHECK_LIB(tatlas,cblas_sasum,GOT_CBLAS_LIB=yes)
+     ;;
+   no)
+     AC_MSG_ERROR(You cannot remove dependencies to CBLAS);
+@@ -526,14 +526,14 @@ case $withval in
+       if [[ "$cblas_lib" != "" ]]; then
+         saved_LDFLAGS="$LDFLAGS"
+         LDFLAGS="$LDFLAGS -L$cblas_lib"
+-        AC_CHECK_LIB(cblas, cblas_sasum, GOT_CBLAS_LIB=yes)
++        AC_CHECK_LIB(tatlas, cblas_sasum, GOT_CBLAS_LIB=yes)
+         if [[ "$GOT_CBLAS_LIB" = "yes" ]]; then
+           CBLAS_LIB_DIR="-L$cblas_lib"
+         else
+           LDFLAGS="$saved_LDFLAGS"
+         fi
+       else
+-        AC_CHECK_LIB(cblas, cblas_sasum, GOT_CBLAS_LIB=yes)
++        AC_CHECK_LIB(tatlas, cblas_sasum, GOT_CBLAS_LIB=yes)
+       fi
+     else
+       AC_MSG_ERROR("Odd argument passed for CBLAS")
+@@ -542,12 +542,12 @@ case $withval in
+ esac
+ 
+ if [[ "$GOT_CBLAS_INC" = "no" -o "$GOT_CBLAS_LIB" = "no" ]]; then
+-  AC_MSG_ERROR("Could not successfully find the cblas library")
++  AC_MSG_ERROR("Could not successfully find the tatlas library")
+ fi
+ 
+ dnl LAPACKE needs CBLAS
+ LDFLAGS="$CBLAS_LIB_DIR $LDFLAGS"
+-LIBS="-lcblas $LIBS"
++LIBS="-ltatlas $LIBS"
+ 
+ dnl Now we need to locate lapack that just is a library
+ LAPACK_LIB_DIR=
+@@ -678,4 +678,4 @@ AC_SUBST(LD_PRINTOUT)
+ 
+ dnl AC_CONFIG_FILES(def.mk lib/config.h)
+ AC_CONFIG_FILES(def.mk)
+-AC_OUTPUT
+\ No newline at end of file
++AC_OUTPUT
+diff --git a/pywrwp/Makefile b/pywrwp/Makefile
+index 68e5fd6..d23d140 100644
+--- a/pywrwp/Makefile
++++ b/pywrwp/Makefile
+@@ -31,7 +31,7 @@ CFLAGS= -I../lib -I. $(LAPACKE_INCLUDE_DIR) $(CBLAS_INCLUDE_DIR) $(RAVE_MODULE_P
+ # Linker flags
+ LDFLAGS= -L../lib -L. $(BLAS_LIB_DIR) $(CBLAS_LIB_DIR) $(LAPACK_LIB_DIR) $(LAPACKE_LIB_DIR) $(RAVE_MODULE_LDFLAGS) 
+ 
+-LIBRARIES= -lwrwp $(RAVE_MODULE_PYLIBRARIES) -llapacke -llapack -lcblas -lblas $(FORTRAN_CLINK_LIBS) -lm
++LIBRARIES= -lwrwp $(RAVE_MODULE_PYLIBRARIES) -llapacke -llapack -ltatlas -lblas $(FORTRAN_CLINK_LIBS) -lm
+ 
+ # --------------------------------------------------------------------
+ # Fixed definitions
