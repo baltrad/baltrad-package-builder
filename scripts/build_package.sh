@@ -103,6 +103,7 @@ prepare_and_build_centos()
   fi
   RPM_ARCH_DIR=`rpmbuild --eval '%_arch'`
   RPM_PCK_DIR=`rpmbuild --eval '%_rpmdir/%_arch'`
+  RPM_PCK_NOARCH_DIR=`rpmbuild --eval '%_rpmdir/noarch'`
   #First we need to create a source tarball. Remove the old one
   if [ -f "$RPM_TOP_DIR/SOURCES/$2-$3.tar.gz" ]; then
     \rm -f "$RPM_TOP_DIR/SOURCES/$2-$3.tar.gz"
@@ -147,7 +148,10 @@ prepare_and_build_centos()
     #  fi
     #fi
     if [ "$RPM_PCK_DIR" != "" ]; then
-      mv "$RPM_PCK_DIR"/$3*-$4-$5*.$RPM_ARCH_DIR.rpm ../../artifacts/
+      mv "$RPM_PCK_DIR"/$3*-$4-$5*.$RPM_ARCH_DIR.rpm ../../artifacts/ >> /dev/null 2>&1
+    fi
+    if [ "$RPM_PCK_NOARCH_DIR" != "" ]; then
+      mv "$RPM_PCK_NOARCH_DIR"/$3*-$4-$5*.noarch.rpm ../../artifacts/ >> /dev/null 2>&1
     fi
   fi
 }

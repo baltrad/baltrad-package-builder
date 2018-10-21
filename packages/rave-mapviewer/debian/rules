@@ -16,6 +16,7 @@ DEBROOT=$(CURDIR)/debian/tmp
 	dh $@ --with python2  --with quilt
 override_dh_auto_install:
 	mkdir -p $(INSTALLROOT)/usr/lib/rave_mapviewer
+	mkdir -p $(INSTALLROOT)/usr/lib/rave_mapviewer/Lib
 	mkdir -p $(INSTALLROOT)/usr/lib/python2.7/site-packages/
 	python setup.py install --prefix=/usr/lib --root=$(INSTALLROOT)
 	mv $(INSTALLROOT)/usr/lib/lib/python2.7/site-packages/*.py $(INSTALLROOT)/usr/lib/rave_mapviewer/Lib/
