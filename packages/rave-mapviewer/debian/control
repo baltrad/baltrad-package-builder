@@ -1,0 +1,13 @@
+Source: rave-mapviewer
+Section: science
+Priority: extra
+Maintainer: Anders Henja <anders@baltrad.eu>
+Build-Depends: debhelper (>= 8.0.0), python2.7-dev, python, python-setuptools, hlhdf-python, rave-dev, libhdf5-dev, libatlas-base-dev
+Standards-Version: 3.9.4
+X-Python-Version: >=2.7
+
+Package: rave-mapviewer
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}, python, hlhdf-python, hlhdf, rave
+Recommends: php5-common, libapache2-mod-php5, apache2
+Description: Creates PNG images for use with open streetmap or google map

@@ -1,0 +1,55 @@
+diff --git a/setup.py b/setup.py
+index 126014c..283ddb4 100644
+--- a/setup.py
++++ b/setup.py
+@@ -51,22 +51,25 @@ if __name__ == "__main__":
+     
+   # Setup the default install prefix
+   prefix = "/opt/baltrad"
++  rootpath = ""
+ 
+   # Get the install prefix if one is specified from the command line
+   for arg in sys.argv:
+     if arg.startswith('--prefix='):
+       prefix = arg[9:]
+       prefix = os.path.expandvars(prefix)
++    if arg.startswith('--root='):
++      rootpath = arg[7:]
++
++  ipath = prefix+"/rave_mapviewer"
+   
+-  ipath = prefix+"/rave_gmap"
+-  
+-  setup(name='RAVE Google Maps Plugin',
++  setup(name='RAVE Map Viewer',
+         version='0.1',
+-        description='Google Maps plugin for RAVE',
++        description='Map Viewer plugin for RAVE',
+         author='Anders Henja',
+         author_email='anders@baltrad.eu',
+         url='http://www.baltrad.eu',
+-        extra_path = ipath + "/Lib",  # all modules go here
++        #extra_path = rootpath + ipath + "/Lib",  # all modules go here
+         packages=[""],
+         package_dir={"": "src"},
+         data_files=[(ipath+'/web/css', glob.glob('web/css/*.css')),
+@@ -79,18 +82,4 @@ if __name__ == "__main__":
+                     (ipath+'/Lib', glob.glob('src/*.xml')),
+                     (ipath, ["README", "README.ravepgf", "README2", "LICENSE", "COPYING", "COPYING.LESSER"])]
+        )
+-  
+-  # Only perform this operation during installation
+-  isinstalling = 0
+-  for item in sys.argv:
+-    if item=="install":
+-      isinstalling = 1
+-  if isinstalling:
+-    source = ipath + '/Lib.pth'
+-    dest = distutils.sysconfig.get_python_lib() + '/rave_gmap.pth'
+-    try:
+-      os.rename(source, dest)  # doesn't work in some environments
+-    except:
+-      import shutil
+-      shutil.copyfile(source, dest)
+-      os.unlink(source)
++
