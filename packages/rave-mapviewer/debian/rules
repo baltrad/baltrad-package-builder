@@ -18,9 +18,14 @@ override_dh_auto_install:
 	mkdir -p $(INSTALLROOT)/usr/lib/rave_mapviewer
 	mkdir -p $(INSTALLROOT)/usr/lib/rave_mapviewer/Lib
 	mkdir -p $(INSTALLROOT)/usr/lib/python2.7/site-packages/
+	mkdir -p $(INSTALLROOT)/var/lib/baltrad/baltrad_viewer/data
 	python setup.py install --prefix=/usr/lib --root=$(INSTALLROOT)
 	mv $(INSTALLROOT)/usr/lib/lib/python2.7/site-packages/*.py $(INSTALLROOT)/usr/lib/rave_mapviewer/Lib/
 	echo "/usr/lib/rave_mapviewer/Lib" > $(INSTALLROOT)/usr/lib/python2.7/site-packages/rave_mapviewer.pth
 	dh_quilt_unpatch
+
+override_dh_install:
+	dh_install --sourcedir=$(INSTALLROOT)
+	dh_link
 
 #override_dh_auto_build:

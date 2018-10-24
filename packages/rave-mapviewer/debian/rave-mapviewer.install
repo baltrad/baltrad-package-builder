@@ -1,3 +1,4 @@
 usr/lib/python2.7/site-packages/rave_mapviewer.pth
 usr/lib/rave_mapviewer/web/*
 usr/lib/rave_mapviewer/Lib/*
+var/lib/baltrad/baltrad_viewer

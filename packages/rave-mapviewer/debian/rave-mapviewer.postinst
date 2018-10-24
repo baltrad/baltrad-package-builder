@@ -13,4 +13,7 @@ a.register('eu.baltrad.beast.creategmap', 'googlemap_pgf_plugin', 'generate', 'G
 EOF
   python $TMPNAME
   \rm -f $TMPNAME
+  
+  chmod 1775 /var/lib/baltrad/baltrad_viewer
+  chown baltrad:baltrad /var/lib/baltrad/baltrad_viewer
 fi
