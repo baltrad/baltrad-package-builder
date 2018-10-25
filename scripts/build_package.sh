@@ -85,9 +85,9 @@ prepare_and_build_debian()
 
   debuild -b -uc -us || exit 127
   
-  #if [ "$4" = "true" ]; then
-  #    sudo dpkg -i ../$2*_$3*.deb || exit 127
-  #fi
+  if [ "$4" = "true" ]; then
+      sudo dpkg -i ../$2*_$3*.deb || exit 127
+  fi
   if [ ! -d ../../artifacts ]; then
     mkdir ../../artifacts || exit 127
   fi

@@ -14,8 +14,8 @@ INSTALLROOT=$(CURDIR)/debian/tmp
 %:
 	dh $@ --with python2 --with quilt
 override_dh_auto_configure:
-	./configure --prefix=/usr/lib/rave --with-hlhdf=/usr/lib/hlhdf --with-expat --with-bufr=/usr/lib/bbufr
-# -with-netcdf=yes
+	./configure --prefix=/usr/lib/rave --with-hlhdf=/usr/lib/hlhdf --with-expat --with-bufr=/usr/lib/bbufr -with-netcdf=yes
+
 override_dh_auto_build:
 	make
 override_dh_installdirs:
