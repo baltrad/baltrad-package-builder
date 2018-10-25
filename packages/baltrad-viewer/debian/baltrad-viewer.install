@@ -1,0 +1,5 @@
+usr/lib/python2.7/site-packages/baltrad-viewer.pth
+usr/lib/baltrad-viewer/web/*
+usr/lib/baltrad-viewer/Lib/*
+var/lib/baltrad/baltrad-viewer
+etc/baltrad/baltrad-viewer

@@ -15,13 +15,16 @@ DEBROOT=$(CURDIR)/debian/tmp
 %:
 	dh $@ --with python2  --with quilt
 override_dh_auto_install:
-	mkdir -p $(INSTALLROOT)/usr/lib/rave_mapviewer
-	mkdir -p $(INSTALLROOT)/usr/lib/rave_mapviewer/Lib
+	mkdir -p $(INSTALLROOT)/usr/lib/baltrad-viewer
+	mkdir -p $(INSTALLROOT)/usr/lib/baltrad-viewer/Lib
 	mkdir -p $(INSTALLROOT)/usr/lib/python2.7/site-packages/
-	mkdir -p $(INSTALLROOT)/var/lib/baltrad/baltrad_viewer/data
+	mkdir -p $(INSTALLROOT)/var/lib/baltrad/baltrad-viewer/data
+	mkdir -p $(INSTALLROOT)/etc/baltrad/baltrad-viewer
 	python setup.py install --prefix=/usr/lib --root=$(INSTALLROOT)
-	mv $(INSTALLROOT)/usr/lib/lib/python2.7/site-packages/*.py $(INSTALLROOT)/usr/lib/rave_mapviewer/Lib/
-	echo "/usr/lib/rave_mapviewer/Lib" > $(INSTALLROOT)/usr/lib/python2.7/site-packages/rave_mapviewer.pth
+	mv $(INSTALLROOT)/usr/lib/lib/python2.7/site-packages/*.py $(INSTALLROOT)/usr/lib/baltrad-viewer/Lib/
+	echo "/usr/lib/baltrad-viewer/Lib" > $(INSTALLROOT)/usr/lib/python2.7/site-packages/baltrad-viewer.pth
+	mv web/products.js $(INSTALLROOT)/etc/baltrad/baltrad-viewer
+	cp web/smhi-areas.xml $(INSTALLROOT)/etc/baltrad/baltrad-viewer/product-areas.xml
 	dh_quilt_unpatch
 
 override_dh_install:

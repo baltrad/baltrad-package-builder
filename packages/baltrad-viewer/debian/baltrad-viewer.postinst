@@ -14,6 +14,6 @@ EOF
   python $TMPNAME
   \rm -f $TMPNAME
   
-  chmod 1775 /var/lib/baltrad/baltrad_viewer
-  chown baltrad:baltrad /var/lib/baltrad/baltrad_viewer
+  chmod 1775 /var/lib/baltrad/baltrad-viewer
+  chown baltrad:baltrad /var/lib/baltrad/baltrad-viewer
 fi

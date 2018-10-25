@@ -1,9 +1,9 @@
 %{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
-%define _prefix /usr/lib/rave_mapviewer
-Name:		rave-mapviewer
+%define _prefix /usr/lib/baltrad-viewer
+Name:		baltrad-viewer
 Version: %{version}
 Release: %{snapshot}%{?dist}
-Summary:	Rave Map Viewer plugin for Baltrad
+Summary:	Baltrad Viewer plugin
 Group:		Development/Libraries
 License:	LGPL
 URL:		http://www.baltrad.eu/
@@ -13,13 +13,10 @@ BuildArch:	noarch
 BuildRequires:	python2-devel
 BuildRequires:  python-distribute
 BuildRequires:	hlhdf-python
-#BuildRequires: 	rave
-#BuildRequires:	rave-devel
 Requires:	python2
 Requires:	hlhdf-python
 Requires:	hlhdf
 Requires:	rave
-#Requires:	httpd
 Requires:   php
 Requires:   php-common
 %description
@@ -39,9 +36,9 @@ mkdir -p %{buildroot}%{_prefix}
 mkdir -p %{buildroot}%{_prefix}/Lib
 mkdir -p %{buildroot}%{python_sitelib}
 %{__python} setup.py install --prefix=/usr/lib --root=%{buildroot}
-mv %{buildroot}/usr/lib/lib/python2.7/site-packages/*.py* %{buildroot}/usr/lib/rave_mapviewer/Lib/
-mv %{buildroot}/usr/lib/lib/python2.7/site-packages/*.egg-info %{buildroot}/usr/lib/rave_mapviewer/Lib/
-echo "/usr/lib/rave_mapviewer/Lib" > %{buildroot}/usr/lib/python2.7/site-packages/rave_mapviewer.pth
+mv %{buildroot}/usr/lib/lib/python2.7/site-packages/*.py* %{buildroot}/usr/lib/baltrad-viewer/Lib/
+mv %{buildroot}/usr/lib/lib/python2.7/site-packages/*.egg-info %{buildroot}/usr/lib/baltrad-viewer/Lib/
+echo "/usr/lib/baltrad-viewer/Lib" > %{buildroot}/usr/lib/python2.7/site-packages/baltrad-viewer.pth
 
 %files
 #%doc %{_prefix}/rave_gmap/COPYING
@@ -54,7 +51,7 @@ echo "/usr/lib/rave_mapviewer/Lib" > %{buildroot}/usr/lib/python2.7/site-package
 #%{_prefix}
 #%{_prefix}
 %{_prefix}
-/usr/lib/python2.7/site-packages/rave_mapviewer.pth
+/usr/lib/python2.7/site-packages/baltrad-viewer.pth
 
 %changelog
 

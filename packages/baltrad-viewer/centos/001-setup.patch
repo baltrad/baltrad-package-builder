@@ -16,12 +16,12 @@ index 126014c..283ddb4 100644
 +    if arg.startswith('--root='):
 +      rootpath = arg[7:]
 +
-+  ipath = prefix+"/rave_mapviewer"
++  ipath = prefix+"/baltrad-viewer"
    
 -  ipath = prefix+"/rave_gmap"
 -  
 -  setup(name='RAVE Google Maps Plugin',
-+  setup(name='RAVE Map Viewer',
++  setup(name='Baltrad Viewer',
          version='0.1',
 -        description='Google Maps plugin for RAVE',
 +        description='Map Viewer plugin for RAVE',
