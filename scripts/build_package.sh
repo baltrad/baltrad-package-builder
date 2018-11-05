@@ -134,19 +134,26 @@ prepare_and_build_centos()
   
   if [ "$RPM_ARTIFACTS" != "" ]; then
     RPMS_TOPDIR=`rpmbuild --eval '%_rpmdir'`
+    RPMS_TO_INSTALL=
     for X in $RPM_ARTIFACTS; do
       fname=`echo $X | sed -e "s/<buildver>/$PACKAGE_VERSION-$BUILD_NUMBER/g"`
       FILES=`ls -1 $RPMS_TOPDIR/$fname`
       for f in $FILES; do
         cp "$f" ../../artifacts/
+        RPMS_TO_INSTALL="$RPMS_TO_INSTALL ../../artifacts/`basename $f`"
       done
     done
+    if [ "$RPMS_TO_INSTALL" != "" ]; then
+      echo "Installing $RPMS_TO_INSTALL"
+      sudo rpm --force -Uvh $RPMS_TO_INSTALL
+    fi
   else
-    #if [ "$6" = "true" ]; then
-    #  if [ "$RPM_PCK_DIR" != "" ]; then
-    #    sudo rpm -Uvh "$RPM_PCK_DIR/$3*-$4-$5*.$RPM_ARCH_DIR.rpm"
-    #  fi
-    #fi
+    if [ "$6" = "true" ]; then
+      if [ "$RPM_PCK_DIR" != "" ]; then
+        # Use --force to be able to use same pck-number
+        sudo rpm --force -Uvh "$RPM_PCK_DIR/$3*-$4-$5*.$RPM_ARCH_DIR.rpm"
+      fi
+    fi
     if [ "$RPM_PCK_DIR" != "" ]; then
       mv "$RPM_PCK_DIR"/$3*-$4-$5*.$RPM_ARCH_DIR.rpm ../../artifacts/ >> /dev/null 2>&1
     fi
@@ -203,11 +210,14 @@ fi
 if [ "$OS_VARIANT" = "Ubuntu-16.04" -o "$OS_VARIANT" = "Ubuntu-18.04" ]; then
   echo "Debian build"
   prepare_and_build_debian "$PACKAGEDIR/$PACKAGE_NAME/debian" $BUILD_NAME $PACKAGE_VERSION-$BUILD_NUMBER $INSTALL_ARTIFACTS
+  exit 0
 elif [ "$OS_VARIANT" = "CentOS-7" ]; then
   echo "Redhat build"
   prepare_and_build_centos "$PACKAGEDIR/$PACKAGE_NAME/centos" "$PACKAGEDIR/$PACKAGE_NAME/$SPECFILE" $BUILD_NAME $PACKAGE_VERSION $BUILD_NUMBER $INSTALL_ARTIFACTS $CREATE_TAR_FROM_FOLDER
+  exit 0
 else
-  echo "Unsupported build variant"  
+  echo "Unsupported build variant"
+  exit 127  
 fi
 
 
