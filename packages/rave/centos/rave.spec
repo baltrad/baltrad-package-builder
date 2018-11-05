@@ -16,12 +16,15 @@ BuildRequires: hlhdf-python
 BuildRequires: hdf5-devel
 BuildRequires: zlib-devel
 BuildRequires: python2-devel
+BuildRequires: netcdf-devel
 # Workaround for centos6
 BuildRequires: atlas
 BuildRequires: numpy
 BuildRequires: proj-devel
 #expat requires
 Requires: expat
+Requires: netcdf
+Requires: hlhdf
 BuildRequires: expat-devel
 # Don't see any actual imports, just mentioned in README
 #BuildRequires: python-pycurl
@@ -51,8 +54,7 @@ RAVE development headers and libraries.
 %patch2 -p1
 
 %build
-%configure --prefix=/usr/lib/rave --with-hlhdf=/usr/lib/hlhdf --with-expat --with-bufr=/usr/lib/bbufr
-# --with-netcdf=yes
+%configure --prefix=/usr/lib/rave --with-hlhdf=/usr/lib/hlhdf --with-expat --with-bufr=/usr/lib/bbufr --with-netcdf=yes
 make
 
 %install
