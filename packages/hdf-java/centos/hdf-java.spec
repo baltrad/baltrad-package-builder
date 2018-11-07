@@ -48,7 +48,7 @@ Summary:        Java HDF Package
 Group:          Development/Libraries
 
 BuildRequires:  jpackage-utils
-BuildRequires:  java-1.6.0-openjdk-devel
+BuildRequires:  java-1.8.0-openjdk-devel
 BuildRequires:  hdf-devel
 
 Requires:       jpackage-utils

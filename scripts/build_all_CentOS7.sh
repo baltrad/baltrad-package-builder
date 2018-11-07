@@ -5,7 +5,7 @@ print_error_and_exit() {
   exit 127
 }
 
-./scripts/build_package.sh  hlhdf              1 CentOS7 || print_error_and_exit "Failed to build hlhdf" 
+./scripts/build_package.sh hlhdf               1 CentOS7 || print_error_and_exit "Failed to build hlhdf" 
 ./scripts/build_package.sh bbufr               1 CentOS7 || print_error_and_exit "Failed to build bbufr"
 ./scripts/build_package.sh rave                1 CentOS7 || print_error_and_exit "Failed to build rave"
 ./scripts/build_package.sh bropo               1 CentOS7 || print_error_and_exit "Failed to build bropo"
@@ -15,7 +15,7 @@ print_error_and_exit() {
 ./scripts/build_package.sh baltrad-beast       1 CentOS7 || print_error_and_exit "Failed to build baltrad-beast"
 ./scripts/build_package.sh baltrad-config      1 CentOS7 || print_error_and_exit "Failed to build baltrad-config"
 ./scripts/build_package.sh hdf-java            1 CentOS7 || print_error_and_exit "Failed to build hdf-java"
-./scripts/build_package.sh baltrad-node-tomcat 1 Ubuntu1604 || print_error_and_exit "Failed to build baltrad-node-tomcat"
-./scripts/build_package.sh baltrad-dex         1 Ubuntu1604 || print_error_and_exit "Failed to build baltrad-dex"
+./scripts/build_package.sh baltrad-node-tomcat 1 CentOS7 || print_error_and_exit "Failed to build baltrad-node-tomcat"
+./scripts/build_package.sh baltrad-dex         1 CentOS7 || print_error_and_exit "Failed to build baltrad-dex"
 
 
