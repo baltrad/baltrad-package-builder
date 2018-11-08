@@ -21,7 +21,7 @@ override_dh_auto_clean:
 override_dh_installdirs:
 	mkdir -p $(DEBROOT)/var/lib/baltrad/baltrad-node-tomcat/webapps/BaltradDex
 	mkdir -p $(DEBROOT)/var/lib/baltrad/bdb_storage
-	mkdir -p $(DEBROOT)/etc/baltrad/bltnode-keys
+#	mkdir -p $(DEBROOT)/etc/baltrad/bltnode-keys
 #	ls -lR
 
 override_dh_auto_build:

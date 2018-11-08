@@ -30,7 +30,6 @@ if [ "$1" = configure ]; then
   chown root:baltrad /etc/baltrad/db.properties
   chown root:baltrad /etc/baltrad/dex.fc.properties
   chown root:baltrad /etc/baltrad/bltnode-keys
-  chown baltrad:baltrad /var/lib/baltrad/bdb_storage
   chmod 660 /etc/baltrad/dex.properties
   chmod 660 /etc/baltrad/dex.log4j.properties
   chmod 660 /etc/baltrad/db.properties

@@ -24,4 +24,5 @@ if [ "$1" = configure ]; then
   chmod 1775 /var/run/baltrad
   chown root:baltrad /var/log/baltrad
   chown root:baltrad /var/run/baltrad
+  chown baltrad:baltrad /var/lib/baltrad/bdb_storage
 fi

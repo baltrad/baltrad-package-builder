@@ -37,5 +37,6 @@ override_dh_auto_install:
 	cp -p $(JAVACLIENT)/lib/joda-time/joda-time-2.0.jar $(DEBROOT)/usr/share/baltrad/baltrad-db/java/libs
 	mkdir -p $(DEBROOT)/var/run/baltrad
 	mkdir -p $(DEBROOT)/var/log/baltrad
+	mkdir -p $(DEBROOT)/var/lib/baltrad/bdb_storage
 	
 	dh_quilt_unpatch

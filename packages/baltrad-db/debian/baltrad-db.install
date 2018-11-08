@@ -19,3 +19,4 @@ usr/local/lib/python2.7/dist-packages/baltrad.bdbclient-0.1*dev0*.egg-info usr/l
 var/log/baltrad
 var/run/baltrad
 etc/init.d/bdbserver
+var/lib/baltrad/bdb_storage

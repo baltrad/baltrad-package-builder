@@ -73,6 +73,8 @@ ls -lR
 %install
 cd common
 mkdir -p $RPM_BUILD_ROOT/etc/init.d
+mkdir -p $RPM_BUILD_ROOT/var/lib/baltrad/bdb_storage
+mkdir -p $RPM_BUILD_ROOT/var/run/baltrad
 %{__python} setup.py install --skip-build --root $RPM_BUILD_ROOT
 cd ../server
 %{__python} setup.py install --skip-build --root $RPM_BUILD_ROOT
@@ -107,8 +109,8 @@ su -s /bin/sh baltrad -c "test -O /var/lib/baltrad &&
 
 chmod 1775 /var/log/baltrad
 chmod 1775 /var/run/baltrad
-chown root:baltrad /var/log/baltrad
-chown root:baltrad /var/run/baltrad
+chown baltrad:baltrad /var/log/baltrad
+chown baltrad:baltrad /var/run/baltrad
 
 %files
 # Why is %{_prefix} in buildroot?
@@ -147,6 +149,9 @@ chown root:baltrad /var/run/baltrad
 # Investigate the different paths and at least split these up amongst split packages
 %{python_sitelib}/baltrad.*.pth
 %{python_sitelib}/baltrad.*dev-*.egg-info/*
+%attr(-,baltrad,baltrad) /var/lib/baltrad
+%attr(-,baltrad,baltrad) /var/lib/baltrad/bdb_storage
+%attr(-,baltrad,baltrad) /var/run/baltrad
 
 %files java
 %{_prefix}/share/baltrad/baltrad-db/java/*.jar
