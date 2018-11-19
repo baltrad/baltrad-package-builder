@@ -1,0 +1,141 @@
+
+
+                       CentOS7 Builder in Virtualbox
+==========================================================================================
+In order for us to be able to build the necessary RPMs for a baltrad node, we need to setup
+several dependencies on the build host before trying to create the RPMs. This building is using
+a separate projects called baltrad-package-builder but this howto should also be at least somewhat
+useful if creating the packages in another way. First a short variant on how to setup a virtual box
+is described. If you don't need it or are going to use something else, you can skip that section.
+
+=============== Virtual Box ===============
+Assuming that the currently installed virtual box is version 5.2.10. First we create the virtual box 
+instance (as RedHat 64-bit linux) with some hard disk space. Then install the latest CentOS7
+version.
+
+Any command executed in centos, will be prefixed with %>.
+
+First we want to get the virtual box additions installed.
+%> yum install kernel-devel kernel-devel-3.10.0-862.el7.x86_64
+%> yum install elfutils-libelf-devel
+
+# Then we need to install the guest additions image which should be compatible with the virtual box
+version used. This usually can be done by selecting the menu choice "Devices->Insert guest additions CD image..."
+
+%> cd /run/media/baltrad/VBox_GAs_5.2.10/
+%> ./VBoxLinuxAdditions.run
+%> shutdown --now
+
+# Add bridged network adapter in the virtual box settings and start the virtual guest
+
+=============== Dependencies ===============
+
+Most of the dependencies can be installed by using the standard yum installation features. There are a few exceptions
+that are resolved by using "pip".
+
+%> sudo yum groupinstall 'Development Tools'
+%> sudo yum install rpmdevtools yum-utils
+%> sudo yum install git
+%> sudo yum install rpm-build
+%> sudo yum install python2-devel numpy atlas
+%> sudo yum install –y epel-release
+%> sudo yum-config-manager --enable epel
+%> sudo yum install hdf-devel hdf5-devel
+%> sudo yum install proj-devel libpng-devel
+%> sudo yum install netcdf-devel expat-devel
+%> sudo yum install atlas-sse3 lapack-devel blas-devel atlas-devel gsl-devel
+%> sudo yum install java-1.8.0-openjdk-devel ant
+%> sudo yum install postgresql postgresql-devel postgresql-contrib postgresql-server
+%> sudo yum install ImageMagick
+%> sudo yum install python-pip python-pbr
+%> sudo yum install python-cherrypy python-daemon python-keyczar python-migrate
+%> sudo yum install python-progressbar python-psycopg2 python-sqlalchemy
+%> sudo yum install python-werkzeug postgresql-jdbc
+%> sudo pip install "sqlalchemy-migrate==0.10.0"
+%> sudo pip install jprops>=2.0.2
+
+============ Initial setup (postgres) =============
+When all third-party depedencies has been installed, we need to setup the database and create a couple of users. If you already have
+a working database with the baltrad database user created you can skip to next step which is to create a rpm builder user.
+
+sudo postgresql-setup initdb
+sudo vi /var/lib/pgsql/data/pg_hba.conf
+# Change ident to md5
+sudo systemctl start postgresql
+sudo su - postgres
+psql
+postgres=# create user baltrad with password 'baltrad';
+postgres=# create database baltrad with owner baltrad;
+postgres=# \q
+-bash-4.2$ logout
+~ ]$ sudo systemctl enable postgresql
+
+============ Setup user for building =============
+In some cases it might be a good idea to have a specific user that is allowed to create and install the built packages.
+If you for example want to let jenkins automatically build and install the created rpms. Regardless if you want to
+have some automatic installation of the rpms or not, you will have to ensure that the directories required by rpmbuild
+is created.
+
+Assuming that you want a user called rpmbuilder, the following steps should be done, otherwise you can jump to the
+create part.
+
+%> sudo useradd rpmbuilder
+%> sudo passwd rpmbuilder
+
+We also want the rpmbuilder to be added to the sudoers.
+%> sudo usermod -aG wheel rpmbuilder
+
+If you want the automatic installation to be performed you will also need to modify /etc/sudoers somewhat and add
+an entry
+---------------
+rpmbuilder	ALL=(ALL) NOPASSWD: ALL
+---------------
+
+after the entry
+---------------
+%sudo	ALL=(ALL:ALL) ALL
+---------------
+
+Now, when that has been taken care of you should login in as the rpmbuilder user. 
+
+%> su - rpmbuilder
+
+============ Setup user for building =============
+There is a utility that can be used to simplify the create process of the necessary directories when creating
+rpm:s that's distributed in the rpm package rpmdevtools installed above.
+
+%> sudo yum install rpmdev-setuptree
+
+
+============ Get the package builder and test that all builds are currently working =============
+Like the header says, we want to ensure that everything works as expected. You can either create
+some temporary directory or like in the below example, prepare for building continously. Assuming that
+the user that should be building is called rpmbuilder.
+
+%> sudo mkdir -p /opt/projects/
+%> sudo chown rpmbuilder:rpmbuilder /opt/projects
+%> cd /opt/projects/
+%> git clone git://git.baltrad.eu/baltrad-package-builder.git
+%> cd baltrad-package-builder
+%> ./scripts/build_all_CentOS7.sh 1
+
+============ Setting up a new node =============
+When installing the baltrad node, a user called "baltrad" is automatically created and all relevant permissions are set on the installed
+software and we should login as baltrad in order to create the necessary configuration. The configuration steps will in most cases only
+have to be performed at a new installation. When upgrading the software, the current configuration will be left as is by the installation
+scripts.
+
+We have tried to keep the necessary steps for creating a default configuration to a minimum but as always, it's not possible to
+guess everything.
+ 
+%> sudo su - baltrad
+
+First we create a node specific configuration, this will most likely only be done once / node. 
+baltrad ~]$ sudo baltrad-config init --conf=localhost.properties --create-config
+baltrad ~]$ gedit localhost.properties  # or whatever editor you enjoy
+
+Now, when the above configuration file has been created, we can just create keys and install the database
+baltrad ~]$ sudo baltrad-config init --conf=localhost.properties --create-keys
+baltrad ~]$ sudo baltrad-config setup --conf=localhost.properties --install-database
+
+
