@@ -1,0 +1,23 @@
+Source: baltrad-wrwp
+Section: science
+Priority: extra
+Maintainer: Povi Software LLC <laur@baltrad.eu>
+Build-Depends: debhelper (>= 8.0.0), rave, rave-dev, libblas-dev, liblapack-dev, libproj-dev, libhdf5-dev, hlhdf-dev, libatlas3-base, libgsl23, libgslcblas0, libatlas-base-dev, liblapacke-dev, python-dev, python-numpy
+#Build-Depends: debhelper (>= 8.0.0), rave, rave-dev, libblas-dev, liblapack-dev, libproj-dev, libhdf5-dev, hlhdf-dev, libatlas3-base, libgsl2, libatlas-base-dev, liblapacke-dev, python-dev, python-numpy
+Standards-Version: 3.9.4
+X-Python-Version: >=2.7
+
+Package: baltrad-wrwp
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, rave
+Description: Baltrad weather radar wind products
+
+Package: baltrad-wrwp-python
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, python-numpy, baltrad-wrwp
+Description: Python module of baltrad-wrwp
+
+Package: baltrad-wrwp-dev
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, baltrad-wrwp
+Description: Development files of baltrad-wrp

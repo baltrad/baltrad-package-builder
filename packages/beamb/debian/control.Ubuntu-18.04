@@ -1,0 +1,17 @@
+Source: beamb
+Section: science
+Priority: extra
+Maintainer: Anders Henja <anders@baltrad.eu>
+Build-Depends: debhelper (>= 8.0.0),  rave-dev, python2.7-dev, libproj-dev, libpng12-0, python, libhdf5-dev, hlhdf-dev, python-numpy
+Standards-Version: 3.9.4
+X-Python-Version: >=2.7
+
+Package: beamb
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, python, libpng12-0
+Description: Determination of, and correction for, beam blockage caused by topography
+
+Package: beamb-dev
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, beamb
+Description: Determination of, and correction for, beam blockage caused by topography
