@@ -8,12 +8,12 @@ a separate projects called baltrad-package-builder but this howto should also be
 useful if creating the packages in another way. First a short variant on how to setup a virtual box
 is described. If you don't need it or are going to use something else, you can skip that section.
 
+Any command executed in a CentOS shell, will be prefixed with '%>' or '<user> ~]$'
+
 =============== Virtual Box ===============
 Assuming that the currently installed virtual box is version 5.2.10. First we create the virtual box 
 instance (as RedHat 64-bit linux) with some hard disk space. Then install the latest CentOS7
 version.
-
-Any command executed in centos, will be prefixed with %>.
 
 First we want to get the virtual box additions installed.
 %> yum install kernel-devel kernel-devel-3.10.0-862.el7.x86_64
@@ -58,17 +58,17 @@ that are resolved by using "pip".
 When all third-party depedencies has been installed, we need to setup the database and create a couple of users. If you already have
 a working database with the baltrad database user created you can skip to next step which is to create a rpm builder user.
 
-sudo postgresql-setup initdb
-sudo vi /var/lib/pgsql/data/pg_hba.conf
+%> sudo postgresql-setup initdb
+%> sudo vi /var/lib/pgsql/data/pg_hba.conf
 # Change ident to md5
-sudo systemctl start postgresql
-sudo su - postgres
-psql
+%> sudo systemctl start postgresql
+%> sudo su - postgres
+postgres ~]$psql
 postgres=# create user baltrad with password 'baltrad';
 postgres=# create database baltrad with owner baltrad;
 postgres=# \q
--bash-4.2$ logout
-~ ]$ sudo systemctl enable postgresql
+postgres ~]$ logout
+%> sudo systemctl enable postgresql
 
 ============ Setup user for building =============
 In some cases it might be a good idea to have a specific user that is allowed to create and install the built packages.
@@ -119,6 +119,11 @@ the user that should be building is called rpmbuilder.
 %> cd baltrad-package-builder
 %> ./scripts/build_all_CentOS7.sh 1
 
+This last step will take quite some time since everything will be built and installed. If everything goes well, you have successfully
+created a rpm builder. If you want to use these rpms, you should refer to the howto on how to install the rpms.
+
+
++++++++++ TO BE MOVED TO howto-install-on-centos7.txt ++++++++++++++++
 ============ Setting up a new node =============
 When installing the baltrad node, a user called "baltrad" is automatically created and all relevant permissions are set on the installed
 software and we should login as baltrad in order to create the necessary configuration. The configuration steps will in most cases only
@@ -138,4 +143,23 @@ Now, when the above configuration file has been created, we can just create keys
 baltrad ~]$ sudo baltrad-config init --conf=localhost.properties --create-keys
 baltrad ~]$ sudo baltrad-config setup --conf=localhost.properties --install-database
 
+When this has been done, it's time to start the system and do the final touches.
+
+============ Starting the node =============
+There are 3 scripts that has been added to /etc/init.d. These are 
+ - /etc/init.d/bdbserver       For controling the baltrad database service
+ - /etc/init.d/raved           For controlling the rave product generator
+ - /etc/init.d/baltrad-node    For controlling the baltrad data exchange node
+ 
+ These can be started in different ways and enabled for automatic start so I just show one variant.
+
+baltrad ~]$ sudo service bdbserver start
+baltrad ~]$ sudo service raved start
+baltrad ~]$ sudo service baltrad-node start
+baltrad ~]$ sudo service bdbserver start
+baltrad ~]$ sudo service raved start
+baltrad ~]$ sudo service baltrad-node start
+
+And finally it's 
+baltrad ~]$ baltrad-bdb-client import_sources --url=http://localhost:8090 /etc/baltrad/rave/config/odim_source.xml
 
