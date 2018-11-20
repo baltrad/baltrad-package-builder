@@ -1,16 +1,73 @@
 #!/bin/sh
 
-if [ $# -lt 3 ]; then
-  echo "Usage: $0 <package name> <buildnr> <node_name>"
+# Brief usage
+usage_brief() {
+  echo "Usage: `basename $0` <package name> <buildnr> [<options>]"
+}
+
+# Usage
+usage() {
+  echo "Usage: `basename $0` <package name> <buildnr> [<options>]"
+  echo "<package name> - the name of the package to be built, e.g. bbufr, rave, baltrad-db ...."
+  echo "<buildnr>      - the build number, should always be provided"
+  echo "Options:"
+  echo "--builder-name=<name>   - Name of the node building this packages if it's relevant somehow'"
+  echo "--version=<version>     - Version that the packages should get. Should be in format, <major>.<minor>.<patch>." 
+  echo "                          Will override the setting in respective packages package.ini file"
+  echo "--artifacts=<loc>       - The directory where the artifacts should be placed (can also support scp if "
+  echo "                          specifying scp: like usual with either user / pwd or that the current user is"
+  echo "                          allowed to scp without pwd question). If not specifying this the packages will"
+  echo "                          be placed under packages/<package>/artifacts/<OS build>"
+  echo "--install-artifacts=true|false  - If the build artifacts should be installed or not. Default is to use "
+  echo "                                  the package.ini setting, but usually true is a good choice since"
+  echo "                                  packages built after might have dependencies to this artifact"
+}
+
+if [ $# -lt 2 ]; then
   exit 127
 fi
 
-CHANGELOG_MESSAGE="Autobuild"
-
 PACKAGE_NAME=$1
 BUILD_NUMBER=$2
-NODE_NAME=$3
 BUILD_NAME=$PACKAGE_NAME
+BUILDER_NAME=
+RELEASE_VERSION=
+ARTIFACTS=
+OPT_INSTALL_ARTIFACTS=
+
+shift;shift
+
+for arg in $*; do
+  case $arg in
+    --builder-name=*)
+      BUILDER_NAME=`echo $arg | sed 's/[-a-zA-Z0-9]*=//'`
+      ;;
+    --version=*)
+      RELEASE_VERSION=`echo $arg | sed 's/[-a-zA-Z0-9]*=//'`
+      ;;
+    --artifacts=*)
+      ARTIFACTS=`echo $arg | sed 's/[-a-zA-Z0-9]*=//'`
+      ;;
+    --install-artifacts=*)
+      OPT_INSTALL_ARTIFACTS=`echo $arg | sed 's/[-a-zA-Z0-9]*=//'`
+      if [ "$OPT_INSTALL_ARTIFACTS" != "true" -a "$OPT_INSTALL_ARTIFACTS" != "false" ]; then
+        echo "--install-artifacts must be either true or false"
+        exit 127
+      fi
+      ;;
+    --help)
+      usage $0
+      exit 0
+      ;;      
+    *)
+      echo "Unknown option or command: $arg"
+      usage_brief $0
+      exit 127
+      ;;      
+  esac
+done
+
+CHANGELOG_MESSAGE="Autobuild"
 
 if [ ! -f packages/$PACKAGE_NAME/package.ini ]; then
   echo "No package named $PACKAGE_NAME"
@@ -43,6 +100,14 @@ fi
 if [ "$GIT_URI" != "" -a "$TAR_BALL" != "" ]; then
   echo "Can not specify both tar_ball and git_uri in packages/$PACKAGE_NAME/package.ini"
   exit 127
+fi
+
+if [ "$RELEASE_VERSION" != "" ]; then
+  PACKAGE_VERSION=$RELEASE_VERSION
+fi
+
+if [ "$OPT_INSTALL_ARTIFACTS" != "" ]; then
+  INSTALL_ARTIFACTS=$OPT_INSTALL_ARTIFACTS
 fi
 
 SCRIPTDIR=`dirname $(python -c "import os; print(os.path.abspath(\"$0\"))")`
@@ -137,8 +202,8 @@ prepare_and_build_centos()
   fi
   rpmbuild --define="version $4" --define "snapshot $5" -v -ba "$2" || exit 127
 
-  if [ ! -d ../../artifacts ]; then
-    mkdir ../../artifacts || exit 127
+  if [ ! -d ../../artifacts/$8 ]; then
+    mkdir -p ../../artifacts/$8 || exit 127
   fi
   
   if [ "$RPM_ARTIFACTS" != "" ]; then
@@ -148,8 +213,8 @@ prepare_and_build_centos()
       fname=`echo $X | sed -e "s/<buildver>/$PACKAGE_VERSION-$BUILD_NUMBER/g"`
       FILES=`ls -1 $RPMS_TOPDIR/$fname`
       for f in $FILES; do
-        cp "$f" ../../artifacts/
-        RPMS_TO_INSTALL="$RPMS_TO_INSTALL ../../artifacts/`basename $f`"
+        cp "$f" ../../artifacts/$8/
+        RPMS_TO_INSTALL="$RPMS_TO_INSTALL ../../artifacts/$8/`basename $f`"
       done
     done
     if [ "$RPMS_TO_INSTALL" != "" ]; then
@@ -164,10 +229,10 @@ prepare_and_build_centos()
       fi
     fi
     if [ "$RPM_PCK_DIR" != "" ]; then
-      mv "$RPM_PCK_DIR"/$3*-$4-$5*.$RPM_ARCH_DIR.rpm ../../artifacts/ >> /dev/null 2>&1
+      mv "$RPM_PCK_DIR"/$3*-$4-$5*.$RPM_ARCH_DIR.rpm ../../artifacts/$8/ >> /dev/null 2>&1
     fi
     if [ "$RPM_PCK_NOARCH_DIR" != "" ]; then
-      mv "$RPM_PCK_NOARCH_DIR"/$3*-$4-$5*.noarch.rpm ../../artifacts/ >> /dev/null 2>&1
+      mv "$RPM_PCK_NOARCH_DIR"/$3*-$4-$5*.noarch.rpm ../../artifacts/$8/ >> /dev/null 2>&1
     fi
   fi
 }
@@ -178,7 +243,11 @@ fi
 
 OS_VARIANT=`get_os_version`
 
-echo "Building $BUILD_NAME-$PACKAGE_VERSION-$BUILD_NUMBER on $OS_VARIANT on node $NODE_NAME"
+if [ "$BUILDER_NAME" != "" ]; then
+  echo "Building $BUILD_NAME-$PACKAGE_VERSION-$BUILD_NUMBER for $OS_VARIANT on node $BUILDER_NAME"
+else
+  echo "Building $BUILD_NAME-$PACKAGE_VERSION-$BUILD_NUMBER for $OS_VARIANT"
+fi
 
 cd packages/$PACKAGE_NAME
 
@@ -222,10 +291,10 @@ if [ "$OS_VARIANT" = "Ubuntu-16.04" -o "$OS_VARIANT" = "Ubuntu-18.04" ]; then
   exit 0
 elif [ "$OS_VARIANT" = "CentOS-7" ]; then
   echo "Redhat build"
-  prepare_and_build_centos "$PACKAGEDIR/$PACKAGE_NAME/centos" "$PACKAGEDIR/$PACKAGE_NAME/$SPECFILE" $BUILD_NAME $PACKAGE_VERSION $BUILD_NUMBER $INSTALL_ARTIFACTS $CREATE_TAR_FROM_FOLDER
+  prepare_and_build_centos "$PACKAGEDIR/$PACKAGE_NAME/centos" "$PACKAGEDIR/$PACKAGE_NAME/$SPECFILE" $BUILD_NAME $PACKAGE_VERSION $BUILD_NUMBER $INSTALL_ARTIFACTS $CREATE_TAR_FROM_FOLDER $OS_VARIANT
   exit 0
 else
-  echo "Unsupported build variant"
+  echo "Unsupported build variant $OS_VARIANT"
   exit 127  
 fi
 
