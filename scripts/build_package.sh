@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Brief usage
 usage_brief() {
@@ -14,10 +14,11 @@ usage() {
   echo "--builder-name=<name>   - Name of the node building this packages if it's relevant somehow'"
   echo "--version=<version>     - Version that the packages should get. Should be in format, <major>.<minor>.<patch>." 
   echo "                          Will override the setting in respective packages package.ini file"
-  echo "--artifacts=<loc>       - The directory where the artifacts should be placed (can also support scp if "
-  echo "                          specifying scp: like usual with either user / pwd or that the current user is"
-  echo "                          allowed to scp without pwd question). If not specifying this the packages will"
-  echo "                          be placed under packages/<package>/artifacts/<OS build>"
+  echo "--artifacts=<loc>       - The directory where the artifacts should be placed (also support scp if "
+  echo "                          the target location accepts copying without a password). In that case,"
+  echo "                          the specified location should be like scp:<user>@<host>:<loc>"
+  echo "                          If not specifying this the packages will be placed under "
+  echo                            "packages/<package>/artifacts/<OS build>"
   echo "--install-artifacts=true|false  - If the build artifacts should be installed or not. Default is to use "
   echo "                                  the package.ini setting, but usually true is a good choice since"
   echo "                                  packages built after might have dependencies to this artifact"
@@ -139,6 +140,31 @@ get_os_version()
   echo "$OS-$VER"
 }
 
+copy_package_to_location() {
+  XSTR=$1
+  if [ "${XSTR:0:4}" = "scp:" ]; then
+    TARGET=${XSTR:4}
+    REMOTE_DIR=`echo "$TARGET" | sed -e "s/.*://g"`
+    REMOTE_USER=`echo "$TARGET" | sed -e "s/:.*//g"`
+    if [ "$REMOTE_DIR" != "" -a "$REMOTE_USER" != "" ]; then
+      echo "Creating remote directory $REMOTE_DIR on $REMOTE_USER"
+      ssh $REMOTE_USER "mkdir -p $REMOTE_DIR"
+      echo "scp $2 $TARGET"
+      scp $2 "$TARGET" 2>/dev/null
+    else
+      echo "Failed to identify scp. Format should be scp:<user>@<host>:<dir>, e.g. scp:baltrad@192.168.2.1:~/artifacts/2018-11-21"
+      exit 127
+    fi
+  else
+    XSTR=${XSTR/#\~/$HOME}
+    if [ ! -d "$XSTR" ]; then
+      mkdir -p "$XSTR" || exit 127
+    fi
+  
+    mv $2 "$XSTR/" 2>/dev/null
+  fi
+}
+
 prepare_and_build_debian()
 {
   if [ -d "debian" ]; then
@@ -162,10 +188,8 @@ prepare_and_build_debian()
   if [ "$4" = "true" ]; then
       sudo dpkg -i ../$2*_$3*.deb || exit 127
   fi
-  if [ ! -d ../../artifacts/$5 ]; then
-    mkdir ../../artifacts/$5 || exit 127
-  fi
-  mv ../$2*_$3*.deb ../../artifacts/$5/
+
+  copy_package_to_location "$6" "../$2*_$3*.deb"
 }
 
 prepare_and_build_centos()
@@ -229,10 +253,10 @@ prepare_and_build_centos()
       fi
     fi
     if [ "$RPM_PCK_DIR" != "" ]; then
-      mv "$RPM_PCK_DIR"/$3*-$4-$5*.$RPM_ARCH_DIR.rpm ../../artifacts/$8/ >> /dev/null 2>&1
+      copy_package_to_location "$9" "$RPM_PCK_DIR/$3*-$4-$5*.$RPM_ARCH_DIR.rpm"
     fi
     if [ "$RPM_PCK_NOARCH_DIR" != "" ]; then
-      mv "$RPM_PCK_NOARCH_DIR"/$3*-$4-$5*.noarch.rpm ../../artifacts/$8/ >> /dev/null 2>&1
+      copy_package_to_location "$9" "$RPM_PCK_NOARCH_DIR/$3*-$4-$5*.noarch.rpm"
     fi
   fi
 }
@@ -280,18 +304,22 @@ else
   git checkout master || exit 127
   git pull || exit 127
 fi
+
 CREATE_TAR_FROM_FOLDER=false
 if [ "$TAR_BALL" != "" ]; then
   CREATE_TAR_FROM_FOLDER=true
 fi
 
+ARTIFACT_REPOSITORY="../../artifacts/$OS_VARIANT/"
+if [ "$ARTIFACTS" != "" ]; then
+  ARTIFACT_REPOSITORY=$ARTIFACTS
+fi
+
 if [ "$OS_VARIANT" = "Ubuntu-16.04" -o "$OS_VARIANT" = "Ubuntu-18.04" ]; then
-  echo "Debian build"
-  prepare_and_build_debian "$PACKAGEDIR/$PACKAGE_NAME/debian" $BUILD_NAME $PACKAGE_VERSION-$BUILD_NUMBER $INSTALL_ARTIFACTS $OS_VARIANT
+  prepare_and_build_debian "$PACKAGEDIR/$PACKAGE_NAME/debian" $BUILD_NAME $PACKAGE_VERSION-$BUILD_NUMBER $INSTALL_ARTIFACTS $OS_VARIANT "$ARTIFACT_REPOSITORY"
   exit 0
 elif [ "$OS_VARIANT" = "CentOS-7" ]; then
-  echo "Redhat build"
-  prepare_and_build_centos "$PACKAGEDIR/$PACKAGE_NAME/centos" "$PACKAGEDIR/$PACKAGE_NAME/$SPECFILE" $BUILD_NAME $PACKAGE_VERSION $BUILD_NUMBER $INSTALL_ARTIFACTS $CREATE_TAR_FROM_FOLDER $OS_VARIANT
+  prepare_and_build_centos "$PACKAGEDIR/$PACKAGE_NAME/centos" "$PACKAGEDIR/$PACKAGE_NAME/$SPECFILE" $BUILD_NAME $PACKAGE_VERSION $BUILD_NUMBER $INSTALL_ARTIFACTS $CREATE_TAR_FROM_FOLDER $OS_VARIANT "$ARTIFACT_REPOSITORY"
   exit 0
 else
   echo "Unsupported build variant $OS_VARIANT"
