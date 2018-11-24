@@ -160,8 +160,10 @@ copy_package_to_location() {
     if [ ! -d "$XSTR" ]; then
       mkdir -p "$XSTR" || exit 127
     fi
-  
-    mv $2 "$XSTR/" 2>/dev/null
+    FILES=`ls -1 $2 2>/dev/null`
+    if [ "$FILES" != "" ]; then
+      mv $2 "$XSTR/" 2>/dev/null
+    fi
   fi
 }
 
@@ -226,10 +228,6 @@ prepare_and_build_centos()
   fi
   rpmbuild --define="version $4" --define "snapshot $5" -v -ba "$2" || exit 127
 
-  if [ ! -d ../../artifacts/$8 ]; then
-    mkdir -p ../../artifacts/$8 || exit 127
-  fi
-  
   if [ "$RPM_ARTIFACTS" != "" ]; then
     RPMS_TOPDIR=`rpmbuild --eval '%_rpmdir'`
     RPMS_TO_INSTALL=
@@ -237,8 +235,8 @@ prepare_and_build_centos()
       fname=`echo $X | sed -e "s/<buildver>/$PACKAGE_VERSION-$BUILD_NUMBER/g"`
       FILES=`ls -1 $RPMS_TOPDIR/$fname`
       for f in $FILES; do
-        cp "$f" ../../artifacts/$8/
-        RPMS_TO_INSTALL="$RPMS_TO_INSTALL ../../artifacts/$8/`basename $f`"
+        copy_package_to_location "$9" "$f"
+        RPMS_TO_INSTALL="$RPMS_TO_INSTALL $f"
       done
     done
     if [ "$RPMS_TO_INSTALL" != "" ]; then
@@ -249,7 +247,16 @@ prepare_and_build_centos()
     if [ "$6" = "true" ]; then
       if [ "$RPM_PCK_DIR" != "" ]; then
         # Use --force to be able to use same pck-number
-        sudo rpm --force -Uvh "$RPM_PCK_DIR/$3*-$4-$5*.$RPM_ARCH_DIR.rpm"
+        FILES=`ls -1 $RPM_PCK_DIR/$3*-$4-$5*.$RPM_ARCH_DIR.rpm 2>/dev/null`
+        if [ "$FILES" != "" ]; then
+          sudo rpm --force -Uvh "$RPM_PCK_DIR/$3*-$4-$5*.$RPM_ARCH_DIR.rpm"
+        fi
+      fi
+      if [ "$RPM_PCK_NOARCH_DIR" != "" ]; then
+        FILES=`ls -1 $RPM_PCK_NOARCH_DIR/$3*-$4-$5*.noarch.rpm 2>/dev/null`
+        if [ "$FILES" != "" ]; then
+          sudo rpm --force -Uvh "$RPM_PCK_NOARCH_DIR/$3*-$4-$5*.noarch.rpm"
+        fi
       fi
     fi
     if [ "$RPM_PCK_DIR" != "" ]; then

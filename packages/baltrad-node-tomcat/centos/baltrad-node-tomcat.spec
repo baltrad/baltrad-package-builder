@@ -88,9 +88,17 @@ if ! id -Gn baltrad | grep -qw baltrad; then
   adduser baltrad baltrad
 fi
 
-mkdir -p /var/lib/baltrad
-su -s /bin/sh baltrad -c "test -O /var/lib/baltrad &&
-  test -G /var/lib/baltrad" || chown baltrad:baltrad /var/lib/baltrad
+#mkdir -p /var/lib/baltrad
+#chmod 1775 /var/lib/baltrad
+#chown root:baltrad /var/lib/baltrad
+
+mkdir -p /var/log/baltrad
+chmod 1775 /var/log/baltrad
+chown root:baltrad /var/log/baltrad
+
+mkdir -p /var/run/baltrad
+chmod 1775 /var/run/baltrad
+chown root:baltrad /var/run/baltrad
 
 %files
 /usr/share/baltrad/baltrad-node-tomcat/*
@@ -100,7 +108,7 @@ su -s /bin/sh baltrad -c "test -O /var/lib/baltrad &&
 %attr(4755,baltrad,baltrad) /var/log/baltrad/baltrad-node-tomcat
 %attr(4640,root,baltrad) /etc/baltrad/baltrad-node-tomcat/*
 %attr(4755,root,baltrad) /etc/baltrad/baltrad-node-tomcat
-%attr(4755,baltrad,baltrad) /var/run/baltrad
+#%attr(4755,baltrad,baltrad) /var/run/baltrad
 #-rw-r----- 1 root baltrad   7746 okt  7 11:45 catalina.properties
 #-rw-r----- 1 root baltrad   1338 okt  7 11:45 context.xml
 #-rw-r----- 1 root baltrad   1149 okt  7 11:45 jaspic-providers.xml

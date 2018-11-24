@@ -136,6 +136,32 @@ EOF
 python $TMPNAME
 \rm -f $TMPNAME
 
+if ! getent passwd baltrad > /dev/null; then
+  adduser --system --home /var/lib/baltrad --no-create-home \
+    --shell /bin/bash -g baltrad baltrad
+fi
+    
+if ! getent group baltrad > /dev/null; then
+  groupadd --system baltrad
+fi
+  
+if ! id -Gn baltrad | grep -qw baltrad; then
+  adduser baltrad baltrad
+fi
+
+#mkdir -p /var/lib/baltrad
+#chmod 1775 /var/lib/baltrad
+#chown root:baltrad /var/lib/baltrad
+
+mkdir -p /var/log/baltrad
+chmod 1775 /var/log/baltrad
+chown root:baltrad /var/log/baltrad
+
+mkdir -p /var/run/baltrad
+chmod 1775 /var/run/baltrad
+chown root:baltrad /var/run/baltrad
+
+
 %postun -p /sbin/ldconfig
 
 %files
@@ -166,8 +192,8 @@ python $TMPNAME
 %attr(0664, root, baltrad) /etc/baltrad/rave/config/*.xml
 %attr(0664, root, baltrad) /etc/baltrad/rave/etc/*.xml
 /etc/ld.so.conf.d/rave.conf
-%attr(775,root,baltrad) /var/run/baltrad
-%attr(-,root,baltrad) /var/log/baltrad
+#%dir %attr(775,root,baltrad) /var/run/baltrad
+#%dir %attr(-,root,baltrad) /var/log/baltrad
 %attr(-,baltrad,baltrad) /var/lib/baltrad/rave_pgf_queue.xml
 %attr(-,baltrad,baltrad) /var/lib/baltrad/MSG_CT
 

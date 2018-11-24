@@ -103,13 +103,13 @@ done
 
 HLHDF_OPT_STR=
 BALTRAD_OPT_STR=
-BALTRAD_NODE_TOMCAT_STR=
+BALTRAD_NO_VERSION_OPT_STR=
 OS_VERSION=`get_os_version`
 
 if [ "$BUILDER_NAME" != "" ]; then
   HLHDF_OPT_STR="$HLHDF_OPT_STR --builder-name=$BUILDER_NAME"
   BALTRAD_OPT_STR="$BALTRAD_OPT_STR --builder-name=$BUILDER_NAME"
-  BALTRAD_NODE_TOMCAT_STR="$BALTRAD_NODE_TOMCAT_STR --builder-name=$BUILDER_NAME"
+  BALTRAD_NO_VERSION_OPT_STR="$BALTRAD_NO_VERSION_OPT_STR --builder-name=$BUILDER_NAME"
 fi
 
 if [ "$BALTRAD_VERSION" != "" ]; then
@@ -123,7 +123,7 @@ fi
 if [ "$ARTIFACTS" != "" ]; then
   HLHDF_OPT_STR="$HLHDF_OPT_STR --artifacts=$ARTIFACTS"
   BALTRAD_OPT_STR="$BALTRAD_OPT_STR --artifacts=$ARTIFACTS"
-  BALTRAD_NODE_TOMCAT_STR="$BALTRAD_NODE_TOMCAT_STR --artifacts=$ARTIFACTS"
+  BALTRAD_NO_VERSION_OPT_STR="$BALTRAD_NO_VERSION_OPT_STR --artifacts=$ARTIFACTS"
 fi
 
 ./scripts/build_package.sh hlhdf               $PKG_BUILD_NUMBER $HLHDF_OPT_STR || print_error_and_exit "Failed to build hlhdf" 
@@ -137,10 +137,11 @@ fi
 ./scripts/build_package.sh baltrad-config      $PKG_BUILD_NUMBER $BALTRAD_OPT_STR || print_error_and_exit "Failed to build baltrad-config"
 
 if [ "$OS_VERSION" != "Ubuntu-16.04" -a "$OS_VERSION" != "Ubuntu-18.04" ]; then
-  ./scripts/build_package.sh hdf-java            $PKG_BUILD_NUMBER $BALTRAD_OPT_STR || print_error_and_exit "Failed to build hdf-java"
+  ./scripts/build_package.sh hdf-java            $PKG_BUILD_NUMBER $BALTRAD_NO_VERSION_OPT_STR || print_error_and_exit "Failed to build hdf-java"
 fi
 
-./scripts/build_package.sh baltrad-node-tomcat $PKG_BUILD_NUMBER $BALTRAD_NODE_TOMCAT_STR || print_error_and_exit "Failed to build baltrad-node-tomcat"
+./scripts/build_package.sh baltrad-node-tomcat $PKG_BUILD_NUMBER $BALTRAD_NO_VERSION_OPT_STR || print_error_and_exit "Failed to build baltrad-node-tomcat"
 ./scripts/build_package.sh baltrad-dex         $PKG_BUILD_NUMBER $BALTRAD_OPT_STR || print_error_and_exit "Failed to build baltrad-dex"
+./scripts/build_package.sh baltrad-viewer      $PKG_BUILD_NUMBER $BALTRAD_OPT_STR || print_error_and_exit "Failed to build baltrad-viewer"
 
 

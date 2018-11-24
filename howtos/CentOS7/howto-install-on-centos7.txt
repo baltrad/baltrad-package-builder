@@ -1,0 +1,173 @@
+
+
+                       Baltrad Installation guide for CentOS7
+==========================================================================================
+This installation guide expects that you have an freshly installed CentOS-7 and that you
+are going to let this host take care of database storage, processing and everything else
+that comes with beeing a baltrad node.
+
+Any command executed in a CentOS shell, will be prefixed with '%>' or '<user> ~]$'
+
+There are several packages required just to be able to install the baltrad node. In Appendix A,
+you can see an example of the rpm:s that was generated at the first 2.0.3 build by the automatic build process. 
+Usually all these rpms will be shipped in the same directory so when it's time you can usually just 
+install everything at once with *.rpm which is fortunate since it's well over 40 different rpms.
+
+
+
+=============== Dependencies ===============
+Before we even atempt to install the packages described above, several dependencies has to be installed. The first thing
+you will have to do is to install the latest epel-release rpm which you can find here 
+  - http://dl.fedoraproject.org/pub/epel/7/x86_64/Packages/e/
+  
+Then you install the epel release rpm by typing
+%> rpm -Uvh epel-release*.rpm
+ 
+Fortunately, the installation of these rpms will be quite simple if you have managed to perform the above described scripts. Since yum
+is good at extracting the necessary dependencies from an rpm most dependencies will be found just by trying to install the baltrad node rpms.
+Get the baltrad node rpms and place them in a directory, then just type:
+ 
+ %> yum install *.rpm
+ 
+ Now, yum will calculate a lot of dependencies and then it will produce some output with all the dependencies it can find and then ask if
+ you want to continue with the installation, answer "y".
+ After a while, a similar output to this will be shown.
+ 
+--------------------
+Installed:
+  baltrad-beast.x86_64 0:2.0.3-1.el7           baltrad-beast-debuginfo.x86_64 0:2.0.3-1.el7           baltrad-beast-external.x86_64 0:2.0.3-1.el7    baltrad-config.x86_64 0:2.0.3-1.el7            baltrad-config-debuginfo.x86_64 0:2.0.3-1.el7    baltrad-db.x86_64 0:2.0.3-1.el7            
+  baltrad-db-debuginfo.x86_64 0:2.0.3-1.el7    baltrad-db-external.x86_64 0:2.0.3-1.el7               baltrad-db-java.x86_64 0:2.0.3-1.el7           baltrad-dex.x86_64 0:2.0.3-1.el7               baltrad-dex-debuginfo.x86_64 0:2.0.3-1.el7       baltrad-dex-tomcat.x86_64 0:2.0.3-1.el7    
+  baltrad-node-tomcat.x86_64 0:8.5.34-1.el7    baltrad-node-tomcat-debuginfo.x86_64 0:8.5.34-1.el7    baltrad-viewer.noarch 0:2.0.3-1.el7            baltrad-wrwp.x86_64 0:2.0.3-1.el7              baltrad-wrwp-debuginfo.x86_64 0:2.0.3-1.el7    baltrad-wrwp-devel.x86_64 0:2.0.3-1.el7          baltrad-wrwp-python.x86_64 0:2.0.3-1.el7   
+  bbufr.x86_64 0:2.0.3-1.el7                   bbufr-debuginfo.x86_64 0:2.0.3-1.el7                   beamb.x86_64 0:2.0.3-1.el7                     beamb-debuginfo.x86_64 0:2.0.3-1.el7           beamb-devel.x86_64 0:2.0.3-1.el7                 bropo.x86_64 0:2.0.3-1.el7                 
+  bropo-debuginfo.x86_64 0:2.0.3-1.el7         bropo-devel.x86_64 0:2.0.3-1.el7                       hdfview.noarch 0:2.8-1.el7                     hlhdf.x86_64 0:0.8.9-1.el7                     hlhdf-debuginfo.x86_64 0:0.8.9-1.el7             hlhdf-devel.x86_64 0:0.8.9-1.el7           
+  hlhdf-python.x86_64 0:0.8.9-1.el7            jhdf.x86_64 0:2.8-1.el7                                jhdf5.x86_64 0:2.8-1.el7                       jhdf5-debuginfo.x86_64 0:2.8-1.el7             jhdfobj.noarch 0:2.8-1.el7                       rave.x86_64 0:2.0.3-1.el7                  
+  rave-debuginfo.x86_64 0:2.0.3-1.el7          rave-devel.x86_64 0:2.0.3-1.el7                       
+
+Dependency Installed:
+  atlas.x86_64 0:3.10.1-12.el7             blis.x86_64 0:0.4.1-2.el7               hdf.x86_64 0:4.2.13-1.el7                     hdf5.x86_64 0:1.8.12-10.el7               hdf5-devel.x86_64 0:1.8.12-10.el7      lapack.x86_64 0:3.4.2-8.el7             libaec.x86_64 0:1.0.2-1.el7           
+  libaec-devel.x86_64 0:1.0.2-1.el7        libgfortran.x86_64 0:4.8.5-28.el7_5.1   libquadmath.x86_64 0:4.8.5-28.el7_5.1         libtomcrypt.x86_64 0:1.17-26.el7          libtommath.x86_64 0:0.42.0-6.el7       memkind.x86_64 0:1.5.0-1.el7            netcdf.x86_64 0:4.3.3.1-5.el7         
+  numpy.x86_64 1:1.7.1-13.el7              postgresql.x86_64 0:9.2.24-1.el7_5      postgresql-jdbc.noarch 0:9.2.1002-6.el7_5     postgresql-libs.x86_64 0:9.2.24-1.el7_5   proj.x86_64 0:4.8.0-4.el7              proj-devel.x86_64 0:4.8.0-4.el7         python-cherrypy.noarch 0:3.2.2-4.el7  
+  python-daemon.noarch 0:1.6-4.el7         python-keyczar.noarch 0:0.71c-2.el7     python-lockfile.noarch 1:0.9.1-4.el7.centos   python-migrate.noarch 0:0.9.2-2.el7       python-nose.noarch 0:1.3.7-1.el7       python-progressbar.noarch 0:2.3-4.el7   python-psycopg2.x86_64 0:2.5.1-3.el7  
+  python-sqlalchemy.x86_64 0:0.9.8-2.el7   python-sqlparse.noarch 0:0.1.11-2.el7   python-tempita.noarch 0:0.5.1-6.el7           python-werkzeug.noarch 0:0.9.1-2.el7      python2-crypto.x86_64 0:2.6.1-15.el7  
+  libzip.x86_64 0:0.10.1-8.el7             php.x86_64 0:5.4.16-45.el7              php-cli.x86_64 0:5.4.16-45.el7 
+  
+Complete!
+--------------------
+ 
+%> sudo yum install postgresql postgresql-devel postgresql-contrib postgresql-server
+%> sudo yum install python-pip
+%> sudo pip install "sqlalchemy-migrate==0.10.0"
+%> sudo pip install jprops>=2.0.2
+ 
+============ Initial setup (postgres) =============
+Before we start to configure the system, we need to setup the database If you already have a working database with the baltrad database 
+user created you can skip this step.
+
+%> sudo postgresql-setup initdb
+%> sudo vi /var/lib/pgsql/data/pg_hba.conf
+# Change ident to md5
+%> sudo systemctl start postgresql
+%> sudo su - postgres
+postgres ~]$psql
+postgres=# create user baltrad with password 'baltrad';
+postgres=# create database baltrad with owner baltrad;
+postgres=# \q
+postgres ~]$ logout
+%> sudo systemctl enable postgresql
+ 
+ ============ Setting up a new node =============
+When installing the baltrad node, a user called "baltrad" is automatically created and all relevant permissions are set on the installed
+software and we should login as baltrad in order to create the necessary configuration. The configuration steps will in most cases only
+have to be performed at a new installation. When upgrading the software, the current configuration will be left as is by the installation
+scripts.
+
+We have tried to keep the necessary steps for creating a default configuration to a minimum but as always, it's not possible to
+guess everything.
+ 
+%> sudo su - baltrad
+
+First we create a node specific configuration, this will most likely only be done once / node. 
+baltrad ~]$ sudo baltrad-config init --conf=localhost.properties --create-config
+baltrad ~]$ gedit localhost.properties  # or whatever editor you enjoy
+
+Now, when the above configuration file has been created, we can just create keys and install the database
+baltrad ~]$ sudo baltrad-config init --conf=localhost.properties --create-keys
+baltrad ~]$ sudo baltrad-config setup --conf=localhost.properties --install-database
+
+When this has been done, it's time to start the system and do the final touches.
+
+============ Starting the node =============
+There are 3 scripts that has been added to /etc/init.d. These are 
+ - /etc/init.d/bdbserver       For controling the baltrad database service
+ - /etc/init.d/raved           For controlling the rave product generator
+ - /etc/init.d/baltrad-node    For controlling the baltrad data exchange node
+ 
+These can be started in different ways and enabled for automatic start so I just show one variant.
+
+baltrad ~]$ sudo service bdbserver start
+baltrad ~]$ sudo service raved start
+baltrad ~]$ sudo service baltrad-node start
+
+And since we want the services to be automatically started at boot,
+baltrad ~]$ sudo systemctl enable raved
+baltrad ~]$ sudo systemctl enable baltrad-node
+baltrad ~]$ sudo systemctl enable bdbserver 
+
+And finally it's 
+baltrad ~]$ baltrad-bdb-client import_sources --url=http://localhost:8090 /etc/baltrad/rave/config/odim_source.xml
+
+Just to ensure that everything is starting properly after the installation it might be a good idea to reboot the
+computer and verify that all services has started ok.
+baltrad ~]$ shutdown -r now
+
+
+ 
+=============== Appendix A ===============
+ - baltrad-beast-2.0.3-1.el7.x86_64.rpm
+ - baltrad-beast-debuginfo-2.0.3-1.el7.x86_64.rpm
+ - baltrad-beast-external-2.0.3-1.el7.x86_64.rpm
+ - baltrad-config-2.0.3-1.el7.x86_64.rpm
+ - baltrad-config-debuginfo-2.0.3-1.el7.x86_64.rpm
+ - baltrad-db-2.0.3-1.el7.x86_64.rpm
+ - baltrad-db-debuginfo-2.0.3-1.el7.x86_64.rpm
+ - baltrad-db-external-2.0.3-1.el7.x86_64.rpm
+ - baltrad-db-java-2.0.3-1.el7.x86_64.rpm
+ - baltrad-dex-2.0.3-1.el7.x86_64.rpm
+ - baltrad-dex-debuginfo-2.0.3-1.el7.x86_64.rpm
+ - baltrad-dex-tomcat-2.0.3-1.el7.x86_64.rpm
+ - baltrad-node-tomcat-2.0.3-1.el7.x86_64.rpm
+ - baltrad-node-tomcat-8.5.34-1.el7.x86_64.rpm
+ - baltrad-node-tomcat-debuginfo-2.0.3-1.el7.x86_64.rpm
+ - baltrad-node-tomcat-debuginfo-8.5.34-1.el7.x86_64.rpm
+ - baltrad-viewer.noarch 0:2.0.3-1.el7
+ - baltrad-wrwp-2.0.3-1.el7.x86_64.rpm
+ - baltrad-wrwp-debuginfo-2.0.3-1.el7.x86_64.rpm
+ - baltrad-wrwp-devel-2.0.3-1.el7.x86_64.rpm
+ - baltrad-wrwp-python-2.0.3-1.el7.x86_64.rpm
+ - bbufr-2.0.3-1.el7.x86_64.rpm
+ - bbufr-debuginfo-2.0.3-1.el7.x86_64.rpm
+ - beamb-2.0.3-1.el7.x86_64.rpm
+ - beamb-debuginfo-2.0.3-1.el7.x86_64.rpm
+ - beamb-devel-2.0.3-1.el7.x86_64.rpm
+ - bropo-2.0.3-1.el7.x86_64.rpm
+ - bropo-debuginfo-2.0.3-1.el7.x86_64.rpm
+ - bropo-devel-2.0.3-1.el7.x86_64.rpm
+ - hdfview-2.8-1.el7.centos.noarch.rpm
+ - hdfview-2.8-1.el7.noarch.rpm
+ - hlhdf-0.8.9-1.el7.x86_64.rpm
+ - hlhdf-debuginfo-0.8.9-1.el7.x86_64.rpm
+ - hlhdf-devel-0.8.9-1.el7.x86_64.rpm
+ - hlhdf-python-0.8.9-1.el7.x86_64.rpm
+ - jhdf-2.8-1.el7.centos.x86_64.rpm
+ - jhdf-2.8-1.el7.x86_64.rpm
+ - jhdf5-2.8-1.el7.centos.x86_64.rpm
+ - jhdf5-2.8-1.el7.x86_64.rpm
+ - jhdf5-debuginfo-2.8-1.el7.centos.x86_64.rpm
+ - jhdf5-debuginfo-2.8-1.el7.x86_64.rpm
+ - jhdfobj-2.8-1.el7.centos.noarch.rpm
+ - jhdfobj-2.8-1.el7.noarch.rpm
+ - rave-2.0.3-1.el7.x86_64.rpm
+ - rave-debuginfo-2.0.3-1.el7.x86_64.rpm
+ - rave-devel-2.0.3-1.el7.x86_64.rpm
+
+ 
