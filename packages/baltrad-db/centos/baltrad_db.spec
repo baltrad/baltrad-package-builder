@@ -49,15 +49,7 @@ are provided in the baltrad-db package.
 %prep
 %setup -q
 %patch1 -p1
-#%patch2 -p1
-#find -name '*.class' -exec rm -f '{}' \;
-#find -name '*.jar' -exec rm -f '{}' \;
 
-# Four parts from tarball in different subdirs:
-# common
-# server
-# python client
-# java client
 %build
 cd common
 %{__python} setup.py build
@@ -102,10 +94,6 @@ fi
 if ! id -Gn baltrad | grep -qw baltrad; then
   adduser baltrad baltrad
 fi
-
-#mkdir -p /var/lib/baltrad
-#chmod 1775 /var/lib/baltrad
-#chown root:baltrad /var/lib/baltrad
 
 mkdir -p /var/log/baltrad
 chmod 1775 /var/log/baltrad
@@ -153,9 +141,7 @@ chown root:baltrad /var/run/baltrad
 # Investigate the different paths and at least split these up amongst split packages
 %{python_sitelib}/baltrad.*.pth
 %{python_sitelib}/baltrad.*dev-*.egg-info/*
-#%attr(-,baltrad,baltrad) /var/lib/baltrad
 %attr(-,baltrad,baltrad) /var/lib/baltrad/bdb_storage
-#%attr(-,baltrad,baltrad) /var/run/baltrad
 
 %files java
 %{_prefix}/share/baltrad/baltrad-db/java/*.jar

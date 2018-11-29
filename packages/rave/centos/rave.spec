@@ -149,9 +149,9 @@ if ! id -Gn baltrad | grep -qw baltrad; then
   adduser baltrad baltrad
 fi
 
-#mkdir -p /var/lib/baltrad
-#chmod 1775 /var/lib/baltrad
-#chown root:baltrad /var/lib/baltrad
+mkdir -p /var/lib/baltrad
+chmod 1775 /var/lib/baltrad
+chown root:baltrad /var/lib/baltrad
 
 mkdir -p /var/log/baltrad
 chmod 1775 /var/log/baltrad
@@ -161,6 +161,21 @@ mkdir -p /var/run/baltrad
 chmod 1775 /var/run/baltrad
 chown root:baltrad /var/run/baltrad
 
+mkdir -p /etc/baltrad
+chmod 1775 /etc/baltrad
+chown root:baltrad /etc/baltrad
+
+mkdir -p /etc/baltrad/rave/Lib
+mkdir -p /etc/baltrad/rave/config
+mkdir -p /etc/baltrad/rave/etc
+chmod 1775 /etc/baltrad/rave
+chmod 1775 /etc/baltrad/rave/Lib
+chmod 1775 /etc/baltrad/rave/config
+chmod 1775 /etc/baltrad/rave/etc
+chown root:baltrad /etc/baltrad/rave
+chown root:baltrad /etc/baltrad/rave/Lib
+chown root:baltrad /etc/baltrad/rave/config
+chown root:baltrad /etc/baltrad/rave/etc
 
 %postun -p /sbin/ldconfig
 
@@ -192,8 +207,6 @@ chown root:baltrad /var/run/baltrad
 %attr(0664, root, baltrad) /etc/baltrad/rave/config/*.xml
 %attr(0664, root, baltrad) /etc/baltrad/rave/etc/*.xml
 /etc/ld.so.conf.d/rave.conf
-#%dir %attr(775,root,baltrad) /var/run/baltrad
-#%dir %attr(-,root,baltrad) /var/log/baltrad
 %attr(-,baltrad,baltrad) /var/lib/baltrad/rave_pgf_queue.xml
 %attr(-,baltrad,baltrad) /var/lib/baltrad/MSG_CT
 

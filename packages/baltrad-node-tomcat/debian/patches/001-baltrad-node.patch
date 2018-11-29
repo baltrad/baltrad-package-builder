@@ -1,6 +1,6 @@
---- bin/baltrad-node	2018-10-07 10:35:49.434564769 +0200
-+++ bin/baltrad-node	2018-10-07 10:35:29.918977872 +0200
-@@ -0,0 +1,122 @@
+--- bin/baltrad-node	2018-11-29 22:56:36.785894324 +0100
++++ bin/baltrad-node	2018-11-29 22:55:47.750991858 +0100
+@@ -0,0 +1,135 @@
 +#!/bin/sh
 +#
 +# /etc/init.d/baltrad-node -- startup script for the baltrad node
@@ -20,7 +20,8 @@
 +PATH=/bin:/usr/bin:/sbin:/usr/sbin
 +CATALINA_HOME=/usr/share/baltrad/baltrad-node-tomcat
 +CATALINA_BASE=/var/lib/baltrad/baltrad-node-tomcat
-+CATALINA_PID="/var/run/baltrad/baltrad-node-tomcat.pid"
++NODE_PIDDIR="/var/run/baltrad"
++CATALINA_PID="$NODE_PIDDIR/baltrad-node-tomcat.pid"
 +CATALINA_SH="$CATALINA_HOME/bin/catalina.sh"
 +JAVA_OPTS="-Djava.awt.headless=true -Dfile.encoding=UTF-8 -server -Xms1536m -Xmx1536m -XX:NewSize=256m -XX:MaxNewSize=256m -XX:+DisableExplicitGC"
 +
@@ -38,10 +39,22 @@
 +	export LANG
 +fi
 +
++if [ ! -d "$NODE_PIDDIR" ]; then
++  echo "Creating dirname $NODE_PIDDIR"
++  mkdir "$NODE_PIDDIR"
++fi
++if [ -d "$NODE_PIDDIR" ]; then
++  chown $BALTRAD_USER:$BALTRAD_GROUP "$NODE_PIDDIR"
++  if [ $? -ne 0 ]; then
++    echo "Failed to create pid file directory, defaulting to /tmp/baltrad-node-tomcat.pid"
++    CATALINA_PID=/tmp/baltrad-node-tomcat.pid
++  fi
++fi
++
 +find_java_home()
 +{
 +  for jv in 8 7; do
-+    tmpdir=/usr/lib/jvm/java-${jv}-openjdk-amd64
++    tmpdir=/usr/lib/jvm/jre-1.${jv}.0-openjdk
 +    if [ -d "${tmpdir}" ]; then
 +      if [ -x "${tmpdir}/jre/bin/java" ]; then
 +        JAVA_HOME="${tmpdir}/jre"
@@ -56,7 +69,7 @@
 +JAVA_HOME=
 +find_java_home
 +if [ -z "$JAVA_HOME" ]; then
-+  log_failure_msg "No JAVA_HOME found"
++  echo "No JAVA_HOME found"
 +fi
 +export JAVA_HOME
 +

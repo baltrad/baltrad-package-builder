@@ -29,7 +29,6 @@ The dex node that should be used within the baltrad-node-tomcat.
 %prep
 %setup -q
 %patch1 -p1
-#%patch2 -p1
 
 %build
 ant -Dbeast.path=/usr/share/baltrad/baltrad-beast -Dbaltrad.db.path="/usr/share/baltrad" -Dbaltrad.db.java.path="/usr/share/baltrad/baltrad-db/java" -Djavahdf.path=/usr/share/java
@@ -49,6 +48,24 @@ ln -s ../../../../../../etc/baltrad/dex.properties  $RPM_BUILD_ROOT/var/lib/balt
 ln -s ../../../../../../etc/baltrad/db.properties  $RPM_BUILD_ROOT/var/lib/baltrad/baltrad-node-tomcat/webapps/BaltradDex/db.properties
 ln -s ../../../../../../etc/baltrad/dex.log4j.properties  $RPM_BUILD_ROOT/var/lib/baltrad/baltrad-node-tomcat/webapps/BaltradDex/dex.log4j.properties
 ln -s ../../../../../../../../../etc/baltrad/dex.fc.properties  $RPM_BUILD_ROOT/var/lib/baltrad/baltrad-node-tomcat/webapps/BaltradDex/WEB-INF/classes/resources/dex.fc.properties
+
+%post
+if ! getent passwd baltrad > /dev/null; then
+  adduser --system --home /var/lib/baltrad --no-create-home \
+    --shell /bin/bash -g baltrad baltrad
+fi
+
+if ! getent group baltrad > /dev/null; then
+  groupadd --system baltrad
+fi
+  
+if ! id -Gn baltrad | grep -qw baltrad; then
+  adduser baltrad baltrad
+fi
+
+mkdir -p /etc/baltrad
+chmod 1775 /etc/baltrad
+chown root:baltrad /etc/baltrad
 
 %files
 %{_prefix}/bin/BaltradDex.war

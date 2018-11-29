@@ -1,5 +1,5 @@
 diff --git a/etc/raved b/etc/raved
-index 1d9dc34..177dc3c 100755
+index e8ad925..dfa8e4e 100755
 --- a/etc/raved
 +++ b/etc/raved
 @@ -41,7 +41,7 @@ get_rave_pid() {
@@ -11,15 +11,15 @@ index 1d9dc34..177dc3c 100755
    if [ "$RAVEPGFPROCESS" = "rave_pgf is not running" ]; then
      return 1
    else
-@@ -67,7 +67,7 @@ case "$1" in
+@@ -68,7 +68,7 @@ case "$1" in
      if [ $? -eq 0 ]; then
        echo "already running"
      else
 -      su $BALTRAD_USER -s /bin/bash -c "/opt/baltrad/rave/bin/rave_pgf start"
 +      su $BALTRAD_USER -s /bin/bash -c "/usr/lib/rave/bin/rave_pgf start"
-       #/opt/baltrad/rave/bin/rave_pgf start
        if [ $? -ne 0 ]; then
          echo "failed."
+       else
 @@ -78,7 +78,7 @@ case "$1" in
      ;;
    stop)

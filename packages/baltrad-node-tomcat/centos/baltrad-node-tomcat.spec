@@ -1,4 +1,5 @@
 %define _prefix /
+%{?systemd_requires}
 
 Name: baltrad-node-tomcat
 Version: %{version}
@@ -60,19 +61,9 @@ cp LICENSE $RPM_BUILD_ROOT/usr/share/baltrad/baltrad-node-tomcat/
 cp NOTICE $RPM_BUILD_ROOT/usr/share/baltrad/baltrad-node-tomcat/
 cp README.md $RPM_BUILD_ROOT/usr/share/baltrad/baltrad-node-tomcat/
 
-#/usr/share/java/jhdf4obj.jar /usr/share/baltrad/baltrad-node-tomcat/lib/jhdf4obj.jar
-#/usr/share/java/jhdf5.jar /usr/share/baltrad/baltrad-node-tomcat/lib/jhdf5.jar
-#/usr/share/java/jhdf5obj.jar /usr/share/baltrad/baltrad-node-tomcat/lib/jhdf5obj.jar
-#/usr/share/java/jhdf.jar /usr/share/baltrad/baltrad-node-tomcat/lib/jhdf.jar
-#/usr/share/java/jhdfobj.jar /usr/share/baltrad/baltrad-node-tomcat/lib/jhdfobj.jar
-
-
-# FIXME: Unstandard jar install path
-#mkdir -p $RPM_BUILD_ROOT%{_prefix}/bin
-#cp -p dist/%{name}.jar $RPM_BUILD_ROOT%{_prefix}/bin
-#mkdir -p $RPM_BUILD_ROOT%{_prefix}/libs
-#cp -rp lib/apache-xmlrpc/ $RPM_BUILD_ROOT%{_prefix}/libs
-#cp -rp lib/groovy/ $RPM_BUILD_ROOT%{_prefix}/libs
+%preun
+sudo /etc/init.d/baltrad-node stop || :
+%systemd_postun baltrad-node.service || :
 
 %post
 if ! getent passwd baltrad > /dev/null; then
@@ -88,9 +79,9 @@ if ! id -Gn baltrad | grep -qw baltrad; then
   adduser baltrad baltrad
 fi
 
-#mkdir -p /var/lib/baltrad
-#chmod 1775 /var/lib/baltrad
-#chown root:baltrad /var/lib/baltrad
+mkdir -p /var/lib/baltrad
+chmod 1775 /var/lib/baltrad
+chown root:baltrad /var/lib/baltrad
 
 mkdir -p /var/log/baltrad
 chmod 1775 /var/log/baltrad
@@ -100,35 +91,22 @@ mkdir -p /var/run/baltrad
 chmod 1775 /var/run/baltrad
 chown root:baltrad /var/run/baltrad
 
+mkdir -p /etc/baltrad
+chmod 1775 /etc/baltrad
+chown root:baltrad /etc/baltrad
+
 %files
 /usr/share/baltrad/baltrad-node-tomcat/*
+%attr(-,baltrad,baltrad) /var/lib/baltrad/baltrad-node-tomcat
 %attr(-,baltrad,baltrad) /var/lib/baltrad/baltrad-node-tomcat/*
 %attr(-,baltrad,baltrad) /var/lib/baltrad/baltrad-node-tomcat/policy/*
 %attr(-,baltrad,baltrad) /var/lib/baltrad/baltrad-node-tomcat/webapps/*
+%attr(-,baltrad,baltrad) /var/lib/baltrad/baltrad-node-tomcat/logs
+%attr(-,baltrad,baltrad) /var/lib/baltrad/baltrad-node-tomcat/conf
+%attr(-,baltrad,baltrad) /var/lib/baltrad/baltrad-node-tomcat/work
 %attr(4755,baltrad,baltrad) /var/log/baltrad/baltrad-node-tomcat
-%attr(4640,root,baltrad) /etc/baltrad/baltrad-node-tomcat/*
-%attr(4755,root,baltrad) /etc/baltrad/baltrad-node-tomcat
-#%attr(4755,baltrad,baltrad) /var/run/baltrad
-#-rw-r----- 1 root baltrad   7746 okt  7 11:45 catalina.properties
-#-rw-r----- 1 root baltrad   1338 okt  7 11:45 context.xml
-#-rw-r----- 1 root baltrad   1149 okt  7 11:45 jaspic-providers.xml
-#-rw-r----- 1 root baltrad   2313 okt  7 11:45 jaspic-providers.xsd
-#-rw-r----- 1 root baltrad   3622 okt  7 11:45 logging.properties
-#-rw-r----- 1 root baltrad   7869 okt  7 11:45 server.xml
-#-rw-r----- 1 root baltrad   2164 okt  7 11:45 tomcat-users.xml
-#-rw-r----- 1 root baltrad   2633 okt  7 11:45 tomcat-users.xsd
-#-rw-r----- 1 root baltrad 169322 okt  7 11:45 web.xml
+%attr(0775,root,baltrad) /etc/baltrad/baltrad-node-tomcat
+%attr(0660,root,baltrad) /etc/baltrad/baltrad-node-tomcat/*
 /etc/init.d/baltrad-node
-/var/lib/baltrad/baltrad-node-tomcat/logs
-/var/lib/baltrad/baltrad-node-tomcat/conf
-/var/lib/baltrad/baltrad-node-tomcat/work
 %attr(4775,baltrad,baltrad) /var/cache/baltrad-node-tomcat
-
-
-#%{_prefix}/bin/beast.jar
-#%{_prefix}/bin/pgfwkplugin
-#%{_prefix}/bin/xmlrpcserver
-#%{_prefix}/etc/*
-#%{_prefix}/examples/*
-#%{_prefix}/sql/*
 
