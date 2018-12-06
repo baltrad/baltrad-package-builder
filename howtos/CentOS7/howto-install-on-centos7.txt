@@ -33,6 +33,7 @@ Fortunately, the installation of these rpms will be quite simple if you have man
 is good at extracting the necessary dependencies from an rpm most dependencies will be found just by trying to install the baltrad node rpms.
 Get the baltrad node rpms and place them in a directory, then just type:
  
+ # NOTE! I use yum to automatically get most of the dependencies installed. 
  %> yum install *.rpm
  
  Now, yum will calculate a lot of dependencies and then it will produce some output with all the dependencies it can find and then ask if
@@ -92,17 +93,28 @@ guess everything.
  
 %> sudo su - baltrad
 
+==== Create node specific configuration =====
 First we create a node specific configuration, this will most likely only be done once / node. 
+
 baltrad ~]$ sudo baltrad-config init --conf=localhost.properties --create-config
 baltrad ~]$ gedit localhost.properties  # or whatever editor you enjoy
 
+
+==== Setup node with configuration =====
 Now, when the above configuration file has been created, we can just create keys and install the database
+
 baltrad ~]$ sudo baltrad-config init --conf=localhost.properties --create-keys
 baltrad ~]$ sudo baltrad-config setup --conf=localhost.properties --install-database
 
+
+NOTE! After the configuration has been setup on the host, you should not have to perform the
+configuration setup again since the configuration files are placed in /etc and should
+not be affected by updates. 
+
+============ Final touches =============
 When this has been done, it's time to start the system and do the final touches.
 
-============ Starting the node =============
+==== Starting the node =====
 There are 3 scripts that has been added to /etc/init.d. These are 
  - /etc/init.d/bdbserver       For controling the baltrad database service
  - /etc/init.d/raved           For controlling the rave product generator
@@ -119,9 +131,13 @@ baltrad ~]$ sudo systemctl enable raved
 baltrad ~]$ sudo systemctl enable baltrad-node
 baltrad ~]$ sudo systemctl enable bdbserver 
 
-And finally it's 
+==== Import the sources =====
+It's essential that a baltrad node knows about all sources (radars) and we must import the sources before we can
+do anything useful with the node.
+
 baltrad ~]$ baltrad-bdb-client import_sources --url=http://localhost:8090 /etc/baltrad/rave/config/odim_source.xml
 
+==== Finally =====
 Just to ensure that everything is starting properly after the installation it might be a good idea to reboot the
 computer and verify that all services has started ok.
 baltrad ~]$ shutdown -r now
