@@ -13,8 +13,6 @@ you can see an example of the rpm:s that was generated at the first 2.0.3 build 
 Usually all these rpms will be shipped in the same directory so when it's time you can usually just 
 install everything at once with *.rpm which is fortunate since it's well over 40 different rpms.
 
-
-
 =============== Dependencies ===============
 Before we even atempt to install the packages described above, several dependencies has to be installed. The first thing
 you will have to do is to install the latest epel-release rpm which you can find here 
@@ -22,6 +20,14 @@ you will have to do is to install the latest epel-release rpm which you can find
   
 Then you install the epel release rpm by typing
 %> rpm -Uvh epel-release*.rpm
+ 
+It might also be a good idea to install postgres
+ %> sudo yum install postgresql postgresql-devel postgresql-contrib postgresql-server
+
+=============== Installation ===============
+As described earlier, the installation of a complete node consists of more than 40 different rpms. Some of these rpms are not
+necessary and some might conflict with others. Since the package builder doesn't care on what rpms are packaged and just
+copies the result you might for example get packages with one generic and one centos.
  
 Fortunately, the installation of these rpms will be quite simple if you have managed to perform the above described scripts. Since yum
 is good at extracting the necessary dependencies from an rpm most dependencies will be found just by trying to install the baltrad node rpms.
@@ -53,8 +59,8 @@ Dependency Installed:
   
 Complete!
 --------------------
- 
-%> sudo yum install postgresql postgresql-devel postgresql-contrib postgresql-server
+
+Unfortunately, CentOS 7 does not provide sqlalchemy-migrate or jprops as rpms so these two packages is installed by using pip. 
 %> sudo yum install python-pip
 %> sudo pip install "sqlalchemy-migrate==0.10.0"
 %> sudo pip install jprops>=2.0.2
@@ -123,6 +129,11 @@ baltrad ~]$ shutdown -r now
 
  
 =============== Appendix A ===============
+This is an example of the RPMs built for installing a complete baltrad node. As you can see most of these 
+packages versions are the same, even the build number are the same. However, a few packages has different version
+numbers. baltrad-node-tomcat is based on apache tomcat - 8.5.34 and hence, the version is the same.
+hdfview & related packages have version 2.8 and are packaged as such.  
+
  - baltrad-beast-2.0.3-1.el7.x86_64.rpm
  - baltrad-beast-debuginfo-2.0.3-1.el7.x86_64.rpm
  - baltrad-beast-external-2.0.3-1.el7.x86_64.rpm
@@ -135,9 +146,7 @@ baltrad ~]$ shutdown -r now
  - baltrad-dex-2.0.3-1.el7.x86_64.rpm
  - baltrad-dex-debuginfo-2.0.3-1.el7.x86_64.rpm
  - baltrad-dex-tomcat-2.0.3-1.el7.x86_64.rpm
- - baltrad-node-tomcat-2.0.3-1.el7.x86_64.rpm
  - baltrad-node-tomcat-8.5.34-1.el7.x86_64.rpm
- - baltrad-node-tomcat-debuginfo-2.0.3-1.el7.x86_64.rpm
  - baltrad-node-tomcat-debuginfo-8.5.34-1.el7.x86_64.rpm
  - baltrad-viewer.noarch 0:2.0.3-1.el7
  - baltrad-wrwp-2.0.3-1.el7.x86_64.rpm

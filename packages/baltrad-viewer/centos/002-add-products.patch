@@ -1,0 +1,76 @@
+diff -Naur a/web/products.js b/web/products.js
+--- a/web/products.js	2018-10-25 21:03:48.612076038 +0200
++++ b/web/products.js	2018-10-25 21:04:02.131689444 +0200
+@@ -0,0 +1,72 @@
++function RadarProduct() {
++  this.product = '';
++  this.description = '';
++  this.lon = 0.0;
++  this.lat = 0.0;
++  zoom = 5;
++  this.nelon = 0.0;
++  this.nelat = 0.0;
++  this.swlon = 0.0;
++  this.swlat = 0.0;
++}
++
++var radar_products = {};
++
++var radar_option_list = new Array();
++
++
++//Product swegmaps_2000, Swedish Composite
++radar_products['swegmaps_2000'] = new RadarProduct;
++radar_products['swegmaps_2000'].description = 'Swedish Composite';
++radar_products['swegmaps_2000'].lon = 18.000000;
++radar_products['swegmaps_2000'].lat = 62.000000;
++radar_products['swegmaps_2000'].zoom = 4;
++radar_products['swegmaps_2000'].nelon = 27.087240;
++radar_products['swegmaps_2000'].nelat = 69.875954;
++radar_products['swegmaps_2000'].swlon = 8.725675;
++radar_products['swegmaps_2000'].swlat = 54.138663;
++
++radar_option_list[0] = 'swegmaps_2000';
++
++
++//Product fingmaps_2000, Finnish Composite
++radar_products['fingmaps_2000'] = new RadarProduct;
++radar_products['fingmaps_2000'].description = 'Finnish Composite';
++radar_products['fingmaps_2000'].lon = 25.000000;
++radar_products['fingmaps_2000'].lat = 64.000000;
++radar_products['fingmaps_2000'].zoom = 4;
++radar_products['fingmaps_2000'].nelon = 32.748342;
++radar_products['fingmaps_2000'].nelat = 69.388234;
++radar_products['fingmaps_2000'].swlon = 17.117656;
++radar_products['fingmaps_2000'].swlat = 57.871926;
++
++radar_option_list[1] = 'fingmaps_2000';
++
++
++//Product polgmaps_2000, Polish Composite
++radar_products['polgmaps_2000'] = new RadarProduct;
++radar_products['polgmaps_2000'].description = 'Polish Composite';
++radar_products['polgmaps_2000'].lon = 19.000000;
++radar_products['polgmaps_2000'].lat = 52.000000;
++radar_products['polgmaps_2000'].zoom = 4;
++radar_products['polgmaps_2000'].nelon = 25.546354;
++radar_products['polgmaps_2000'].nelat = 56.633365;
++radar_products['polgmaps_2000'].swlon = 11.999759;
++radar_products['polgmaps_2000'].swlat = 47.751111;
++
++radar_option_list[2] = 'polgmaps_2000';
++
++
++//Product bltgmaps_4000, BALTRAD 2 km
++radar_products['bltgmaps_4000'] = new RadarProduct;
++radar_products['bltgmaps_4000'].description = 'BALTRAD 2 km';
++radar_products['bltgmaps_4000'].lon = 19.000000;
++radar_products['bltgmaps_4000'].lat = 59.000000;
++radar_products['bltgmaps_4000'].zoom = 3;
++radar_products['bltgmaps_4000'].nelon = 32.748342;
++radar_products['bltgmaps_4000'].nelat = 69.875954;
++radar_products['bltgmaps_4000'].swlon = 4.720905;
++radar_products['bltgmaps_4000'].swlat = 47.768703;
++
++radar_option_list[3] = 'bltgmaps_4000';
++

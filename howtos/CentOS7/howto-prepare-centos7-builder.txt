@@ -47,7 +47,7 @@ that are resolved by using "pip".
 %> sudo yum install java-1.8.0-openjdk-devel ant
 %> sudo yum install postgresql postgresql-devel postgresql-contrib postgresql-server
 %> sudo yum install ImageMagick
-%> sudo yum install python-pip python-pbr
+%> sudo yum install python-pip python-pbr python-pillow
 %> sudo yum install python-cherrypy python-daemon python-keyczar python-migrate
 %> sudo yum install python-progressbar python-psycopg2 python-sqlalchemy
 %> sudo yum install python-werkzeug postgresql-jdbc

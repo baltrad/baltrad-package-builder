@@ -21,6 +21,14 @@ BuildRequires: lapack-devel
 BuildRequires: blas-devel
 BuildRequires: atlas-devel
 BuildRequires: gsl-devel
+Requires: rave
+Requires: numpy
+Requires: hlhdf
+Requires: python2
+Requires: proj-devel
+Requires: rave
+Requires: atlas-sse3
+Requires: atlas
 
 %description
 Baltrad weather radar wind products
