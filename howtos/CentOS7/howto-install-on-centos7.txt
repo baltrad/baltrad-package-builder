@@ -34,7 +34,7 @@ is good at extracting the necessary dependencies from an rpm most dependencies w
 Get the baltrad node rpms and place them in a directory, then just type:
  
  # NOTE! I use yum to automatically get most of the dependencies installed. 
- %> yum install *.rpm
+ %> yum -y install *.rpm
  
  Now, yum will calculate a lot of dependencies and then it will produce some output with all the dependencies it can find and then ask if
  you want to continue with the installation, answer "y".
@@ -62,9 +62,9 @@ Complete!
 --------------------
 
 Unfortunately, CentOS 7 does not provide sqlalchemy-migrate or jprops as rpms so these two packages is installed by using pip. 
-%> sudo yum install python-pip
+%> sudo yum -y install python-pip
 %> sudo pip install "sqlalchemy-migrate==0.10.0"
-%> sudo pip install jprops>=2.0.2
+%> sudo pip install "jprops>=2.0.2"
  
 ============ Initial setup (postgres) =============
 Before we start to configure the system, we need to setup the database If you already have a working database with the baltrad database 
@@ -75,13 +75,19 @@ user created you can skip this step.
 # Change ident to md5
 %> sudo systemctl start postgresql
 %> sudo su - postgres
-postgres ~]$psql
+postgres ~]$ psql
 postgres=# create user baltrad with password 'baltrad';
 postgres=# create database baltrad with owner baltrad;
 postgres=# \q
 postgres ~]$ logout
 %> sudo systemctl enable postgresql
  
+============ Fixing blas =============
+The installation of libblas does not ensure that the libblas.so is found on the LD_LIBRARY_PATH so we fix it by adding an entry in ld.so.conf.d.
+
+%> sudo sh -c "echo /usr/lib64/blisblas > /etc/ld.so.conf.d/libblas.conf"
+%> ldconfig
+
  ============ Setting up a new node =============
 When installing the baltrad node, a user called "baltrad" is automatically created and all relevant permissions are set on the installed
 software and we should login as baltrad in order to create the necessary configuration. The configuration steps will in most cases only
@@ -105,7 +111,6 @@ Now, when the above configuration file has been created, we can just create keys
 
 baltrad ~]$ sudo baltrad-config init --conf=localhost.properties --create-keys
 baltrad ~]$ sudo baltrad-config setup --conf=localhost.properties --install-database
-
 
 NOTE! After the configuration has been setup on the host, you should not have to perform the
 configuration setup again since the configuration files are placed in /etc and should
@@ -137,10 +142,19 @@ do anything useful with the node.
 
 baltrad ~]$ baltrad-bdb-client import_sources --url=http://localhost:8090 /etc/baltrad/rave/config/odim_source.xml
 
+==== Firewall  =====
+If you want to ensure that you can access the dex user interface from a remote computer you will have to ensure that
+the ports 8080 and 8443 are open for remote access. This is easily done by issuing the following 3 commands.
+
+baltrad ~]$ sudo firewall-cmd --zone=public --add-port=8080/tcp --permanent
+baltrad ~]$ sudo firewall-cmd --zone=public --add-port=8443/tcp --permanent
+baltrad ~]$ sudo firewall-cmd --reload
+
 ==== Finally =====
 Just to ensure that everything is starting properly after the installation it might be a good idea to reboot the
 computer and verify that all services has started ok.
-baltrad ~]$ shutdown -r now
+
+baltrad ~]$ sudo shutdown -r now
 
 
  
