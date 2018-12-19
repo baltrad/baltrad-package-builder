@@ -1,5 +1,6 @@
 %{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
 %define _prefix /usr/lib/baltrad-viewer
+
 Name:		baltrad-viewer
 Version: %{version}
 Release: %{snapshot}%{?dist}
@@ -50,6 +51,18 @@ ln -s ../../../../var/lib/baltrad/baltrad-viewer/data %{buildroot}/usr/lib/baltr
 echo "/usr/lib/baltrad-viewer/Lib" > %{buildroot}/usr/lib/python2.7/site-packages/baltrad-viewer.pth
 
 %post
+BALTRAD_USER="baltrad"
+BALTRAD_GROUP="baltrad"
+if [[ "$BALTRAD_RPM_USER" != "" ]]; then
+  BALTRAD_USER="$BALTRAD_RPM_USER"
+fi
+if [[ "$BALTRAD_RPM_GROUP" != "" ]]; then
+  BALTRAD_GROUP="$BALTRAD_RPM_GROUP"
+fi
+
+chown -R $BALTRAD_USER:$BALTRAD_GROUP /var/lib/baltrad/baltrad-viewer
+chown -R root:$BALTRAD_GROUP /etc/baltrad/baltrad-viewer
+
 /sbin/ldconfig
 TMPNAME=`mktemp /tmp/XXXXXXXXXX.py`
   
@@ -69,10 +82,10 @@ python $TMPNAME
 %files
 %{_prefix}
 /usr/lib/python2.7/site-packages/baltrad-viewer.pth
-#/usr/lib/baltrad-viewer/web/*
-#/usr/lib/baltrad-viewer/Lib/*
-%attr(-,baltrad,baltrad) /var/lib/baltrad/baltrad-viewer
-%attr(-,root,baltrad) /etc/baltrad/baltrad-viewer
+#%attr(-,baltrad,baltrad) /var/lib/baltrad/baltrad-viewer
+/var/lib/baltrad/baltrad-viewer
+#%attr(-,root,baltrad) /etc/baltrad/baltrad-viewer
+/etc/baltrad/baltrad-viewer
 
 %changelog
 

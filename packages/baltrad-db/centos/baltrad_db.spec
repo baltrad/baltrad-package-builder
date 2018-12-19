@@ -60,7 +60,7 @@ cd ../client/python
 cd ../../client/java
 ant
 cd ../../
-ls -lR
+#ls -lR
 
 %install
 cd common
