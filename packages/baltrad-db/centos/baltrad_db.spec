@@ -82,27 +82,43 @@ cp -p lib/commons/commons-lang3-3.1.jar $RPM_BUILD_ROOT%{_prefix}/share/baltrad/
 cp -p lib/joda-time/joda-time-2.0.jar $RPM_BUILD_ROOT%{_prefix}/share/baltrad/baltrad-db/java/libs
 
 %post
-if ! getent passwd baltrad > /dev/null; then
-  adduser --system --home /var/lib/baltrad --no-create-home \
-    --shell /bin/bash -g baltrad baltrad
-fi
-    
-if ! getent group baltrad > /dev/null; then
-  groupadd --system baltrad
-fi
-  
-if ! id -Gn baltrad | grep -qw baltrad; then
-  adduser baltrad baltrad
+BALTRAD_USER="baltrad"
+BALTRAD_GROUP="baltrad"
+
+#[ # Reading value of  SMHI_MODE. Handles enviroments: utv, test and prod where prod is default This is just for testing & development purposes
+#-f /etc/profile.d/smhi.sh ] && . /etc/profile.d/smhi.sh
+
+# This code is uniquely defined for internal use at SMHI so that we can automatically test
+# and/or deploy the software. However, the default behaviour should always be that baltrad
+# uses a system user.
+# SMHI_MODE contains utv,test,prod.
+if [[ -f /etc/profile.d/smhi.sh ]]; then
+  . /etc/profile.d/smhi.sh
+  if [[ "$SMHI_MODE" = "utv" ]];then
+    BALTRAD_USER="baltra.u"
+    BALTRAD_GROUP="baltra.u"
+  elif [[ "$SMHI_MODE" = "test" ]];then
+    BALTRAD_USER="baltra.t"
+    BALTRAD_GROUP="baltra.t"
+  fi
+else
+  if ! getent group $BALTRAD_GROUP > /dev/null; then
+    groupadd --system $BALTRAD_GROUP
+  fi
+
+  if ! getent passwd "$BALTRAD_USER" > /dev/null; then
+    adduser --system --home /var/lib/baltrad --no-create-home --shell /bin/bash -g $BALTRAD_GROUP $BALTRAD_USER
+  fi
 fi
 
 mkdir -p /var/log/baltrad
 chmod 1775 /var/log/baltrad
-chown root:baltrad /var/log/baltrad
-
 mkdir -p /var/run/baltrad
 chmod 1775 /var/run/baltrad
-chown root:baltrad /var/run/baltrad
 
+chown root:$BALTRAD_GROUP /var/log/baltrad
+chown root:$BALTRAD_GROUP /var/run/baltrad
+chown -R $BALTRAD_USER:$BALTRAD_GROUP /var/lib/baltrad/bdb_storage
 
 %files
 # Why is %{_prefix} in buildroot?
@@ -141,7 +157,7 @@ chown root:baltrad /var/run/baltrad
 # Investigate the different paths and at least split these up amongst split packages
 %{python_sitelib}/baltrad.*.pth
 %{python_sitelib}/baltrad.*dev-*.egg-info/*
-%attr(-,baltrad,baltrad) /var/lib/baltrad/bdb_storage
+/var/lib/baltrad/bdb_storage
 
 %files java
 %{_prefix}/share/baltrad/baltrad-db/java/*.jar

@@ -66,47 +66,78 @@ sudo /etc/init.d/baltrad-node stop || :
 %systemd_postun baltrad-node.service || :
 
 %post
-if ! getent passwd baltrad > /dev/null; then
-  adduser --system --home /var/lib/baltrad --no-create-home \
-    --shell /bin/bash -g baltrad baltrad
-fi
-    
-if ! getent group baltrad > /dev/null; then
-  groupadd --system baltrad
-fi
-  
-if ! id -Gn baltrad | grep -qw baltrad; then
-  adduser baltrad baltrad
-fi
+BALTRAD_USER="baltrad"
+BALTRAD_GROUP="baltrad"
+BALTRAD_ADDUSER="true"
 
-mkdir -p /var/lib/baltrad
-chmod 1775 /var/lib/baltrad
-chown root:baltrad /var/lib/baltrad
+#[ # Reading value of  SMHI_MODE. Handles enviroments: utv, test and prod where prod is default This is just for testing & development purposes
+#-f /etc/profile.d/smhi.sh ] && . /etc/profile.d/smhi.sh
 
-mkdir -p /var/log/baltrad
-chmod 1775 /var/log/baltrad
-chown root:baltrad /var/log/baltrad
+# This code is uniquely defined for internal use at SMHI so that we can automatically test
+# and/or deploy the software. However, the default behaviour should always be that baltrad
+# uses a system user.
+# SMHI_MODE contains utv,test,prod.
+if [[ -f /etc/profile.d/smhi.sh ]]; then
+  . /etc/profile.d/smhi.sh
+  BALTRAD_ADDUSER="false"
+  if [[ "$SMHI_MODE" = "utv" ]];then
+    BALTRAD_USER="baltra.u"
+    BALTRAD_GROUP="baltra.u"
+  elif [[ "$SMHI_MODE" = "test" ]];then
+    BALTRAD_USER="baltra.t"
+    BALTRAD_GROUP="baltra.t"
+  fi
+else
+  if ! getent group $BALTRAD_GROUP > /dev/null; then
+    groupadd --system $BALTRAD_GROUP
+  fi
+
+  if ! getent passwd "$BALTRAD_USER" > /dev/null; then
+    adduser --system --home /var/lib/baltrad --no-create-home --shell /bin/bash -g $BALTRAD_GROUP $BALTRAD_USER
+  fi
+fi
 
 mkdir -p /var/run/baltrad
-chmod 1775 /var/run/baltrad
-chown root:baltrad /var/run/baltrad
 
-mkdir -p /etc/baltrad
 chmod 1775 /etc/baltrad
-chown root:baltrad /etc/baltrad
+chmod 1775 /var/lib/baltrad
+chmod 1775 /var/log/baltrad
+chmod 1775 /var/run/baltrad
+
+chown root:$BALTRAD_GROUP /var/lib/baltrad
+chown root:$BALTRAD_GROUP /var/log/baltrad
+chown root:$BALTRAD_GROUP /var/run/baltrad
+chown root:$BALTRAD_GROUP /etc/baltrad
+
+chown $BALTRAD_USER:$BALTRAD_GROUP /var/lib/baltrad/baltrad-node-tomcat
+chown $BALTRAD_USER:$BALTRAD_GROUP /var/lib/baltrad/baltrad-node-tomcat/*
+chown $BALTRAD_USER:$BALTRAD_GROUP /var/lib/baltrad/baltrad-node-tomcat/policy/*
+chown $BALTRAD_USER:$BALTRAD_GROUP /var/lib/baltrad/baltrad-node-tomcat/webapps/*
+chown $BALTRAD_USER:$BALTRAD_GROUP /var/lib/baltrad/baltrad-node-tomcat/logs
+chown $BALTRAD_USER:$BALTRAD_GROUP /var/lib/baltrad/baltrad-node-tomcat/conf
+chown $BALTRAD_USER:$BALTRAD_GROUP /var/lib/baltrad/baltrad-node-tomcat/work
+
+chmod 4755 /var/log/baltrad/baltrad-node-tomcat
+chown $BALTRAD_USER:$BALTRAD_GROUP /var/log/baltrad/baltrad-node-tomcat
+chmod 0775 /etc/baltrad/baltrad-node-tomcat
+chown root:$BALTRAD_GROUP /etc/baltrad/baltrad-node-tomcat
+chmod 0660 /etc/baltrad/baltrad-node-tomcat/*
+chown root:$BALTRAD_GROUP /etc/baltrad/baltrad-node-tomcat/*
+chmod 4775 /var/cache/baltrad-node-tomcat
+chown $BALTRAD_USER:$BALTRAD_GROUP /var/cache/baltrad-node-tomcat 
 
 %files
 /usr/share/baltrad/baltrad-node-tomcat/*
-%attr(-,baltrad,baltrad) /var/lib/baltrad/baltrad-node-tomcat
-%attr(-,baltrad,baltrad) /var/lib/baltrad/baltrad-node-tomcat/*
-%attr(-,baltrad,baltrad) /var/lib/baltrad/baltrad-node-tomcat/policy/*
-%attr(-,baltrad,baltrad) /var/lib/baltrad/baltrad-node-tomcat/webapps/*
-%attr(-,baltrad,baltrad) /var/lib/baltrad/baltrad-node-tomcat/logs
-%attr(-,baltrad,baltrad) /var/lib/baltrad/baltrad-node-tomcat/conf
-%attr(-,baltrad,baltrad) /var/lib/baltrad/baltrad-node-tomcat/work
-%attr(4755,baltrad,baltrad) /var/log/baltrad/baltrad-node-tomcat
-%attr(0775,root,baltrad) /etc/baltrad/baltrad-node-tomcat
-%attr(0660,root,baltrad) /etc/baltrad/baltrad-node-tomcat/*
+/var/lib/baltrad/baltrad-node-tomcat
+/var/lib/baltrad/baltrad-node-tomcat/*
+/var/lib/baltrad/baltrad-node-tomcat/policy/*
+/var/lib/baltrad/baltrad-node-tomcat/webapps/*
+/var/lib/baltrad/baltrad-node-tomcat/logs
+/var/lib/baltrad/baltrad-node-tomcat/conf
+/var/lib/baltrad/baltrad-node-tomcat/work
+/var/log/baltrad/baltrad-node-tomcat
+/etc/baltrad/baltrad-node-tomcat
+/etc/baltrad/baltrad-node-tomcat/*
 /etc/init.d/baltrad-node
-%attr(4775,baltrad,baltrad) /var/cache/baltrad-node-tomcat
+/var/cache/baltrad-node-tomcat
 

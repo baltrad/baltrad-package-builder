@@ -34,8 +34,6 @@ are provided in the beast package.
 # Copy joda-time in our sources until baltrad-db installs it and we find it from there
 # Why does it work either way on Fedora17? java-sdk includes it already or what..?
 # Use copy from baltrad-db-external instead
-#mkdir lib/joda-time
-#cp %{SOURCE1} lib/joda-time
 
 %build
 # Use %{_prefix} once known what it should be based on higher level components requirements
@@ -43,12 +41,6 @@ ant -Dbaltraddb.path=/usr/share/baltrad -Dbaltraddb.java.path=/usr/share/baltrad
 
 %install
 ant install-files -Dapp.dist.dir.name=%{name} -Dbaltraddb.path=/usr/share/baltrad -Dbaltraddb.java.path=/usr/share/baltrad/baltrad-db/java -Dbaltraddb.bin.path=/usr/bin -Dprefix=$RPM_BUILD_ROOT/usr/share/baltrad
-#ls -lR $RPM_BUILD_ROOT
-#mkdir -p $RPM_BUILD_ROOT%{_prefix}/bin
-#cp -p dist/%{name}.jar $RPM_BUILD_ROOT%{_prefix}/bin
-#mkdir -p $RPM_BUILD_ROOT%{_prefix}/libs
-#cp -rp lib/apache-xmlrpc/ $RPM_BUILD_ROOT%{_prefix}/libs
-#cp -rp lib/groovy/ $RPM_BUILD_ROOT%{_prefix}/libs
 
 %files
 %{_prefix}/bin/beast.jar

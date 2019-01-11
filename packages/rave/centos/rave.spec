@@ -116,6 +116,35 @@ ln -s ../../../../etc/baltrad/rave/config/swedish_radars.xml		%{buildroot}/usr/l
 ln -s ../../../../etc/baltrad/rave/Lib/rave_defines.py %{buildroot}/usr/lib/rave/Lib/rave_defines.py
 
 %post
+BALTRAD_USER="baltrad"
+BALTRAD_GROUP="baltrad"
+
+#[ # Reading value of  SMHI_MODE. Handles enviroments: utv, test and prod where prod is default This is just for testing & development purposes
+#-f /etc/profile.d/smhi.sh ] && . /etc/profile.d/smhi.sh
+
+# This code is uniquely defined for internal use at SMHI so that we can automatically test
+# and/or deploy the software. However, the default behaviour should always be that baltrad
+# uses a system user.
+# SMHI_MODE contains utv,test,prod.
+if [[ -f /etc/profile.d/smhi.sh ]]; then
+  . /etc/profile.d/smhi.sh
+  if [[ "$SMHI_MODE" = "utv" ]];then
+    BALTRAD_USER="baltra.u"
+    BALTRAD_GROUP="baltra.u"
+  elif [[ "$SMHI_MODE" = "test" ]];then
+    BALTRAD_USER="baltra.t"
+    BALTRAD_GROUP="baltra.t"
+  fi
+else
+  if ! getent group $BALTRAD_GROUP > /dev/null; then
+    groupadd --system $BALTRAD_GROUP
+  fi
+
+  if ! getent passwd "$BALTRAD_USER" > /dev/null; then
+    adduser --system --home /var/lib/baltrad --no-create-home --shell /bin/bash -g $BALTRAD_GROUP $BALTRAD_USER
+  fi
+fi
+
 /sbin/ldconfig
 TMPNAME=`mktemp /tmp/XXXXXXXXXX.py`
   
@@ -136,34 +165,21 @@ EOF
 python $TMPNAME
 \rm -f $TMPNAME
 
-if ! getent passwd baltrad > /dev/null; then
-  adduser --system --home /var/lib/baltrad --no-create-home \
-    --shell /bin/bash -g baltrad baltrad
-fi
-    
-if ! getent group baltrad > /dev/null; then
-  groupadd --system baltrad
-fi
-  
-if ! id -Gn baltrad | grep -qw baltrad; then
-  adduser baltrad baltrad
-fi
-
 mkdir -p /var/lib/baltrad
 chmod 1775 /var/lib/baltrad
-chown root:baltrad /var/lib/baltrad
+chown root:$BALTRAD_GROUP /var/lib/baltrad
 
 mkdir -p /var/log/baltrad
 chmod 1775 /var/log/baltrad
-chown root:baltrad /var/log/baltrad
+chown root:$BALTRAD_GROUP /var/log/baltrad
 
 mkdir -p /var/run/baltrad
 chmod 1775 /var/run/baltrad
-chown root:baltrad /var/run/baltrad
+chown root:$BALTRAD_GROUP /var/run/baltrad
 
 mkdir -p /etc/baltrad
 chmod 1775 /etc/baltrad
-chown root:baltrad /etc/baltrad
+chown root:$BALTRAD_GROUP /etc/baltrad
 
 mkdir -p /etc/baltrad/rave/Lib
 mkdir -p /etc/baltrad/rave/config
@@ -172,10 +188,20 @@ chmod 1775 /etc/baltrad/rave
 chmod 1775 /etc/baltrad/rave/Lib
 chmod 1775 /etc/baltrad/rave/config
 chmod 1775 /etc/baltrad/rave/etc
-chown root:baltrad /etc/baltrad/rave
-chown root:baltrad /etc/baltrad/rave/Lib
-chown root:baltrad /etc/baltrad/rave/config
-chown root:baltrad /etc/baltrad/rave/etc
+chown root:$BALTRAD_GROUP /etc/baltrad/rave
+chown root:$BALTRAD_GROUP /etc/baltrad/rave/Lib
+chown root:$BALTRAD_GROUP /etc/baltrad/rave/config
+chown root:$BALTRAD_GROUP /etc/baltrad/rave/etc
+
+chmod 0664 /etc/baltrad/rave/Lib/*.py
+chown root:$BALTRAD_GROUP /etc/baltrad/rave/Lib/*.py
+chmod 0664 /etc/baltrad/rave/config/*.xml
+chown root:$BALTRAD_GROUP /etc/baltrad/rave/config/*.xml
+chmod 0664 /etc/baltrad/rave/etc/*.xml
+chown root:$BALTRAD_GROUP /etc/baltrad/rave/etc/*.xml
+
+chown $BALTRAD_USER:$BALTRAD_GROUP /var/lib/baltrad/rave_pgf_queue.xml
+chown $BALTRAD_USER:$BALTRAD_GROUP /var/lib/baltrad/MSG_CT
 
 %postun -p /sbin/ldconfig
 
@@ -201,14 +227,14 @@ chown root:baltrad /etc/baltrad/rave/etc
 %{_prefix}/etc/rave_tile_registry.xml
 %{python_sitearch}/rave.pth
 /etc/init.d/raved
-%attr(0664, root, baltrad) /etc/baltrad/rave/Lib/*.py
+/etc/baltrad/rave/Lib/*.py
 %exclude /etc/baltrad/rave/Lib/rave_defines.pyc
 %exclude /etc/baltrad/rave/Lib/rave_defines.pyo
-%attr(0664, root, baltrad) /etc/baltrad/rave/config/*.xml
-%attr(0664, root, baltrad) /etc/baltrad/rave/etc/*.xml
+/etc/baltrad/rave/config/*.xml
+/etc/baltrad/rave/etc/*.xml
 /etc/ld.so.conf.d/rave.conf
-%attr(-,baltrad,baltrad) /var/lib/baltrad/rave_pgf_queue.xml
-%attr(-,baltrad,baltrad) /var/lib/baltrad/MSG_CT
+/var/lib/baltrad/rave_pgf_queue.xml
+/var/lib/baltrad/MSG_CT
 
 %config(noreplace) %{python_sitelib}/rave.pth
 %config(noreplace) %{_sysconfdir}/ld.so.conf.d/rave.conf

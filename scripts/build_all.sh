@@ -66,6 +66,16 @@ HLHDF_VERSION=
 ARTIFACTS=
 OPT_INSTALL_ARTIFACTS=
 
+for arg in $*; do
+  case $arg in
+    --help)
+      usage $0
+      exit 0
+      ;;
+    *) ;;
+  esac
+done
+
 STR=`echo $1 | egrep -e "^[0-9]+$"`
 if [ "$STR" != "" ]; then
   PKG_BUILD_NUMBER=$1

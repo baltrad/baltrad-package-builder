@@ -50,31 +50,56 @@ ln -s ../../../../../../etc/baltrad/dex.log4j.properties  $RPM_BUILD_ROOT/var/li
 ln -s ../../../../../../../../../etc/baltrad/dex.fc.properties  $RPM_BUILD_ROOT/var/lib/baltrad/baltrad-node-tomcat/webapps/BaltradDex/WEB-INF/classes/resources/dex.fc.properties
 
 %post
-if ! getent passwd baltrad > /dev/null; then
-  adduser --system --home /var/lib/baltrad --no-create-home \
-    --shell /bin/bash -g baltrad baltrad
+BALTRAD_USER="baltrad"
+BALTRAD_GROUP="baltrad"
+
+#[ # Reading value of  SMHI_MODE. Handles enviroments: utv, test and prod where prod is default This is just for testing & development purposes
+#-f /etc/profile.d/smhi.sh ] && . /etc/profile.d/smhi.sh
+
+# This code is uniquely defined for internal use at SMHI so that we can automatically test
+# and/or deploy the software. However, the default behaviour should always be that baltrad
+# uses a system user.
+# SMHI_MODE contains utv,test,prod.
+if [[ -f /etc/profile.d/smhi.sh ]]; then
+  . /etc/profile.d/smhi.sh
+  if [[ "$SMHI_MODE" = "utv" ]];then
+    BALTRAD_USER="baltra.u"
+    BALTRAD_GROUP="baltra.u"
+  elif [[ "$SMHI_MODE" = "test" ]];then
+    BALTRAD_USER="baltra.t"
+    BALTRAD_GROUP="baltra.t"
+  fi
+else
+  if ! getent group $BALTRAD_GROUP > /dev/null; then
+    groupadd --system $BALTRAD_GROUP
+  fi
+
+  if ! getent passwd "$BALTRAD_USER" > /dev/null; then
+    adduser --system --home /var/lib/baltrad --no-create-home --shell /bin/bash -g $BALTRAD_GROUP $BALTRAD_USER
+  fi
 fi
 
-if ! getent group baltrad > /dev/null; then
-  groupadd --system baltrad
-fi
-  
-if ! id -Gn baltrad | grep -qw baltrad; then
-  adduser baltrad baltrad
-fi
-
-mkdir -p /etc/baltrad
 chmod 1775 /etc/baltrad
-chown root:baltrad /etc/baltrad
+
+chown root:$BALTRAD_GROUP /etc/baltrad
+chown -R $BALTRAD_USER:$BALTRAD_GROUP /var/lib/baltrad/baltrad-node-tomcat/webapps/BaltradDex
+chown root:$BALTRAD_GROUP /etc/baltrad/dex.properties
+chown root:$BALTRAD_GROUP /etc/baltrad/db.properties
+chown root:$BALTRAD_GROUP /etc/baltrad/dex.log4j.properties
+chown root:$BALTRAD_GROUP /etc/baltrad/dex.fc.properties
+chmod 0660 /etc/baltrad/dex.properties
+chmod 0660 /etc/baltrad/db.properties
+chmod 0660 /etc/baltrad/dex.log4j.properties
+chmod 0660 /etc/baltrad/dex.fc.properties
 
 %files
 %{_prefix}/bin/BaltradDex.war
 %{_prefix}/sql/*.sql
 
 %files tomcat
-%attr(-,baltrad,baltrad) /var/lib/baltrad/baltrad-node-tomcat/webapps/BaltradDex
-%attr(0660,root,baltrad) /etc/baltrad/dex.properties
-%attr(0660,root,baltrad) /etc/baltrad/db.properties
-%attr(0660,root,baltrad) /etc/baltrad/dex.log4j.properties
-%attr(0660,root,baltrad) /etc/baltrad/dex.fc.properties
+/var/lib/baltrad/baltrad-node-tomcat/webapps/BaltradDex
+/etc/baltrad/dex.properties
+/etc/baltrad/db.properties
+/etc/baltrad/dex.log4j.properties
+/etc/baltrad/dex.fc.properties
 
