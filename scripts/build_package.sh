@@ -162,7 +162,7 @@ copy_package_to_location() {
     fi
     FILES=`ls -1 $2 2>/dev/null`
     if [ "$FILES" != "" ]; then
-      mv $2 "$XSTR/" 2>/dev/null
+      cp $2 "$XSTR/" 2>/dev/null
     fi
   fi
 }

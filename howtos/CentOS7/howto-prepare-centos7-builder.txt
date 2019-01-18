@@ -51,6 +51,7 @@ that are resolved by using "pip".
 %> sudo yum install python-cherrypy python-daemon python-keyczar python-migrate
 %> sudo yum install python-progressbar python-psycopg2 python-sqlalchemy
 %> sudo yum install python-werkzeug postgresql-jdbc
+%> sudo yum install -y php php-common
 %> sudo pip install "sqlalchemy-migrate==0.10.0"
 %> sudo pip install jprops>=2.0.2
 

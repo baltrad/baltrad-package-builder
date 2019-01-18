@@ -127,14 +127,20 @@ BALTRAD_GROUP="baltrad"
 # uses a system user.
 # SMHI_MODE contains utv,test,prod.
 if [[ -f /etc/profile.d/smhi.sh ]]; then
+  BALTRAD_GROUP=baltradg
   . /etc/profile.d/smhi.sh
   if [[ "$SMHI_MODE" = "utv" ]];then
     BALTRAD_USER="baltra.u"
-    BALTRAD_GROUP="baltra.u"
+    BALTRAD_GROUP="baltragu"
   elif [[ "$SMHI_MODE" = "test" ]];then
     BALTRAD_USER="baltra.t"
-    BALTRAD_GROUP="baltra.t"
+    BALTRAD_GROUP="baltragt"
   fi
+  TMPFILE=`mktemp`
+  cat /etc/init.d/raved | sed -e"s/BALTRAD_USER=baltrad/BALTRAD_USER=baltra.u/g" | sed -e"s/BALTRAD_GROUP=baltrad/BALTRAD_GROUP=baltragu/g" > $TMPFILE
+  cat $TMPFILE > /etc/init.d/raved
+  chmod 755 /etc/init.d/raved
+  \rm -f $TMPFILE 
 else
   if ! getent group $BALTRAD_GROUP > /dev/null; then
     groupadd --system $BALTRAD_GROUP
@@ -166,39 +172,39 @@ python $TMPNAME
 \rm -f $TMPNAME
 
 mkdir -p /var/lib/baltrad
-chmod 1775 /var/lib/baltrad
+chmod 0775 /var/lib/baltrad
 chown root:$BALTRAD_GROUP /var/lib/baltrad
 
 mkdir -p /var/log/baltrad
-chmod 1775 /var/log/baltrad
+chmod 0775 /var/log/baltrad
 chown root:$BALTRAD_GROUP /var/log/baltrad
 
 mkdir -p /var/run/baltrad
-chmod 1775 /var/run/baltrad
+chmod 0775 /var/run/baltrad
 chown root:$BALTRAD_GROUP /var/run/baltrad
 
 mkdir -p /etc/baltrad
-chmod 1775 /etc/baltrad
+chmod 0775 /etc/baltrad
 chown root:$BALTRAD_GROUP /etc/baltrad
 
 mkdir -p /etc/baltrad/rave/Lib
 mkdir -p /etc/baltrad/rave/config
 mkdir -p /etc/baltrad/rave/etc
-chmod 1775 /etc/baltrad/rave
-chmod 1775 /etc/baltrad/rave/Lib
-chmod 1775 /etc/baltrad/rave/config
-chmod 1775 /etc/baltrad/rave/etc
+chmod 0775 /etc/baltrad/rave
+chmod 0775 /etc/baltrad/rave/Lib
+chmod 0775 /etc/baltrad/rave/config
+chmod 0775 /etc/baltrad/rave/etc
 chown root:$BALTRAD_GROUP /etc/baltrad/rave
 chown root:$BALTRAD_GROUP /etc/baltrad/rave/Lib
 chown root:$BALTRAD_GROUP /etc/baltrad/rave/config
 chown root:$BALTRAD_GROUP /etc/baltrad/rave/etc
 
 chmod 0664 /etc/baltrad/rave/Lib/*.py
-chown root:$BALTRAD_GROUP /etc/baltrad/rave/Lib/*.py
+chown $BALTRAD_USER:$BALTRAD_GROUP /etc/baltrad/rave/Lib/*.py
 chmod 0664 /etc/baltrad/rave/config/*.xml
-chown root:$BALTRAD_GROUP /etc/baltrad/rave/config/*.xml
+chown $BALTRAD_USER:$BALTRAD_GROUP /etc/baltrad/rave/config/*.xml
 chmod 0664 /etc/baltrad/rave/etc/*.xml
-chown root:$BALTRAD_GROUP /etc/baltrad/rave/etc/*.xml
+chown $BALTRAD_USER:$BALTRAD_GROUP /etc/baltrad/rave/etc/*.xml
 
 chown $BALTRAD_USER:$BALTRAD_GROUP /var/lib/baltrad/rave_pgf_queue.xml
 chown $BALTRAD_USER:$BALTRAD_GROUP /var/lib/baltrad/MSG_CT

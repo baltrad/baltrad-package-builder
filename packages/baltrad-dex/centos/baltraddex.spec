@@ -61,13 +61,14 @@ BALTRAD_GROUP="baltrad"
 # uses a system user.
 # SMHI_MODE contains utv,test,prod.
 if [[ -f /etc/profile.d/smhi.sh ]]; then
+  BALTRAD_GROUP=baltradg
   . /etc/profile.d/smhi.sh
   if [[ "$SMHI_MODE" = "utv" ]];then
     BALTRAD_USER="baltra.u"
-    BALTRAD_GROUP="baltra.u"
+    BALTRAD_GROUP="baltragu"
   elif [[ "$SMHI_MODE" = "test" ]];then
     BALTRAD_USER="baltra.t"
-    BALTRAD_GROUP="baltra.t"
+    BALTRAD_GROUP="baltragt"
   fi
 else
   if ! getent group $BALTRAD_GROUP > /dev/null; then
@@ -79,14 +80,14 @@ else
   fi
 fi
 
-chmod 1775 /etc/baltrad
+chmod 0775 /etc/baltrad
 
 chown root:$BALTRAD_GROUP /etc/baltrad
 chown -R $BALTRAD_USER:$BALTRAD_GROUP /var/lib/baltrad/baltrad-node-tomcat/webapps/BaltradDex
-chown root:$BALTRAD_GROUP /etc/baltrad/dex.properties
-chown root:$BALTRAD_GROUP /etc/baltrad/db.properties
-chown root:$BALTRAD_GROUP /etc/baltrad/dex.log4j.properties
-chown root:$BALTRAD_GROUP /etc/baltrad/dex.fc.properties
+chown $BALTRAD_USER:$BALTRAD_GROUP /etc/baltrad/dex.properties
+chown $BALTRAD_USER:$BALTRAD_GROUP /etc/baltrad/db.properties
+chown $BALTRAD_USER:$BALTRAD_GROUP /etc/baltrad/dex.log4j.properties
+chown $BALTRAD_USER:$BALTRAD_GROUP /etc/baltrad/dex.fc.properties
 chmod 0660 /etc/baltrad/dex.properties
 chmod 0660 /etc/baltrad/db.properties
 chmod 0660 /etc/baltrad/dex.log4j.properties

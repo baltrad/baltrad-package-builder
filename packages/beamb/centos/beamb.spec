@@ -51,13 +51,14 @@ BALTRAD_GROUP="baltrad"
 # uses a system user.
 # SMHI_MODE contains utv,test,prod.
 if [[ -f /etc/profile.d/smhi.sh ]]; then
+  BALTRAD_GROUP=baltradg
   . /etc/profile.d/smhi.sh
   if [[ "$SMHI_MODE" = "utv" ]];then
     BALTRAD_USER="baltra.u"
-    BALTRAD_GROUP="baltra.u"
+    BALTRAD_GROUP="baltragu"
   elif [[ "$SMHI_MODE" = "test" ]];then
     BALTRAD_USER="baltra.t"
-    BALTRAD_GROUP="baltra.t"
+    BALTRAD_GROUP="baltragt"
   fi
 else
   if ! getent group $BALTRAD_GROUP > /dev/null; then
