@@ -1,8 +1,7 @@
-%{!?__python36: %global __python36 /usr/bin/python36}
-%{!?python36_sitelib: %global python36_sitelib %(%{__python36} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
+%{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
 %define _prefix /usr
 
-Name: baltrad-config
+Name: baltrad-config-py27
 Version: %{version}
 Release: %{snapshot}%{?dist}
 Summary: Baltrad Config
@@ -11,8 +10,8 @@ URL: http://www.baltrad.eu/
 Source0: %{name}-%{version}.tar.gz
 BuildRequires: python2-devel
 BuildRequires: python-distribute
-Requires: python36
-Conflicts: baltrad-config-py27
+Requires: python
+Conflicts: baltrad-config
 
 %description
 Provides configuration features for the baltrad system
@@ -21,10 +20,10 @@ Provides configuration features for the baltrad system
 %setup -q
 
 %build
-%{__python36} setup.py build
+%{__python} setup.py build
 
 %install
-%{__python36} setup.py install --skip-build --root $RPM_BUILD_ROOT
+%{__python} setup.py install --skip-build --root $RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT/etc/baltrad/bltnode-keys
 
 %post
@@ -65,6 +64,6 @@ chown root:$BALTRAD_GROUP /etc/baltrad/bltnode-keys
 %files
 /usr/bin/baltrad-config
 /etc/baltrad/bltnode-keys
-/usr/lib/python3.6/site-packages/baltrad/config
-/usr/lib/python3.6/site-packages/baltrad.*.pth
-/usr/lib/python3.6/site-packages/baltrad.*dev0-*.egg-info/*
+%{python_sitelib}/baltrad/config
+%{python_sitelib}/baltrad.*.pth
+%{python_sitelib}/baltrad.*dev-*.egg-info/*

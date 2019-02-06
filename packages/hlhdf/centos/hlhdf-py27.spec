@@ -1,8 +1,7 @@
-%{!?__python36: %global __python36 /usr/bin/python36}
-%{!?python36_sitearch: %global python36_sitearch %(%{__python36} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
+%{!?python_sitearch: %global python_sitearch %(%{__python36} -c "from distutils.sysconfig import get_python_lib; print get_python_lib(1)")}
 %define _prefix /usr/lib/%{name}
 
-Name: hlhdf
+Name: hlhdf-py27
 Version: 0.8.9
 Release: %{snapshot}%{?dist}
 Summary: HL-HDF
@@ -13,10 +12,10 @@ Source1: hlhdf-python.conf
 BuildRequires: hdf5-devel
 Requires: hdf5
 BuildRequires: zlib-devel
-BuildRequires: python36-devel
-BuildRequires: python36-numpy
+BuildRequires: python3-devel
+BuildRequires: python3-numpy
 BuildRequires: atlas
-Conflicts: hlhdf-py27 
+Conflicts: hlhdf
 
 %description
 A High Level Interface to the HDF5 File Format
@@ -26,7 +25,7 @@ Summary: HL-HDF development files
 Group: Development/Libraries
 Requires: %{name} = %{version}
 Requires: hdf5-devel
-Conflicts: hlhdf-py27-devel
+Conflicts: hlhdf-devel
 
 %description devel
 HL-HDF development headers and libraries.
@@ -34,7 +33,7 @@ HL-HDF development headers and libraries.
 %package python
 Summary: HL-HDF Python bindings
 Requires: %{name} = %{version}
-Requires: python36
+Requires: python2
 Conflicts: hlhdf-py27-python
 
 %description python
@@ -47,7 +46,7 @@ HL-HDF Python bindings
 
 %build
 make distclean || true
-%configure --prefix=/usr/lib/hlhdf  --enable-py3support --with-py3bin=python36
+%configure --prefix=/usr/lib/hlhdf
 make
 
 %install
@@ -57,10 +56,8 @@ make
 mkdir -p %{buildroot}/usr/lib/hlhdf
 
 make install DESTDIR=%{buildroot}
-# Fix proper bin-path
-cat %{buildroot}/usr/lib/hlhdf/mkf/hldef.mk | sed -e "s/HL_INSTALL=.*/HL_INSTALL= \/usr\/lib\/hlhdf\/bin\/hlinstall.sh/g" > %{buildroot}/usr/lib/hlhdf/mkf/hldef.mk
-mkdir -p %{buildroot}%{python36_sitearch}
-mv %{buildroot}%{_prefix}/lib/_pyhl.so %{buildroot}%{python36_sitearch}/
+mkdir -p %{buildroot}%{python_sitearch}
+mv %{buildroot}%{_prefix}/lib/_pyhl.so %{buildroot}%{python_sitearch}/
 install -p -D -m 0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/ld.so.conf.d/hlhdf-python.conf
 mkdir -p %{buildroot}/usr/lib
 ln -sf ../../usr/lib/hlhdf/lib/libhlhdf.so %{buildroot}/usr/lib/libhlhdf.so
@@ -83,7 +80,7 @@ ln -sf ../../usr/lib/hlhdf/lib/libhlhdf.so %{buildroot}/usr/lib/libhlhdf.so
 /usr/lib/libhlhdf.so
 
 %files python
-%{python36_sitearch}/_pyhl.so
+%{python_sitearch}/_pyhl.so
 %config(noreplace) %{_sysconfdir}/ld.so.conf.d/hlhdf-python.conf
 
 %files devel

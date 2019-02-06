@@ -29,6 +29,9 @@ version used. This usually can be done by selecting the menu choice "Devices->In
 # Add bridged network adapter in the virtual box settings and start the virtual guest
 
 =============== Dependencies ===============
+NOTE !!!!!! yum install fdupes
+
+
 
 Most of the dependencies can be installed by using the standard yum installation features. There are a few exceptions
 that are resolved by using "pip".

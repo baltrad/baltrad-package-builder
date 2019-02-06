@@ -1,5 +1,4 @@
-%{!?__python36: %global __python36 /usr/bin/python36}
-%{!?python36_sitelib: %global python36_sitelib %(%{__python36} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
+%{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
 %define _prefix /usr/lib/baltrad-viewer
 
 Name:		baltrad-viewer
@@ -13,16 +12,16 @@ Source0: %{name}-%{version}.tar.gz
 Patch0:		001-setup.patch
 Patch1:		002-add-products.patch
 BuildArch:	noarch
-BuildRequires: python36-devel
-BuildRequires: python36
-BuildRequires: rave-devel
-Requires: python36
+BuildRequires:	python2-devel
+BuildRequires:  python-distribute
+BuildRequires:	hlhdf-python
+Requires: python2
+Requires: hlhdf-python
+Requires: hlhdf
 Requires: rave
 Requires: php
 Requires: php-common
-Requires: python36-pip
-Requires: python36-setuptools
-Conflicts: baltrad-viewer-py27
+Requires: python-pillow
 
 %description
 
@@ -39,18 +38,17 @@ rm -rf %{buildroot}
 %install
 mkdir -p %{buildroot}%{_prefix}
 mkdir -p %{buildroot}%{_prefix}/Lib
-mkdir -p %{buildroot}%{python36_sitelib}
+mkdir -p %{buildroot}%{python_sitelib}
 mkdir -p %{buildroot}/var/lib/baltrad/baltrad-viewer/data
 mkdir -p %{buildroot}/etc/baltrad/baltrad-viewer
-%{__python36} setup.py install --prefix=/usr/lib --root=%{buildroot}
-mv %{buildroot}/usr/lib/lib/python3.6/site-packages/*.py* %{buildroot}/usr/lib/baltrad-viewer/Lib/
-mv %{buildroot}/usr/lib/lib/python3.6/site-packages/*.egg-info %{buildroot}/usr/lib/baltrad-viewer/Lib/
-rm -fr %{buildroot}/usr/lib/lib/python3.6/site-packages/__pycache__
+%{__python} setup.py install --prefix=/usr/lib --root=%{buildroot}
+mv %{buildroot}/usr/lib/lib/python2.7/site-packages/*.py* %{buildroot}/usr/lib/baltrad-viewer/Lib/
+mv %{buildroot}/usr/lib/lib/python2.7/site-packages/*.egg-info %{buildroot}/usr/lib/baltrad-viewer/Lib/
 mv web/products.js %{buildroot}/etc/baltrad/baltrad-viewer
 cp web/smhi-areas.xml %{buildroot}/etc/baltrad/baltrad-viewer/product-areas.xml
 ln -s ../../../../etc/baltrad/baltrad-viewer/products.js %{buildroot}/usr/lib/baltrad-viewer/web/products.js
 ln -s ../../../../var/lib/baltrad/baltrad-viewer/data %{buildroot}/usr/lib/baltrad-viewer/web/data
-echo "/usr/lib/baltrad-viewer/Lib" > %{buildroot}%{python36_sitelib}/baltrad-viewer.pth
+echo "/usr/lib/baltrad-viewer/Lib" > %{buildroot}/usr/lib/python2.7/site-packages/baltrad-viewer.pth
 
 %post
 BALTRAD_USER="baltrad"
@@ -87,6 +85,7 @@ chown -R $BALTRAD_USER:$BALTRAD_GROUP /var/lib/baltrad/baltrad-viewer
 chown -R root:$BALTRAD_GROUP /etc/baltrad/baltrad-viewer
 chmod 775 /etc/baltrad/baltrad-viewer
 
+/sbin/ldconfig
 TMPNAME=`mktemp /tmp/XXXXXXXXXX.py`
   
 cat <<EOF > $TMPNAME
@@ -97,16 +96,14 @@ a.deregister('eu.baltrad.beast.creategmap')
 a.register('se.smhi.rave.creategmapimage', 'googlemap_pgf_plugin', 'generate', 'Google Map Plugin', 'outfile')
 a.register('eu.baltrad.beast.creategmap', 'googlemap_pgf_plugin', 'generate', 'Google Map Plugin', 'outfile')
 EOF
-%{__python36} $TMPNAME
+python $TMPNAME
 \rm -f $TMPNAME
-
-pip3.6 install -q "pillow==5.4.1" || true  # To get PIL (pillow) installed
 
 %postun -p /sbin/ldconfig
 
 %files
 %{_prefix}
-%{python36_sitelib}/baltrad-viewer.pth
+/usr/lib/python2.7/site-packages/baltrad-viewer.pth
 /var/lib/baltrad/baltrad-viewer
 /etc/baltrad/baltrad-viewer
 

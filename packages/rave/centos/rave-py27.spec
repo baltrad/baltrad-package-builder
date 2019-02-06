@@ -1,12 +1,11 @@
-%{!?__python36: %global __python36 /usr/bin/python36}
-%{!?python36_sitelib: %global python36_sitelib %(%{__python36} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
+%{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib(0)")}
 %define _prefix /usr/lib/rave
 
-Name: rave
+Name: rave-py27
 Version: %{version}
 Release: %{snapshot}%{?dist}
 Summary: RAVE - Product generation framework and toolbox. Injector using ODIM_H5 files
-License: LGPL-3
+License: GPL-3 and LGPL-3
 URL: http://www.baltrad.eu/
 Source0: %{name}-%{version}.tar.gz
 Source1: rave.conf
@@ -16,20 +15,21 @@ BuildRequires: hlhdf-devel
 BuildRequires: hlhdf-python
 BuildRequires: hdf5-devel
 BuildRequires: zlib-devel
-BuildRequires: python36-devel
+BuildRequires: python2-devel
 BuildRequires: netcdf-devel
 # Workaround for centos6
 BuildRequires: atlas
-BuildRequires: python36-numpy
+BuildRequires: numpy
 BuildRequires: proj-devel
 #expat requires
 Requires: expat
 Requires: netcdf
 Requires: hlhdf
-Requires: python36-numpy
-Requires: python36
 BuildRequires: expat-devel
-Conflicts: rave-py27
+Conflicts: rave
+
+# Don't see any actual imports, just mentioned in README
+#BuildRequires: python-pycurl
 
 %description
 Product generation framework and toolbox. Injector using ODIM_H5 files
@@ -41,14 +41,12 @@ Requires: %{name} = %{version}-%{release}
 # rave development headers include headers from proj
 Requires: proj-devel
 # arrayobject.h and other needs
-Requires: python36-numpy
-Requires: hlhdf-devel
-Conflicts: rave-py27-devel
-
+Requires: numpy
 # Workaround for centos6
 Requires: atlas
 #
 Requires: bbufr
+Conflicts: rave-devel
 
 %description devel
 RAVE development headers and libraries.
@@ -59,8 +57,7 @@ RAVE development headers and libraries.
 %patch2 -p1
 
 %build
-make distclean || true
-%configure --prefix=/usr/lib/rave --with-hlhdf=/usr/lib/hlhdf --with-expat --with-bufr=/usr/lib/bbufr --with-netcdf=yes  --enable-py3support --with-py3bin=python36 --with-py3bin-config=python3.6-config --with-python-makefile=/usr/lib64/python3.6/config-3.6m-x86_64-linux-gnu/Makefile
+%configure --prefix=/usr/lib/rave --with-hlhdf=/usr/lib/hlhdf --with-expat --with-bufr=/usr/lib/bbufr --with-netcdf=yes
 make
 
 %install
@@ -80,7 +77,8 @@ mkdir -p %{buildroot}/var/run/baltrad
 mkdir -p %{buildroot}/var/log/baltrad
 mkdir -p %{buildroot}/var/lib/baltrad
 mkdir -p %{buildroot}/var/lib/baltrad/MSG_CT
-mkdir -p %{buildroot}%{python36_sitelib}
+mkdir -p %{buildroot}%{python_sitearch}
+echo "/usr/lib/rave/lib">> %{buildroot}/etc/ld.so.conf.d/rave.conf
 echo "/usr/lib/rave/Lib">> %{buildroot}/etc/ld.so.conf.d/rave.conf
 make install DESTDIR=%{buildroot}
 install -p -D -m 0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/ld.so.conf.d/rave.conf
@@ -90,9 +88,8 @@ mv %{buildroot}/usr/lib/rave/config/*.xml %{buildroot}/etc/baltrad/rave/config/
 mv %{buildroot}/usr/lib/rave/etc/rave_pgf_quality_registry.xml %{buildroot}/etc/baltrad/rave/etc/
 mv %{buildroot}/usr/lib/rave/etc/rave_pgf_registry.xml %{buildroot}/etc/baltrad/rave/etc/
 mv %{buildroot}/usr/lib/rave/etc/rave_tile_registry.xml %{buildroot}/etc/baltrad/rave/etc/
-mv %{buildroot}/usr/lib/rave/etc/rave.pth %{buildroot}%{python36_sitelib}
+mv %{buildroot}/usr/lib/rave/etc/rave.pth %{buildroot}%{python_sitearch}
 mv %{buildroot}/usr/lib/rave/etc/rave_pgf_queue.xml %{buildroot}/var/lib/baltrad/
-\rm -f %{buildroot}/usr/lib/python3.6/site-packages/rave.pth
 ln -s ../../../../var/lib/baltrad/rave_pgf_queue.xml %{buildroot}/usr/lib/rave/etc/rave_pgf_queue.xml
 ln -s ../../../../etc/baltrad/rave/etc/rave_pgf_quality_registry.xml %{buildroot}/usr/lib/rave/etc/rave_pgf_quality_registry.xml
 ln -s ../../../../etc/baltrad/rave/etc/rave_pgf_registry.xml %{buildroot}/usr/lib/rave/etc/rave_pgf_registry.xml
@@ -174,7 +171,7 @@ a.register('se.smhi.rave.creategmapimage', 'googlemap_pgf_plugin', 'generate', '
 a.deregister('eu.baltrad.beast.applyqc')
 a.register('eu.baltrad.beast.applyqc', 'rave_pgf_apply_qc_plugin', 'generate', 'Apply quality controls on a polar volume', 'date,time,anomaly-qc,algorithm_id', '', '')  
 EOF
-%{__python36} $TMPNAME
+python $TMPNAME
 \rm -f $TMPNAME
 
 mkdir -p /var/lib/baltrad
@@ -237,19 +234,19 @@ chown $BALTRAD_USER:$BALTRAD_GROUP /var/lib/baltrad/MSG_CT
 %{_prefix}/etc/rave_pgf
 %{_prefix}/etc/rave_pgf_*.xml
 %{_prefix}/etc/rave_tile_registry.xml
-%{python36_sitelib}/rave.pth
+%{python_sitearch}/rave.pth
 /etc/init.d/raved
 /etc/baltrad/rave/Lib/*.py
 %exclude /etc/baltrad/rave/Lib/rave_defines.pyc
 %exclude /etc/baltrad/rave/Lib/rave_defines.pyo
 /etc/baltrad/rave/config/*.xml
 /etc/baltrad/rave/etc/*.xml
-%{_sysconfdir}/ld.so.conf.d/rave.conf
+/etc/ld.so.conf.d/rave.conf
 /var/lib/baltrad/rave_pgf_queue.xml
 /var/lib/baltrad/MSG_CT
 
-#%config(noreplace) %{python36_sitelib}/rave.pth
-#%config(noreplace) %{_sysconfdir}/ld.so.conf.d/rave.conf
+%config(noreplace) %{python_sitelib}/rave.pth
+%config(noreplace) %{_sysconfdir}/ld.so.conf.d/rave.conf
 
 %files devel
 %{_prefix}/include/python/*.h

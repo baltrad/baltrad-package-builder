@@ -1,0 +1,27 @@
+These files has been generated using the tool py2pack (https://pypi.org/project/py2pack/).
+
+Since baltrad uses several dependencies we wanted to ensure that there is a simple way to install all third-party dependencies with RPM:s on Python 3.6.
+As it is right now, there is not many official python36 rpms available for CentOS 7 except the ones existing as EPEL and there aren't that many of them
+at the time of writing this README.
+
+Anyhow, you can also use pip directly to install the relevant packages if you don't want to use the rpm:s available here. Since we want to use python3.6, the corresponding pip3.6 program should be used.
+
+To generate a third_party rpm, that should be distributed either as part of baltrad or as a standalone rpm installed manually you can follow these steps.
+
+First fetch the actual tar ball from PIP.
+
+%> py2pack fetch <name of pip package> [optional version]
+
+A source tar ball will be downloaded and placed in the folder where you are standing. Copy this source tar ball to "rpmbuild --eval '%_topdir'/SOURCES/"
+
+Then, generate the spec file. You can either use the existing fedora.spec provided when installing py2pack and modify it as needed. Or you can create your own template, please refer to https://pypi.org/project/py2pack/ for information on how to define your own template.
+
+%> py2pack generate <name of pip package> [optional version] -t fedora.spec
+
+A file named <name of pip package>.spec will be created. Modify it accordingly.
+
+Now it's time to build the rpm.
+
+%> rpmbuild -v -ba <name of pip package>.spec
+
+If this succeeds, then a rpm should have been placed in "rpmbuild --eval '%_topdir'/RPMS/x86_64".

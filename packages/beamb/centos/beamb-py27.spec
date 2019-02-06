@@ -1,19 +1,18 @@
-%{!?__python36: %global __python36 /usr/bin/python36}
-%{!?python36_sitelib: %global python36_sitelib %(%{__python36} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
+%{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
 %define _prefix /usr/lib/beamb
 
-Name: beamb
+Name: beamb-py27
 Version: %{version}
 Release: %{snapshot}%{?dist}
 Summary: beamb
-License: LGPL-3
+License: GPL-3 and LGPL-3
 URL: http://www.baltrad.eu/
 Source0: %{name}-%{version}.tar.gz
-#Dependencies 
 BuildRequires: rave-devel
-BuildRequires: rave
+BuildRequires: hlhdf-devel
+BuildRequires: python2-devel
 Requires: rave
-Conflicts: beamb-py27
+Conflicts: beamb
 
 %description
 Determination of, and correction for, beam blockage caused by topography
@@ -22,8 +21,7 @@ Determination of, and correction for, beam blockage caused by topography
 Summary: beamb development files
 Group: Development/Libraries
 Requires: %{name} = %{version}-%{release}
-Requires: rave-devel
-Conflicts: beamb-py27-devel
+Conflicts: beamb-devel
 
 %description devel
 Beamb development headers and libraries.
@@ -37,11 +35,11 @@ make
 
 %install
 make install DESTDIR=%{buildroot}
-mkdir -p %{buildroot}%{python36_sitelib}
-#mkdir -p %{buildroot}/usr/lib/python2.7/dist-packages
+mkdir -p %{buildroot}/usr/lib/python2.7/dist-packages
 mkdir -p %{buildroot}/usr/lib/beamb
 mkdir -p %{buildroot}/etc/ld.so.conf.d
 echo "/usr/lib/beamb/lib">> %{buildroot}/etc/ld.so.conf.d/beamb.conf
+cp %{buildroot}/usr/lib/python2.7/site-packages/pybeamb.pth %{buildroot}/usr/lib/python2.7/dist-packages
 
 %post
 BALTRAD_USER="baltrad"
@@ -86,7 +84,7 @@ a.remove_plugin("beamb")
 a.add_plugin("beamb", "beamb_quality_plugin", "beamb_quality_plugin")
 a.save("/etc/baltrad/rave/etc/rave_pgf_quality_registry.xml")
 EOF
-%{__python36} $TMPNAME
+python $TMPNAME
 \rm -f $TMPNAME
 
 %postun -p /sbin/ldconfig
@@ -100,9 +98,9 @@ EOF
 %{_prefix}/share/beamb/pybeamb/*.py
 %{_prefix}/share/beamb/pybeamb/*.pyc
 %{_prefix}/share/beamb/pybeamb/*.pyo
-%{python36_sitelib}/pybeamb.pth
-#%attr(-, baltrad, baltrad) /var/cache/beamb
-#/usr/lib/python2.7/dist-packages
+%{python_sitelib}/pybeamb.pth
+%attr(-, baltrad, baltrad) /var/cache/beamb
+/usr/lib/python2.7/dist-packages
 /etc/ld.so.conf.d/beamb.conf
 
 %files devel

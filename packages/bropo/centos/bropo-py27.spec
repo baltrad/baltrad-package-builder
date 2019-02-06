@@ -1,19 +1,19 @@
-%{!?__python36: %global __python36 /usr/bin/python36}
-%{!?python36_sitelib: %global python36_sitelib %(%{__python36} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
+%{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
 %define _prefix /usr/lib/bropo
 
-Name: bropo
+Name: bropo-py27
 Version: %{version}
 Release: %{snapshot}%{?dist}
 Summary: Baltrad version of the FMI Anomaly detection and removal package ROPO
-License: LGPL-3
+License: GPL-3 and LGPL-3
 URL: http://www.baltrad.eu/
 Source0: %{name}-%{version}.tar.gz
-# Dependencies to python follows from rave-devel and rave
 BuildRequires: rave-devel
 BuildRequires: libpng-devel
+# pyropo
+BuildRequires: python-devel
 Requires: rave
-Conflicts: bropo-py27
+Conflicts: bropo
 
 %description
 bRopo is an adaption of the existing FMI software package ROPO.
@@ -24,11 +24,10 @@ to provide users with a Python interface.
 Summary: bRopo development files
 Group: Development/Libraries
 Requires: %{name} = %{version}-%{release}
-Conflicts: bropo-py27-devel
+Conflicts: bropo-devel
 
 %description devel
 RAVE development headers and libraries.
-
 
 %prep
 %setup -q
@@ -40,9 +39,7 @@ make
 %install
 make install DESTDIR=%{buildroot}
 mkdir -p %{buildroot}/etc/ld.so.conf.d/
-mkdir -p %{buildroot}%{python36_sitelib}
 echo "/usr/lib/bropo/lib" >> %{buildroot}/etc/ld.so.conf.d/bropo.conf
-#mv %{buildroot}/usr/lib/python3.6/site-packages/pyropo.pth %{buildroot}%{python36_sitelib}
 
 %post
 /sbin/ldconfig
@@ -55,7 +52,7 @@ a.remove_plugin("ropo")
 a.add_plugin("ropo", "ropo_quality_plugin", "ropo_quality_plugin")
 a.save("/etc/baltrad/rave/etc/rave_pgf_quality_registry.xml")
 EOF
-%{__python36} $TMPNAME
+python $TMPNAME
 \rm -f $TMPNAME
 
 %postun -p /sbin/ldconfig
@@ -67,7 +64,7 @@ EOF
 %{_prefix}/share/bropo/pyropo/ropo_*.py
 %{_prefix}/share/bropo/pyropo/ropo_*.pyc
 %{_prefix}/share/bropo/pyropo/ropo_*.pyo
-%{python36_sitelib}/pyropo.pth
+%{python_sitelib}/pyropo.pth
 %{_prefix}/share/bropo/pyropo/_fmiimage.so
 %{_prefix}/share/bropo/pyropo/_ropogenerator.so
 /etc/ld.so.conf.d/bropo.conf
