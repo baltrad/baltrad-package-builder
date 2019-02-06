@@ -21,12 +21,12 @@ Requires: hlhdf-python
 Requires: python36
 Requires: python36-progressbar33-blt
 Requires: python36-psycopg2-blt
-Requires: python36-migrate-blt
 Requires: python36-werkzeug-blt
 Requires: python36-daemon-blt
 Requires: python36-keyczar-blt
 Requires: python36-distribute-blt
 Requires: python36-sqlalchemy-blt
+Requires: python36-sqlalchemy-migrate-blt
 Requires: python36-cherrypy-blt
 Conflicts: baltrad-db-py27
 
