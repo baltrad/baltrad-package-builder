@@ -41,6 +41,7 @@ mkdir -p %{buildroot}%{python36_sitelib}
 #mkdir -p %{buildroot}/usr/lib/python2.7/dist-packages
 mkdir -p %{buildroot}/usr/lib/beamb
 mkdir -p %{buildroot}/etc/ld.so.conf.d
+mkdir -p %{buildroot}/var/cache/beamb
 echo "/usr/lib/beamb/lib">> %{buildroot}/etc/ld.so.conf.d/beamb.conf
 
 %post
@@ -101,8 +102,7 @@ EOF
 %{_prefix}/share/beamb/pybeamb/*.pyc
 %{_prefix}/share/beamb/pybeamb/*.pyo
 %{python36_sitelib}/pybeamb.pth
-#%attr(-, baltrad, baltrad) /var/cache/beamb
-#/usr/lib/python2.7/dist-packages
+/var/cache/beamb
 /etc/ld.so.conf.d/beamb.conf
 
 %files devel
