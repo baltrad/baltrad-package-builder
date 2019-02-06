@@ -95,7 +95,12 @@ fi
 do_fetch_package_and_build() {
   if [ ! -f "$SOURCEDIR/$1-$2.tar.gz" ]; then
     py2pack fetch "$1" "$2" || do_exit "Failed to fetch package"
-    mv "$1-$2.tar.gz" "$SOURCEDIR/" || do_exit "Failed to copy source to SOURCEDIR"
+    FNAME=`ls -1 | grep -i "$1-$2.tar.gz"`
+    if [ "$FNAME" != "" ]; then
+      mv "$FNAME" "$SOURCEDIR/$1-$2.tar.gz" || do_exit "Failed to copy source to SOURCEDIR"
+    else
+      do_exit "Could not identify package"
+    fi
   fi
   if [ ! -f "$RPMDIR/$4" -o "$REBUILDPACKAGES" = "yes" ]; then
     rpmbuild -v -ba "$SPECDIR/$3" || do_exit "Failed to build $SPECDIR/$3"

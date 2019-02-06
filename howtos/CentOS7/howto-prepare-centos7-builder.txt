@@ -30,7 +30,7 @@ version used. This usually can be done by selecting the menu choice "Devices->In
 
 =============== Dependencies ===============
 NOTE !!!!!! yum install fdupes
-
+yum install python3-rpm-macros
 
 
 Most of the dependencies can be installed by using the standard yum installation features. There are a few exceptions
