@@ -21,6 +21,7 @@ Requires: python36-tempita-blt
 Requires: python36-sqlparse-blt
 Requires: python36-decorator-blt
 Requires: python36-pbr-blt
+Requires: python36-six
 
 %description
 SQLAlchemy Migrate
