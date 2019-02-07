@@ -141,7 +141,7 @@ if [ "$OS_VERSION" != "Ubuntu-16.04" -a "$OS_VERSION" != "Ubuntu-18.04" ]; then
   if [ "$ARTIFACTS" != "" ]; then
     PIPARGS="$PIPARGS --artifacts=$ARTIFACTS"
   fi
-  ./pip-artifacts/create_3p_packages.sh $PIPARGS 
+  ./pip-artifacts/create_3p_packages.sh $PIPARGS || print_error_and_exit "Failure during pip package build step"
 fi
 
 ./scripts/build_package.sh hlhdf               $PKG_BUILD_NUMBER $HLHDF_OPT_STR || print_error_and_exit "Failed to build hlhdf" 
