@@ -15,8 +15,10 @@ License:        http://www.apache.org/licenses/LICENSE-2.0 (FIXME:No SPDX)
 Group:          Development/Languages/Python
 Source:         https://files.pythonhosted.org/packages/source/p/python3-keyczar/python3-keyczar-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
-BuildRequires:  python-devel
+BuildRequires:  python36-devel
 Requires: python36
+Requires: python36-pyasn1-blt
+Requires: python36-pycrypto-blt
 
 %description
 Keyczar is an open source cryptographic toolkit designed to make it easier and safer for developers to use cryptography in their applications. Keyczar supports authentication and encryption with both symmetric and asymmetric keys. Some features of Keyczar include:

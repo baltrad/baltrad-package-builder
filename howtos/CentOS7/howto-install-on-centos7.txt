@@ -13,6 +13,8 @@ you can see an example of the rpm:s that was generated at the first 2.0.3 build 
 Usually all these rpms will be shipped in the same directory so when it's time you can usually just 
 install everything at once with *.rpm which is fortunate since it's well over 40 different rpms.
 
+Since Python2.7 soon is going to be obsoleted, this guide (and also packages) has focused on Python
+
 =============== Dependencies ===============
 Before we even atempt to install the packages described above, several dependencies has to be installed. The first thing
 you will have to do is to install the latest epel-release rpm which you can find here 

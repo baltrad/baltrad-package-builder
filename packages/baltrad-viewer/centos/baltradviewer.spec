@@ -22,6 +22,7 @@ Requires: php
 Requires: php-common
 Requires: python36-pip
 Requires: python36-setuptools
+Requires: python36-pillow-blt
 Conflicts: baltrad-viewer-py27
 
 %description
