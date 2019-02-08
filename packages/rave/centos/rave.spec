@@ -12,6 +12,7 @@ Source0: %{name}-%{version}.tar.gz
 Source1: rave.conf
 Patch1: 001-raved.patch
 Patch2: 002-rave_defines.patch
+Patch3: 003-raved.service
 BuildRequires: hlhdf-devel
 BuildRequires: hlhdf-python
 BuildRequires: hdf5-devel
@@ -22,6 +23,7 @@ BuildRequires: netcdf-devel
 BuildRequires: atlas
 BuildRequires: python36-numpy
 BuildRequires: proj-devel
+BuildRequires: systemd
 #expat requires
 Requires: expat
 Requires: netcdf
@@ -57,6 +59,7 @@ RAVE development headers and libraries.
 %setup -q
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 
 %build
 make distclean || true
@@ -84,7 +87,8 @@ mkdir -p %{buildroot}%{python36_sitelib}
 echo "/usr/lib/rave/Lib">> %{buildroot}/etc/ld.so.conf.d/rave.conf
 make install DESTDIR=%{buildroot}
 install -p -D -m 0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/ld.so.conf.d/rave.conf
-cp etc/raved %{buildroot}/etc/init.d/
+mkdir -p %{buildroot}/%{_unitdir}
+cp etc/raved.service %{buildroot}/%{_unitdir}/raved.service
 mv %{buildroot}/usr/lib/rave/Lib/rave_defines.py %{buildroot}/etc/baltrad/rave/Lib/
 mv %{buildroot}/usr/lib/rave/config/*.xml %{buildroot}/etc/baltrad/rave/config/
 mv %{buildroot}/usr/lib/rave/etc/rave_pgf_quality_registry.xml %{buildroot}/etc/baltrad/rave/etc/
@@ -143,9 +147,9 @@ if [[ -f /etc/profile.d/smhi.sh ]]; then
     BALTRAD_GROUP="baltragt"
   fi
   TMPFILE=`mktemp`
-  cat /etc/init.d/raved | sed -e"s/BALTRAD_USER=baltrad/BALTRAD_USER=baltra.u/g" | sed -e"s/BALTRAD_GROUP=baltrad/BALTRAD_GROUP=baltragu/g" > $TMPFILE
-  cat $TMPFILE > /etc/init.d/raved
-  chmod 755 /etc/init.d/raved
+  cat %{_unitdir}/raved.service | sed -e"s/User=baltrad/User=$BALTRAD_USER/g" | sed -e"s/Group=baltrad/Group=$BALTRAD_GROUP/g" > $TMPFILE
+  cat $TMPFILE > %{_unitdir}/raved.service
+  chmod 644 %{_unitdir}/raved.service
   \rm -f $TMPFILE 
 else
   if ! getent group $BALTRAD_GROUP > /dev/null; then
@@ -238,7 +242,7 @@ chown $BALTRAD_USER:$BALTRAD_GROUP /var/lib/baltrad/MSG_CT
 %{_prefix}/etc/rave_pgf_*.xml
 %{_prefix}/etc/rave_tile_registry.xml
 %{python36_sitelib}/rave.pth
-/etc/init.d/raved
+%{_unitdir}/raved.service
 /etc/baltrad/rave/Lib/*.py
 %exclude /etc/baltrad/rave/Lib/rave_defines.pyc
 %exclude /etc/baltrad/rave/Lib/rave_defines.pyo

@@ -111,7 +111,7 @@ if [[ -f /etc/profile.d/smhi.sh ]]; then
   TMPFILE=`mktemp`
   cat %{_unitdir}/bdbserver.service | sed -e"s/User=baltrad/User=$BALTRAD_USER/g" | sed -e"s/Group=baltrad/Group=$BALTRAD_GROUP/g" > $TMPFILE
   cat $TMPFILE > %{_unitdir}/bdbserver.service
-  chmod 755 %{_unitdir}/bdbserver.service
+  chmod 644 %{_unitdir}/bdbserver.service
   \rm -f $TMPFILE 
 else
   if ! getent group $BALTRAD_GROUP > /dev/null; then

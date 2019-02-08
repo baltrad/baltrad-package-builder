@@ -1,0 +1,17 @@
+--- a/etc/raved.service	2019-02-07 22:31:03.948514551 +0100
++++ b/etc/raved.service	2019-02-07 22:30:53.192760476 +0100
+@@ -0,0 +1,14 @@
++[Unit]
++Description=Rave PGF server
++After=syslog.target network.target
++
++[Service]
++Type=forking
++PIDFile=/var/run/baltrad/rave_pgf_server.pid
++ExecStart=/usr/lib/rave/bin/rave_pgf start
++ExecStop=/usr/lib/rave/bin/rave_pgf stop
++User=baltrad
++Group=baltrad
++
++[Install]
++WantedBy=multi-user.target
