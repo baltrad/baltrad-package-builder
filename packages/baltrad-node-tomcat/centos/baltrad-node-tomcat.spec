@@ -9,8 +9,10 @@ License: See LICENSE information for tomcat
 URL: http://www.baltrad.eu/
 Patch1: 001-baltrad-node.patch
 Patch2: 002-server-xml.patch
+Patch3: 003-baltrad-node-service.patch
 Source0: %{name}-%{version}.tar.gz
 # Server binary needed
+BuildRequires: systemd
 Requires: java-1.8.0-openjdk
 Requires: jhdf5
 Requires: jhdf
@@ -24,6 +26,7 @@ the baltrad web application.
 %setup -q -n baltrad-node-tomcat
 %patch1 -p1
 %patch2 -p0
+%patch3 -p0
 
 %build
 # NOP
@@ -38,8 +41,11 @@ mkdir -p $RPM_BUILD_ROOT/var/cache/baltrad-node-tomcat
 mkdir -p $RPM_BUILD_ROOT/var/run/baltrad
 mkdir -p $RPM_BUILD_ROOT/etc/baltrad/baltrad-node-tomcat
 mkdir -p $RPM_BUILD_ROOT/etc/init.d
-cp baltrad-node $RPM_BUILD_ROOT/etc/init.d/
-chmod a+x $RPM_BUILD_ROOT/etc/init.d/baltrad-node
+#cp baltrad-node $RPM_BUILD_ROOT/etc/init.d/
+mkdir -p %{buildroot}/%{_unitdir}
+cp baltrad-node.service %{buildroot}/%{_unitdir}/baltrad-node.service
+chmod 664 %{buildroot}/%{_unitdir}/baltrad-node.service
+#chmod a+x $RPM_BUILD_ROOT/etc/init.d/baltrad-node
 cp -r bin $RPM_BUILD_ROOT/usr/share/baltrad/baltrad-node-tomcat/
 cp -r lib $RPM_BUILD_ROOT/usr/share/baltrad/baltrad-node-tomcat/
 cp conf/catalina.policy $RPM_BUILD_ROOT/var/lib/baltrad/baltrad-node-tomcat/policy/
@@ -69,9 +75,6 @@ sudo /etc/init.d/baltrad-node stop || :
 BALTRAD_USER="baltrad"
 BALTRAD_GROUP="baltrad"
 
-#[ # Reading value of  SMHI_MODE. Handles enviroments: utv, test and prod where prod is default This is just for testing & development purposes
-#-f /etc/profile.d/smhi.sh ] && . /etc/profile.d/smhi.sh
-
 # This code is uniquely defined for internal use at SMHI so that we can automatically test
 # and/or deploy the software. However, the default behaviour should always be that baltrad
 # uses a system user.
@@ -87,9 +90,9 @@ if [[ -f /etc/profile.d/smhi.sh ]]; then
     BALTRAD_GROUP="baltragt"
   fi
   TMPFILE=`mktemp`
-  cat /etc/init.d/baltrad-node | sed -e"s/BALTRAD_USER=baltrad/BALTRAD_USER=baltra.u/g" | sed -e"s/BALTRAD_GROUP=baltrad/BALTRAD_GROUP=baltragu/g" > $TMPFILE
-  cat $TMPFILE > /etc/init.d/baltrad-node
-  chmod 755 /etc/init.d/baltrad-node
+  cat %{_unitdir}/baltrad-node.service | sed -e"s/User=baltrad/User=$BALTRAD_USER/g" | sed -e"s/Group=baltrad/Group=$BALTRAD_GROUP/g" > $TMPFILE
+  cat $TMPFILE > %{_unitdir}/baltrad-node.service
+  chmod 644 %{_unitdir}/baltrad-node.service
   \rm -f $TMPFILE
 else
   if ! getent group $BALTRAD_GROUP > /dev/null; then
@@ -142,6 +145,7 @@ chown $BALTRAD_USER:$BALTRAD_GROUP /var/cache/baltrad-node-tomcat
 /var/log/baltrad/baltrad-node-tomcat
 /etc/baltrad/baltrad-node-tomcat
 /etc/baltrad/baltrad-node-tomcat/*
-/etc/init.d/baltrad-node
+#/etc/init.d/baltrad-node
+%{_unitdir}/baltrad-node.service
 /var/cache/baltrad-node-tomcat
 
