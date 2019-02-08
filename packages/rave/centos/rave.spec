@@ -12,7 +12,7 @@ Source0: %{name}-%{version}.tar.gz
 Source1: rave.conf
 Patch1: 001-raved.patch
 Patch2: 002-rave_defines.patch
-Patch3: 003-raved.service
+Patch3: 003-raved-service.patch
 BuildRequires: hlhdf-devel
 BuildRequires: hlhdf-python
 BuildRequires: hdf5-devel
