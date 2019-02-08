@@ -10,12 +10,14 @@ Summary: BaltradDB
 License: GPL-3 and LGPL-3
 URL: http://www.baltrad.eu/
 Patch1: baltrad_db_server_setup.patch
+Patch2: bdbserver_service.patch
 Source0: %{name}-%{version}.tar.gz
 BuildRequires: python36-devel
 BuildRequires: python-distribute
 BuildRequires: java-1.8.0-openjdk-devel
 BuildRequires: ant
 BuildRequires: jpackage-utils
+BuildRequires: systemd
 Requires: hlhdf
 Requires: hlhdf-python
 Requires: python36
@@ -54,6 +56,7 @@ are provided in the baltrad-db package.
 %prep
 %setup -q
 %patch1 -p1
+%patch2 -p1
 
 %build
 cd common
@@ -75,7 +78,8 @@ mkdir -p $RPM_BUILD_ROOT/var/run/baltrad
 %{__python36} setup.py install --skip-build --root $RPM_BUILD_ROOT
 cd ../server
 %{__python36} setup.py install --skip-build --root $RPM_BUILD_ROOT
-cp etc/bdbserver $RPM_BUILD_ROOT/etc/init.d/ 
+mkdir -p $RPM_BUILD_ROOT/%{_unitdir}
+cp etc/bdbserver.service $RPM_BUILD_ROOT/%{_unitdir}
 cd ../client/python
 %{__python36} setup.py install --skip-build --root $RPM_BUILD_ROOT
 cd ../../client/java
@@ -89,9 +93,6 @@ cp -p lib/joda-time/joda-time-2.0.jar $RPM_BUILD_ROOT%{_prefix}/share/baltrad/ba
 %post
 BALTRAD_USER="baltrad"
 BALTRAD_GROUP="baltrad"
-
-#[ # Reading value of  SMHI_MODE. Handles enviroments: utv, test and prod where prod is default This is just for testing & development purposes
-#-f /etc/profile.d/smhi.sh ] && . /etc/profile.d/smhi.sh
 
 # This code is uniquely defined for internal use at SMHI so that we can automatically test
 # and/or deploy the software. However, the default behaviour should always be that baltrad
@@ -108,9 +109,9 @@ if [[ -f /etc/profile.d/smhi.sh ]]; then
     BALTRAD_GROUP="baltragt"
   fi
   TMPFILE=`mktemp`
-  cat /etc/init.d/bdbserver | sed -e"s/BALTRAD_USER=baltrad/BALTRAD_USER=baltra.u/g" | sed -e"s/BALTRAD_GROUP=baltrad/BALTRAD_GROUP=baltragu/g" > $TMPFILE
-  cat $TMPFILE > /etc/init.d/bdbserver
-  chmod 755 /etc/init.d/bdbserver
+  cat %{_unitdir}/bdbserver.service | sed -e"s/User=baltrad/User=$BALTRAD_USER/g" | sed -e"s/Group=baltrad/Group=$BALTRAD_GROUP/g" > $TMPFILE
+  cat $TMPFILE > %{_unitdir}/bdbserver.service
+  chmod 755 %{_unitdir}/bdbserver.service
   \rm -f $TMPFILE 
 else
   if ! getent group $BALTRAD_GROUP > /dev/null; then
@@ -139,35 +140,10 @@ chown -R $BALTRAD_USER:$BALTRAD_GROUP /var/lib/baltrad/bdb_storage
 /usr/bin/baltrad-bdb-server
 /usr/bin/baltrad-bdb-upgrade
 /usr/bin/baltrad-bdb-migrate-db
-/etc/init.d/bdbserver
+%{_unitdir}/bdbserver.service
 %{bdb_site_install_dir}/baltrad/bdbcommon
 %{bdb_site_install_dir}/baltrad/bdbclient
 %{bdb_site_install_dir}/baltrad/bdbserver
-#%{bdb_site_install_dir}/baltrad/bdbcommon/*.py
-#%{bdb_site_install_dir}/baltrad/bdbcommon/*.pyc
-#%{bdb_site_install_dir}/baltrad/bdbcommon/*.pyo
-#%{bdb_site_install_dir}/baltrad/bdbcommon/oh5/*.py
-#%{bdb_site_install_dir}/baltrad/bdbcommon/oh5/*.pyc
-#%{bdb_site_install_dir}/baltrad/bdbcommon/oh5/*.pyo
-#%{bdb_site_install_dir}/baltrad/bdbclient/*.py
-#%{bdb_site_install_dir}/baltrad/bdbclient/*.pyc
-#%{bdb_site_install_dir}/baltrad/bdbclient/*.pyo
-#%{bdb_site_install_dir}/baltrad/bdbserver/*.py
-#%{bdb_site_install_dir}/baltrad/bdbserver/*.pyc
-#%{bdb_site_install_dir}/baltrad/bdbserver/*.pyo
-#%{bdb_site_install_dir}/baltrad/bdbserver/sqla/*.py
-#%{bdb_site_install_dir}/baltrad/bdbserver/sqla/*.pyc
-#%{bdb_site_install_dir}/baltrad/bdbserver/sqla/*.pyo
-#%{bdb_site_install_dir}/baltrad/bdbserver/sqla/migrate/*.py
-#%{bdb_site_install_dir}/baltrad/bdbserver/sqla/migrate/*.pyc
-#%{bdb_site_install_dir}/baltrad/bdbserver/sqla/migrate/*.pyo
-#%{bdb_site_install_dir}/baltrad/bdbserver/sqla/migrate/migrate.cfg
-#%{bdb_site_install_dir}/baltrad/bdbserver/sqla/migrate/versions/*.py
-#%{bdb_site_install_dir}/baltrad/bdbserver/sqla/migrate/versions/*.pyc
-#%{bdb_site_install_dir}/baltrad/bdbserver/sqla/migrate/versions/*.pyo
-#%{bdb_site_install_dir}/baltrad/bdbserver/web/*.py
-#%{bdb_site_install_dir}/baltrad/bdbserver/web/*.pyc
-#%{bdb_site_install_dir}/baltrad/bdbserver/web/*.pyo
 # Investigate the different paths and at least split these up amongst split packages
 %{bdb_site_install_dir}/baltrad.*.pth
 %{bdb_site_install_dir}/baltrad.*dev0-*.egg-info/*

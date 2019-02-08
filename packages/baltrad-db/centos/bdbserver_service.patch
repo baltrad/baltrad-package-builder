@@ -1,0 +1,16 @@
+--- a/server/etc/bdbserver.service	2019-02-07 22:31:03.948514551 +0100
++++ b/server/etc/bdbserver.service	2019-02-07 22:30:53.192760476 +0100
+@@ -0,0 +1,13 @@
++[Unit]
++Description=Baltrad db server
++After=syslog.target network.target
++
++[Service]
++Type=forking
++PIDFile=/var/run/baltrad/baltrad-bdb-server.pid
++ExecStart=/usr/bin/baltrad-bdb-server --pidfile=/var/run/baltrad/baltrad-bdb-server.pid --conf=/etc/baltrad/bltnode.properties --logfile=/var/log/baltrad/baltrad-bdb-server.log
++User=baltrad
++Group=baltrad
++
++[Install]
++WantedBy=multi-user.target
