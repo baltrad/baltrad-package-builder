@@ -13,7 +13,40 @@ you can see an example of the rpm:s that was generated at the first 2.0.3 build 
 Usually all these rpms will be shipped in the same directory so when it's time you can usually just 
 install everything at once with *.rpm which is fortunate since it's well over 40 different rpms.
 
-Since Python2.7 soon is going to be obsoleted, this guide (and also packages) has focused on Python
+Since Python2.7 soon is not going to be maintained after Januari 2020 and due to that, the baltrad packages
+are only going to be supported on Python 3. Right now, we have created CentOS 7/ RedHat 7 RPM:s for Python3.6.
+We have also created some debian packages for Python 2.7 with the hopes that we in the nearby future also will
+have time to update these to Python 3.
+
+=============== Third-party packages ===============
+We have tried to use as many existing RPM:s as possible to get the required dependencies in place. But, for Python 3.6
+it has prooved to be quite difficult on CentOS/RedHat 7. Several packages has not been created as RPMs and to not be forced 
+to use PIP prior the RPM installation we have created a number of RPM:s from PIP by using the tool py2pack and then modified
+the .spec files slightly. Our hope is that these pip packages will be included in the official CentOS/RedHat 8 release but
+until then you can use the packages we have created. All these packages have the format python36-<pip-name>-blt-<version>.rpm.
+
+Since these PIP packages have different LICENSING information, we would like to refer you to their respective homepage for
+further information.
+
+Currently, the PIP packages we have created RPMs from are:
+CherryPy             3.8.2
+python-daemon        2.2.3
+decorator            4.3.2
+docutils             0.14
+jprops               2.0.2
+python3-keyczar      0.71rc0
+lockfile             0.12.2
+pbr                  1.10.0
+pillow               5.4.1
+progressbar33        2.4
+psycopg2             2.7.7
+pyasn1               0.4.5
+pycrypto             2.4
+sqlalchemy           1.0.13
+sqlalchemy-migrate   0.10.0
+sqlparse             0.2.4
+tempita              0.5.2
+werkzeug             0.14
 
 =============== Dependencies ===============
 Before we even atempt to install the packages described above, several dependencies has to be installed. The first thing
@@ -24,7 +57,12 @@ Then you install the epel release rpm by typing
 %> rpm -Uvh epel-release*.rpm
  
 It might also be a good idea to install postgres
- %> sudo yum install postgresql postgresql-devel postgresql-contrib postgresql-server
+%> sudo yum install postgresql postgresql-devel postgresql-contrib postgresql-server
+
+Another package that are available from the epel release is actually python 3.6 so you probably should install
+%> sudo yum install python36 python36-devel python36-libs python36-setuptools
+
+as well.
 
 =============== Installation ===============
 As described earlier, the installation of a complete node consists of more than 40 different rpms. Some of these rpms are not
@@ -44,13 +82,21 @@ Get the baltrad node rpms and place them in a directory, then just type:
  
 --------------------
 Installed:
-  baltrad-beast.x86_64 0:2.0.3-1.el7           baltrad-beast-debuginfo.x86_64 0:2.0.3-1.el7           baltrad-beast-external.x86_64 0:2.0.3-1.el7    baltrad-config.x86_64 0:2.0.3-1.el7            baltrad-config-debuginfo.x86_64 0:2.0.3-1.el7    baltrad-db.x86_64 0:2.0.3-1.el7            
-  baltrad-db-debuginfo.x86_64 0:2.0.3-1.el7    baltrad-db-external.x86_64 0:2.0.3-1.el7               baltrad-db-java.x86_64 0:2.0.3-1.el7           baltrad-dex.x86_64 0:2.0.3-1.el7               baltrad-dex-debuginfo.x86_64 0:2.0.3-1.el7       baltrad-dex-tomcat.x86_64 0:2.0.3-1.el7    
-  baltrad-node-tomcat.x86_64 0:8.5.34-1.el7    baltrad-node-tomcat-debuginfo.x86_64 0:8.5.34-1.el7    baltrad-viewer.noarch 0:2.0.3-1.el7            baltrad-wrwp.x86_64 0:2.0.3-1.el7              baltrad-wrwp-debuginfo.x86_64 0:2.0.3-1.el7    baltrad-wrwp-devel.x86_64 0:2.0.3-1.el7          baltrad-wrwp-python.x86_64 0:2.0.3-1.el7   
-  bbufr.x86_64 0:2.0.3-1.el7                   bbufr-debuginfo.x86_64 0:2.0.3-1.el7                   beamb.x86_64 0:2.0.3-1.el7                     beamb-debuginfo.x86_64 0:2.0.3-1.el7           beamb-devel.x86_64 0:2.0.3-1.el7                 bropo.x86_64 0:2.0.3-1.el7                 
-  bropo-debuginfo.x86_64 0:2.0.3-1.el7         bropo-devel.x86_64 0:2.0.3-1.el7                       hdfview.noarch 0:2.8-1.el7                     hlhdf.x86_64 0:0.8.9-1.el7                     hlhdf-debuginfo.x86_64 0:0.8.9-1.el7             hlhdf-devel.x86_64 0:0.8.9-1.el7           
-  hlhdf-python.x86_64 0:0.8.9-1.el7            jhdf.x86_64 0:2.8-1.el7                                jhdf5.x86_64 0:2.8-1.el7                       jhdf5-debuginfo.x86_64 0:2.8-1.el7             jhdfobj.noarch 0:2.8-1.el7                       rave.x86_64 0:2.0.3-1.el7                  
-  rave-debuginfo.x86_64 0:2.0.3-1.el7          rave-devel.x86_64 0:2.0.3-1.el7                       
+  baltrad-beast.x86_64 0:2.0.3-1.el7                         baltrad-beast-external.x86_64 0:2.0.3-1.el7          baltrad-config.x86_64 0:2.0.3-1.el7               
+  baltrad-db.x86_64 0:2.0.3-1.el7                            baltrad-db-external.x86_64 0:2.0.3-1.el7             baltrad-db-java.x86_64 0:2.0.3-1.el7              
+  baltrad-dex.x86_64 0:2.0.3-1.el7                           baltrad-dex-tomcat.x86_64 0:2.0.3-1.el7              baltrad-node-tomcat.x86_64 0:8.5.34-1.el7         
+  baltrad-viewer.noarch 0:2.0.3-1.el7                        baltrad-wrwp.x86_64 0:2.0.3-1.el7                    baltrad-wrwp-devel.x86_64 0:2.0.3-1.el7           
+  baltrad-wrwp-python.x86_64 0:2.0.3-1.el7                   bbufr.x86_64 0:2.0.3-1.el7                           beamb.x86_64 0:2.0.3-1.el7                        
+  beamb-devel.x86_64 0:2.0.3-1.el7                           bropo.x86_64 0:2.0.3-1.el7                           bropo-devel.x86_64 0:2.0.3-1.el7                  
+  hdfview.noarch 0:2.8-1.el7                                 hlhdf.x86_64 0:0.8.9-1.el7                           hlhdf-devel.x86_64 0:0.8.9-1.el7                  
+  hlhdf-python.x86_64 0:0.8.9-1.el7                          jhdf.x86_64 0:2.8-1.el7                              jhdf5.x86_64 0:2.8-1.el7                          
+  jhdfobj.noarch 0:2.8-1.el7                                 python36-cherrypy-blt.x86_64 0:3.8.2-0               python36-daemon-blt.x86_64 0:2.2.3-0              
+  python36-decorator-blt.x86_64 0:4.3.2-0                    python36-docutils-blt.x86_64 0:0.14-0                python36-jprops-blt.x86_64 0:2.0.2-0              
+  python36-keyczar-blt.x86_64 0:0.71rc0-0                    python36-lockfile-blt.x86_64 0:0.12.2-0              python36-pbr-blt.x86_64 0:1.10.0-0                
+  python36-pillow-blt.x86_64 0:5.4.1-0                       python36-progressbar33-blt.x86_64 0:2.4-0            python36-psycopg2-blt.x86_64 0:2.7.7-0            
+  python36-pyasn1-blt.x86_64 0:0.4.5-0                       python36-pycrypto-blt.x86_64 0:2.4-0                 python36-sqlalchemy-blt.x86_64 0:1.0.13-0         
+  python36-sqlalchemy-migrate-blt.x86_64 0:0.10.0-0          python36-sqlparse-blt.x86_64 0:0.2.4-0               python36-tempita-blt.x86_64 0:0.5.2-0             
+  python36-werkzeug-blt.x86_64 0:0.14-0                      rave.x86_64 0:2.0.3-1.el7                            rave-devel.x86_64 0:2.0.3-1.el7                   
 
 Dependency Installed:
   atlas.x86_64 0:3.10.1-12.el7             blis.x86_64 0:0.4.1-2.el7               hdf.x86_64 0:4.2.13-1.el7                     hdf5.x86_64 0:1.8.12-10.el7               hdf5-devel.x86_64 0:1.8.12-10.el7      lapack.x86_64 0:3.4.2-8.el7             libaec.x86_64 0:1.0.2-1.el7           
@@ -62,11 +108,9 @@ Dependency Installed:
   
 Complete!
 --------------------
+It's probably a good idea to install pythons PIP installer as well.
 
-Unfortunately, CentOS 7 does not provide sqlalchemy-migrate or jprops as rpms so these two packages is installed by using pip. 
-%> sudo yum -y install python-pip
-%> sudo pip install "sqlalchemy-migrate==0.10.0"
-%> sudo pip install "jprops>=2.0.2"
+%> sudo yum -y install python36-pip
  
 ============ Initial setup (postgres) =============
 Before we start to configure the system, we need to setup the database If you already have a working database with the baltrad database 
@@ -122,13 +166,12 @@ not be affected by updates.
 When this has been done, it's time to start the system and do the final touches.
 
 ==== Starting the node =====
-There are 3 scripts that has been added to /etc/init.d. These are 
- - /etc/init.d/bdbserver       For controling the baltrad database service
- - /etc/init.d/raved           For controlling the rave product generator
- - /etc/init.d/baltrad-node    For controlling the baltrad data exchange node
+There are 3 systemd service scripts that has been added to /usr/lib/systemd/system. These are 
+ - /usr/lib/systemd/system/bdbserver.service       For controling the baltrad database service
+ - /usr/lib/systemd/system/raved.service           For controlling the rave product generator
+ - /usr/lib/systemd/system/baltrad-node.service    For controlling the baltrad data exchange node
  
-These can be started in different ways and enabled for automatic start so I just show one variant.
-
+To start these services, just do:
 baltrad ~]$ sudo service bdbserver start
 baltrad ~]$ sudo service raved start
 baltrad ~]$ sudo service baltrad-node start
@@ -157,8 +200,6 @@ Just to ensure that everything is starting properly after the installation it mi
 computer and verify that all services has started ok.
 
 baltrad ~]$ sudo shutdown -r now
-
-
  
 =============== Appendix A ===============
 This is an example of the RPMs built for installing a complete baltrad node. As you can see most of these 
@@ -166,49 +207,49 @@ packages versions are the same, even the build number are the same. However, a f
 numbers. baltrad-node-tomcat is based on apache tomcat - 8.5.34 and hence, the version is the same.
 hdfview & related packages have version 2.8 and are packaged as such.  
 
- - baltrad-beast-2.0.3-1.el7.x86_64.rpm
- - baltrad-beast-debuginfo-2.0.3-1.el7.x86_64.rpm
- - baltrad-beast-external-2.0.3-1.el7.x86_64.rpm
- - baltrad-config-2.0.3-1.el7.x86_64.rpm
- - baltrad-config-debuginfo-2.0.3-1.el7.x86_64.rpm
- - baltrad-db-2.0.3-1.el7.x86_64.rpm
- - baltrad-db-debuginfo-2.0.3-1.el7.x86_64.rpm
- - baltrad-db-external-2.0.3-1.el7.x86_64.rpm
- - baltrad-db-java-2.0.3-1.el7.x86_64.rpm
- - baltrad-dex-2.0.3-1.el7.x86_64.rpm
- - baltrad-dex-debuginfo-2.0.3-1.el7.x86_64.rpm
- - baltrad-dex-tomcat-2.0.3-1.el7.x86_64.rpm
- - baltrad-node-tomcat-8.5.34-1.el7.x86_64.rpm
- - baltrad-node-tomcat-debuginfo-8.5.34-1.el7.x86_64.rpm
- - baltrad-viewer.noarch 0:2.0.3-1.el7
- - baltrad-wrwp-2.0.3-1.el7.x86_64.rpm
- - baltrad-wrwp-debuginfo-2.0.3-1.el7.x86_64.rpm
- - baltrad-wrwp-devel-2.0.3-1.el7.x86_64.rpm
- - baltrad-wrwp-python-2.0.3-1.el7.x86_64.rpm
- - bbufr-2.0.3-1.el7.x86_64.rpm
- - bbufr-debuginfo-2.0.3-1.el7.x86_64.rpm
- - beamb-2.0.3-1.el7.x86_64.rpm
- - beamb-debuginfo-2.0.3-1.el7.x86_64.rpm
- - beamb-devel-2.0.3-1.el7.x86_64.rpm
- - bropo-2.0.3-1.el7.x86_64.rpm
- - bropo-debuginfo-2.0.3-1.el7.x86_64.rpm
- - bropo-devel-2.0.3-1.el7.x86_64.rpm
- - hdfview-2.8-1.el7.centos.noarch.rpm
- - hdfview-2.8-1.el7.noarch.rpm
- - hlhdf-0.8.9-1.el7.x86_64.rpm
- - hlhdf-debuginfo-0.8.9-1.el7.x86_64.rpm
- - hlhdf-devel-0.8.9-1.el7.x86_64.rpm
- - hlhdf-python-0.8.9-1.el7.x86_64.rpm
- - jhdf-2.8-1.el7.centos.x86_64.rpm
- - jhdf-2.8-1.el7.x86_64.rpm
- - jhdf5-2.8-1.el7.centos.x86_64.rpm
- - jhdf5-2.8-1.el7.x86_64.rpm
- - jhdf5-debuginfo-2.8-1.el7.centos.x86_64.rpm
- - jhdf5-debuginfo-2.8-1.el7.x86_64.rpm
- - jhdfobj-2.8-1.el7.centos.noarch.rpm
- - jhdfobj-2.8-1.el7.noarch.rpm
- - rave-2.0.3-1.el7.x86_64.rpm
- - rave-debuginfo-2.0.3-1.el7.x86_64.rpm
- - rave-devel-2.0.3-1.el7.x86_64.rpm
-
+- baltrad-beast-2.0.3-1.el7.x86_64.rpm
+- baltrad-beast-external-2.0.3-1.el7.x86_64.rpm
+- baltrad-config-2.0.3-1.el7.x86_64.rpm
+- baltrad-db-2.0.3-1.el7.x86_64.rpm
+- baltrad-db-external-2.0.3-1.el7.x86_64.rpm
+- baltrad-db-java-2.0.3-1.el7.x86_64.rpm
+- baltrad-dex-2.0.3-1.el7.x86_64.rpm
+- baltrad-dex-tomcat-2.0.3-1.el7.x86_64.rpm
+- baltrad-node-tomcat-8.5.34-1.el7.x86_64.rpm
+- baltrad-viewer-2.0.3-1.el7.noarch.rpm
+- baltrad-wrwp-2.0.3-1.el7.x86_64.rpm
+- baltrad-wrwp-devel-2.0.3-1.el7.x86_64.rpm
+- baltrad-wrwp-python-2.0.3-1.el7.x86_64.rpm
+- bbufr-2.0.3-1.el7.x86_64.rpm
+- beamb-2.0.3-1.el7.x86_64.rpm
+- beamb-devel-2.0.3-1.el7.x86_64.rpm
+- bropo-2.0.3-1.el7.x86_64.rpm
+- bropo-devel-2.0.3-1.el7.x86_64.rpm
+- hdfview-2.8-1.el7.noarch.rpm
+- hlhdf-0.8.9-1.el7.x86_64.rpm
+- hlhdf-devel-0.8.9-1.el7.x86_64.rpm
+- hlhdf-python-0.8.9-1.el7.x86_64.rpm
+- jhdf-2.8-1.el7.x86_64.rpm
+- jhdf5-2.8-1.el7.x86_64.rpm
+- jhdfobj-2.8-1.el7.noarch.rpm
+- python36-cherrypy-blt-3.8.2-0.x86_64.rpm
+- python36-daemon-blt-2.2.3-0.x86_64.rpm
+- python36-decorator-blt-4.3.2-0.x86_64.rpm
+- python36-docutils-blt-0.14-0.x86_64.rpm
+- python36-jprops-blt-2.0.2-0.x86_64.rpm
+- python36-keyczar-blt-0.71rc0-0.x86_64.rpm
+- python36-lockfile-blt-0.12.2-0.x86_64.rpm
+- python36-pbr-blt-1.10.0-0.x86_64.rpm
+- python36-pillow-blt-5.4.1-0.x86_64.rpm
+- python36-progressbar33-blt-2.4-0.x86_64.rpm
+- python36-psycopg2-blt-2.7.7-0.x86_64.rpm
+- python36-pyasn1-blt-0.4.5-0.x86_64.rpm
+- python36-pycrypto-blt-2.4-0.x86_64.rpm
+- python36-sqlalchemy-blt-1.0.13-0.x86_64.rpm
+- python36-sqlalchemy-migrate-blt-0.10.0-0.x86_64.rpm
+- python36-sqlparse-blt-0.2.4-0.x86_64.rpm
+- python36-tempita-blt-0.5.2-0.x86_64.rpm
+- python36-werkzeug-blt-0.14-0.x86_64.rpm
+- rave-2.0.3-1.el7.x86_64.rpm
+- rave-devel-2.0.3-1.el7.x86_64.rpm
  
