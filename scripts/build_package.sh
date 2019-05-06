@@ -322,7 +322,7 @@ if [ "$ARTIFACTS" != "" ]; then
   ARTIFACT_REPOSITORY=$ARTIFACTS
 fi
 
-if [ "$OS_VARIANT" = "Ubuntu-16.04" -o "$OS_VARIANT" = "Ubuntu-18.04" ]; then
+if [ "$OS_VARIANT" = "Ubuntu-16.04" -o "$OS_VARIANT" = "Ubuntu-18.04" -o "$OS_VARIANT" = "Ubuntu-18.10" ]; then
   prepare_and_build_debian "$PACKAGEDIR/$PACKAGE_NAME/debian" $BUILD_NAME $PACKAGE_VERSION-$BUILD_NUMBER $INSTALL_ARTIFACTS $OS_VARIANT "$ARTIFACT_REPOSITORY"
   exit 0
 elif [ "$OS_VARIANT" = "CentOS-7" ]; then

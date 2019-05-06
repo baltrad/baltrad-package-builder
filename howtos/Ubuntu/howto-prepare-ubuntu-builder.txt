@@ -1,0 +1,6 @@
+sudo apt-get install devscripts
+sudo apt-get install libhdf5-dev libatlas-base-dev
+sudo apt-get install python3-numpy
+sudo apt-get install dh-python
+sudo apt-get install python-numpy
+sudo apt-get install libproj-dev

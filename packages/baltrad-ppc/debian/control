@@ -1,0 +1,16 @@
+Source: bropo
+Section: science
+Priority: extra
+Maintainer: Anders Henja <anders@baltrad.eu>
+Build-Depends: debhelper (>= 8.0.0),  rave-dev, python2.7-dev, libproj-dev, libpng12-dev, python, hlhdf-dev, hlhdf-python
+Standards-Version: 3.9.4
+
+Package: bropo
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}, python, libpng12-0, rave
+Description: Anomaly (non-precipitation echo) detection and removal
+
+Package: bropo-dev
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, bropo
+Description: Anomaly (non-precipitation echo) detection and removal

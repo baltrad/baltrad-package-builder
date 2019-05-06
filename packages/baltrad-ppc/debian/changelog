@@ -1,0 +1,11 @@
+bropo (0.0.38-2) stable; urgency=high
+
+  * Packaging bugs fixed
+
+ -- Povi Software LLC <laur@baltrad.eu>  Tue, 30 Jul 2013 13:06:19 +0300
+
+bropo (0.0.38-1) stable; urgency=low
+
+  * Initial release
+
+ -- Povi Software LLC <laur@baltrad.eu>  Wed, 29 May 2013 16:05:23 +0300

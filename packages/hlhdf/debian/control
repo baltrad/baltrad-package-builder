@@ -2,13 +2,13 @@ Source: hlhdf
 Section: science
 Priority: extra
 Maintainer: Anders Henja <anders@baltrad.eu>
-Build-Depends: debhelper (>= 8.0.0), libhdf5-dev, zlib1g-dev, python2.7-dev, python-numpy, libatlas-base-dev, python
+Build-Depends: debhelper (>= 8.0.0), libhdf5-dev, zlib1g-dev, python3.6-dev, python3-numpy, libatlas-base-dev, python3.6
 Standards-Version: 3.9.4
-X-Python-Version: >=2.7
+X-Python-Version: >=3.6
 
 Package: hlhdf
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libhdf5-10
+Depends: ${shlibs:Depends}, ${misc:Depends}, libhdf5-100
 Description: High Level Interface to the HDF5 File Format
 
 Package: hlhdf-dev
