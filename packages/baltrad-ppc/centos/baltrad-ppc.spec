@@ -63,6 +63,8 @@ EOF
 %{_prefix}/share/baltrad-ppc/pyppc/*.pyo
 %{python36_sitelib}/baltrad-ppc.pth
 %{_prefix}/share/baltrad-ppc/pyppc/_pdpprocessor.so
+%{_prefix}/share/baltrad-ppc/pyppc/_ppcoptions.so
+%{_prefix}/share/baltrad-ppc/pyppc/_ppcradaroptions.so
 /etc/ld.so.conf.d/baltrad-ppc.conf
 
 %files devel
