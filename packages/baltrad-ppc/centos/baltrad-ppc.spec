@@ -35,8 +35,11 @@ make
 make install DESTDIR=%{buildroot}
 mkdir -p %{buildroot}/etc/ld.so.conf.d/
 mkdir -p %{buildroot}%{python36_sitelib}
+mkdir -p %{buildroot}/etc/baltrad/baltrad-ppc/config
+mv %{buildroot}/%{_prefix}/share/baltrad-ppc/config/*.xml %{buildroot}/etc/baltrad/baltrad-ppc/config/
 echo "/usr/lib/baltrad-ppc/lib" >> %{buildroot}/etc/ld.so.conf.d/baltrad-ppc.conf
 #mv %{buildroot}/usr/lib64/python3.6/site-packages/pybaltradppc.pth %{buildroot}%{python36_sitelib}
+ln -s ../../../../../../etc/baltrad/baltrad-ppc/config/ppc_options.xml 		%{buildroot}/%{_prefix}/share/baltrad-ppc/config/ppc_options.xml
 
 %post
 /sbin/ldconfig
@@ -57,7 +60,7 @@ EOF
 %files
 #%{_prefix}/bin/ropo
 %{_prefix}/lib/libbaltrad-ppc.so
-#%{_prefix}/share/bropo/config/ropo_options.xml
+%{_prefix}/share/baltrad-ppc/config/ppc_options.xml
 %{_prefix}/share/baltrad-ppc/pyppc/*.py
 %{_prefix}/share/baltrad-ppc/pyppc/*.pyc
 %{_prefix}/share/baltrad-ppc/pyppc/*.pyo
@@ -66,6 +69,7 @@ EOF
 %{_prefix}/share/baltrad-ppc/pyppc/_ppcoptions.so
 %{_prefix}/share/baltrad-ppc/pyppc/_ppcradaroptions.so
 /etc/ld.so.conf.d/baltrad-ppc.conf
+/etc/baltrad/baltrad-ppc/config/ppc_options.xml
 
 %files devel
 %{_prefix}/include/*.h
