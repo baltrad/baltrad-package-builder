@@ -1,10 +1,10 @@
 %define _prefix /usr/lib/bbufr
 Name:		bbufr
-Version:	2.0.3
+Version:	%{version}
 Release:	 %{snapshot}%{?dist}
 Summary:	BALTRAD interface to EUMETNET OPERA's BUFR software
 Group:		Development/Libraries
-License:	LGPL
+License:	LGPL-3
 URL:		http://www.baltrad.eu/
 Source0:	%{name}-%{version}.tar.gz
 BuildRequires:	zlib-devel
