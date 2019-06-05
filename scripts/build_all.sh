@@ -58,7 +58,7 @@ if [ $# -lt 1 ]; then
   exit 127
 fi
 
-PKG_BUILD_NUMBER=1
+PKG_BUILD_NUMBER=auto
 
 BUILDER_NAME=
 BALTRAD_VERSION=
@@ -77,7 +77,7 @@ for arg in $*; do
 done
 
 STR=`echo $1 | egrep -e "^[0-9]+$"`
-if [ "$STR" != "" ]; then
+if [ "$STR" != "" -o "$1" = "auto" ]; then
   PKG_BUILD_NUMBER=$1
 else
   echo "Package number must be a digit"

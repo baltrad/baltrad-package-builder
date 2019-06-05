@@ -77,6 +77,9 @@ fi
 
 PACKAGE_VERSION=`cat packages/$PACKAGE_NAME/package.ini | egrep -e "^pkg_version" | sed -e"s/pkg_version=//g"`
 GIT_URI=`cat packages/$PACKAGE_NAME/package.ini | egrep -e "^git_uri" | sed -e"s/git_uri=//g"`
+GIT_PKG_NBR=`cat packages/$PACKAGE_NAME/package.ini | egrep -e "^git_pkg_nbr" | sed -e"s/git_pkg_nbr=//g"`
+GIT_PKG_NO_EXTRACT=`cat packages/$PACKAGE_NAME/package.ini | egrep -e "^git_pkg_no_extract" | sed -e"s/git_pkg_no_extract=//g"`
+GIT_PKG_OFFSET=`cat packages/$PACKAGE_NAME/package.ini | egrep -e "^git_pkg_offset" | sed -e"s/git_pkg_offset=//g"`
 TAR_BALL=`cat packages/$PACKAGE_NAME/package.ini | egrep -e "^tar_ball" | sed -e"s/tar_ball=//g"`
 TAR_STRIP_ROOT=`cat packages/$PACKAGE_NAME/package.ini | egrep -e "^tar_strip_root" | sed -e"s/tar_strip_root=//g"`
 SPECFILE=$PACKAGENAME/`cat packages/$PACKAGE_NAME/package.ini | egrep -e "^spec_file" | sed -e"s/spec_file=//g"`
@@ -268,8 +271,32 @@ prepare_and_build_centos()
   fi
 }
 
+get_git_repo_version() {
+  offset=$1
+  gexpression=$2
+  noextract=$3
+  TNAME=`git describe`
+  VER=`echo $TNAME | sed -e "$gexpression"`
+  #echo "VER = $VER" 1>&2
+  if [ "$VER" != "" ]; then
+    NBR=`echo $VER | egrep -e "^[0-9]+\$"`
+    if [ "$VER" != "$TNAME" -a "$NBR" != "" ]; then
+      VER=`expr $VER - $offset + 1`
+    else
+      if [ "$noextract" != "" ]; then
+        VER=$noextract
+      else
+        VER=1
+      fi
+    fi
+    echo "$VER"
+  else
+    echo ""
+  fi
+}
+
 if [ "$BUILD_NUMBER" = "" ]; then
-  BUILD_NUMBER=1
+  BUILD_NUMBER=auto
 fi
 
 OS_VARIANT=`get_os_version`
@@ -300,17 +327,40 @@ if [ ! -d build/$BUILD_NAME ]; then
       tar -xzf "../$TAR_BALL" --strip 1 --directory $BUILD_NAME || exit 127
     else
       tar -xzf "../$TAR_BALL" --directory $BUILD_NAME || exit 127
-    fi 
+    fi
+    if [ "$BUILD_NUMBER" = "auto" ]; then
+      BUILD_NUMBER=1 # Always set build number to 1 on auto when unpacking tarballs
+    fi  
   else
     git clone $GIT_URI $BUILD_NAME || exit 127
   fi
   cd $BUILD_NAME
+  if [ "$BUILD_NUMBER" = "auto" ]; then
+    TMP_NUMBER=`get_git_repo_version "$GIT_PKG_OFFSET" "$GIT_PKG_NBR" "$GIT_PKG_NO_EXTRACT"`
+    if [ "$TMP_NUMBER" != "" ]; then
+      BUILD_NUMBER=$TMP_NUMBER
+    else
+      echo "Could not determine build number from repository $BUILD_NAME"
+      exit 127
+    fi
+  fi
 else
   cd build/$BUILD_NAME
   git checkout . || exit 127 # REMOVE ALL OLD STUFF
   git checkout master || exit 127
   git pull || exit 127
+  if [ "$BUILD_NUMBER" = "auto" ]; then
+    TMP_NUMBER=`get_git_repo_version "$GIT_PKG_OFFSET" "$GIT_PKG_NBR" "$GIT_PKG_NO_EXTRACT"`
+    if [ "$TMP_NUMBER" != "" ]; then
+      BUILD_NUMBER=$TMP_NUMBER
+    else
+      echo "Could not determine build number from repository $BUILD_NAME"
+      exit 127
+    fi
+  fi
 fi
+#echo "BUILD_NUMBER=$BUILD_NUMBER"
+#exit 0
 
 CREATE_TAR_FROM_FOLDER=false
 if [ "$TAR_BALL" != "" ]; then
