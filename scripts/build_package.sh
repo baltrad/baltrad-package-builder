@@ -217,6 +217,9 @@ prepare_and_build_centos()
     cp "$1/$f" "$RPM_TOP_DIR/SOURCES/"
   done
 
+  \rm -f "$RPM_PCK_DIR/$3-*.rpm"
+  \rm -f "$RPM_PCK_NOARCH_DIR/$3-*.rpm"
+
   #HOW DO WE DETERMINE BUILDROOT? NOW, just fake it...
   if [ "$7" = "false" ]; then # If not tar ball should be created from folder, it must be a git archive
     git archive --format="tar.gz" --prefix="$3-$4/" master -o "$RPM_TOP_DIR/SOURCES/$3-$4.tar.gz"
