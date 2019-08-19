@@ -1,4 +1,4 @@
-%{!?__python36: %global __python36 /usr/bin/python36}
+%{!?__python36: %global __python36 /usr/bin/python3.6}
 %{!?python36_sitearch: %global python36_sitearch %(%{__python36} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
 %define _prefix /usr/lib/%{name}
 
@@ -14,7 +14,7 @@ BuildRequires: hdf5-devel
 Requires: hdf5
 BuildRequires: zlib-devel
 BuildRequires: python36-devel
-BuildRequires: python36-numpy
+BuildRequires: python3-numpy
 BuildRequires: atlas
 Conflicts: hlhdf-py27 
 
@@ -47,7 +47,7 @@ HL-HDF Python bindings
 
 %build
 make distclean || true
-%configure --prefix=/usr/lib/hlhdf  --enable-py3support --with-py3bin=python36
+%configure --prefix=/usr/lib/hlhdf  --enable-py3support --with-py3bin=python3.6
 make
 
 %install
@@ -58,7 +58,7 @@ mkdir -p %{buildroot}/usr/lib/hlhdf
 
 make install DESTDIR=%{buildroot}
 # Fix proper bin-path
- sed -i "s/HL_INSTALL=.*/HL_INSTALL= \/usr\/lib\/hlhdf\/bin\/hlinstall.sh/g" %{buildroot}/usr/lib/hlhdf/mkf/hldef.mk
+sed -i "s/HL_INSTALL=.*/HL_INSTALL= \/usr\/lib\/hlhdf\/bin\/hlinstall.sh/g" %{buildroot}/usr/lib/hlhdf/mkf/hldef.mk
 mkdir -p %{buildroot}%{python36_sitearch}
 mv %{buildroot}%{_prefix}/lib/_pyhl.so %{buildroot}%{python36_sitearch}/
 install -p -D -m 0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/ld.so.conf.d/hlhdf-python.conf

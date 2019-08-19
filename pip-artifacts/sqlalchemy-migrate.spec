@@ -3,7 +3,8 @@
 #
 # Copyright (c) 2019 root.
 #
-%{!?__python36: %global __python36 /usr/bin/python36}
+%global debug_package %{nil}
+%{!?__python36: %global __python36 /usr/bin/python3.6}
 %{!?python36_sitelib: %global python36_sitelib %(%{__python36} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
 
 Name:           python36-sqlalchemy-migrate-blt
@@ -19,9 +20,9 @@ BuildRequires:  python36-devel
 Requires: python36
 Requires: python36-tempita-blt
 Requires: python36-sqlparse-blt
-Requires: python36-decorator-blt
+Requires: python3-decorator
 Requires: python36-pbr-blt
-Requires: python36-six
+Requires: python3-six
 
 %description
 SQLAlchemy Migrate

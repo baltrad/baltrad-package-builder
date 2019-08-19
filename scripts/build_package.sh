@@ -82,7 +82,8 @@ GIT_PKG_NO_EXTRACT=`cat packages/$PACKAGE_NAME/package.ini | egrep -e "^git_pkg_
 GIT_PKG_OFFSET=`cat packages/$PACKAGE_NAME/package.ini | egrep -e "^git_pkg_offset" | sed -e"s/git_pkg_offset=//g"`
 TAR_BALL=`cat packages/$PACKAGE_NAME/package.ini | egrep -e "^tar_ball" | sed -e"s/tar_ball=//g"`
 TAR_STRIP_ROOT=`cat packages/$PACKAGE_NAME/package.ini | egrep -e "^tar_strip_root" | sed -e"s/tar_strip_root=//g"`
-SPECFILE=$PACKAGENAME/`cat packages/$PACKAGE_NAME/package.ini | egrep -e "^spec_file" | sed -e"s/spec_file=//g"`
+CENTOS7_SPECFILE=$PACKAGENAME/`cat packages/$PACKAGE_NAME/package.ini | egrep -e "^centos7_spec_file" | sed -e"s/centos7_spec_file=//g"`
+REDHAT8_SPECFILE=$PACKAGENAME/`cat packages/$PACKAGE_NAME/package.ini | egrep -e "^redhat8_spec_file" | sed -e"s/redhat8_spec_file=//g"`
 INSTALL_ARTIFACTS=`cat packages/$PACKAGE_NAME/package.ini | egrep -e "^install_artifacts" | sed -e"s/install_artifacts=//g"`
 TBUILD_NAME=`cat packages/$PACKAGE_NAME/package.ini | egrep -e "^pkg_name" | sed -e"s/pkg_name=//g"`
 RPM_ARTIFACTS=`cat packages/$PACKAGE_NAME/package.ini | egrep -e "^rpm_artifacts" | sed -e "s/rpm_artifacts=//g"`
@@ -114,7 +115,12 @@ if [ "$OPT_INSTALL_ARTIFACTS" != "" ]; then
   INSTALL_ARTIFACTS=$OPT_INSTALL_ARTIFACTS
 fi
 
-SCRIPTDIR=`dirname $(python -c "import os; print(os.path.abspath(\"$0\"))")`
+if hash python 2> /dev/null; then
+  SCRIPTDIR=`dirname $(python -c "import os; print(os.path.abspath(\"$0\"))")`
+else
+  SCRIPTDIR=`dirname $(python3.6 -c "import os; print(os.path.abspath(\"$0\"))")`
+fi
+
 PACKAGEDIR=$(dirname $SCRIPTDIR)/packages
 
 get_os_version()
@@ -245,7 +251,7 @@ prepare_and_build_centos()
         RPMS_TO_INSTALL="$RPMS_TO_INSTALL $f"
       done
     done
-    if [ "$RPMS_TO_INSTALL" != "" ]; then
+    if [ "$6" = "true" -a "$RPMS_TO_INSTALL" != "" ]; then
       echo "Installing $RPMS_TO_INSTALL"
       sudo rpm --force -Uvh $RPMS_TO_INSTALL
     fi
@@ -255,21 +261,21 @@ prepare_and_build_centos()
         # Use --force to be able to use same pck-number
         FILES=`ls -1 $RPM_PCK_DIR/$3*-$4-$5*.$RPM_ARCH_DIR.rpm 2>/dev/null`
         if [ "$FILES" != "" ]; then
-          sudo rpm --force -Uvh "$RPM_PCK_DIR/$3*-$4-$5*.$RPM_ARCH_DIR.rpm"
-        fi
+          sudo rpm --force -Uvh "$RPM_PCK_DIR/$3*-$4-$5.*$RPM_ARCH_DIR.rpm" 
+	    fi
       fi
       if [ "$RPM_PCK_NOARCH_DIR" != "" ]; then
         FILES=`ls -1 $RPM_PCK_NOARCH_DIR/$3*-$4-$5*.noarch.rpm 2>/dev/null`
         if [ "$FILES" != "" ]; then
-          sudo rpm --force -Uvh "$RPM_PCK_NOARCH_DIR/$3*-$4-$5*.noarch.rpm"
+          sudo rpm --force -Uvh "$RPM_PCK_NOARCH_DIR/$3*-$4-$5.*noarch.rpm"
         fi
       fi
     fi
     if [ "$RPM_PCK_DIR" != "" ]; then
-      copy_package_to_location "$9" "$RPM_PCK_DIR/$3*-$4-$5*.$RPM_ARCH_DIR.rpm"
+      copy_package_to_location "$9" "$RPM_PCK_DIR/$3*-$4-$5.*$RPM_ARCH_DIR.rpm"
     fi
     if [ "$RPM_PCK_NOARCH_DIR" != "" ]; then
-      copy_package_to_location "$9" "$RPM_PCK_NOARCH_DIR/$3*-$4-$5*.noarch.rpm"
+      copy_package_to_location "$9" "$RPM_PCK_NOARCH_DIR/$3*-$4-$5.*noarch.rpm"
     fi
   fi
 }
@@ -362,8 +368,6 @@ else
     fi
   fi
 fi
-#echo "BUILD_NUMBER=$BUILD_NUMBER"
-#exit 0
 
 CREATE_TAR_FROM_FOLDER=false
 if [ "$TAR_BALL" != "" ]; then
@@ -376,10 +380,13 @@ if [ "$ARTIFACTS" != "" ]; then
 fi
 
 if [ "$OS_VARIANT" = "Ubuntu-16.04" -o "$OS_VARIANT" = "Ubuntu-18.04" -o "$OS_VARIANT" = "Ubuntu-18.10" ]; then
-  prepare_and_build_debian "$PACKAGEDIR/$PACKAGE_NAME/debian" $BUILD_NAME $PACKAGE_VERSION-$BUILD_NUMBER $INSTALL_ARTIFACTS $OS_VARIANT "$ARTIFACT_REPOSITORY"
+  prepare_and_build_debian "$PACKAGEDIR/$PACKAGE_NAME/debian" $BUILD_NAME $PACKAGE_VERSION-$BUILD_NUMBER $INSTALL_ARTIFACTS "$OS_VARIANT" "$ARTIFACT_REPOSITORY"
   exit 0
 elif [ "$OS_VARIANT" = "CentOS-7" ]; then
-  prepare_and_build_centos "$PACKAGEDIR/$PACKAGE_NAME/centos" "$PACKAGEDIR/$PACKAGE_NAME/$SPECFILE" $BUILD_NAME $PACKAGE_VERSION $BUILD_NUMBER $INSTALL_ARTIFACTS $CREATE_TAR_FROM_FOLDER $OS_VARIANT "$ARTIFACT_REPOSITORY"
+  prepare_and_build_centos "$PACKAGEDIR/$PACKAGE_NAME/centos" "$PACKAGEDIR/$PACKAGE_NAME/$CENTOS7_SPECFILE" $BUILD_NAME $PACKAGE_VERSION $BUILD_NUMBER $INSTALL_ARTIFACTS $CREATE_TAR_FROM_FOLDER "$OS_VARIANT" "$ARTIFACT_REPOSITORY"
+  exit 0
+elif [ "$OS_VARIANT" = "Red Hat Enterprise-8.0" ]; then
+  prepare_and_build_centos "$PACKAGEDIR/$PACKAGE_NAME/centos" "$PACKAGEDIR/$PACKAGE_NAME/$REDHAT8_SPECFILE" $BUILD_NAME $PACKAGE_VERSION $BUILD_NUMBER $INSTALL_ARTIFACTS $CREATE_TAR_FROM_FOLDER "$OS_VARIANT" "$ARTIFACT_REPOSITORY"
   exit 0
 else
   echo "Unsupported build variant $OS_VARIANT"

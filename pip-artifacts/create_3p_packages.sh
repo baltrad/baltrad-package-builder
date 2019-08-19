@@ -45,7 +45,7 @@ copy_package_to_location() {
   fi
 }
 
-SCRIPTDIR=`dirname $(python -c "import os; print(os.path.abspath(\"$0\"))")`
+SCRIPTDIR=`dirname $(python3.6 -c "import os; print(os.path.abspath(\"$0\"))")`
 SPECDIR=$SCRIPTDIR
 INSTALLPACKAGES=no
 REBUILDPACKAGES=no
@@ -84,6 +84,32 @@ do_exit() {
   exit 127
 }
 
+get_os_version()
+{
+  if [ -f /etc/os-release ]; then
+    . /etc/os-release
+    OS=`echo $NAME | sed -e "s/Linux//g" | sed -e"s/^[[:space:]]*//g" | sed -e's/[[:space:]]*$//g'`
+    VER=$VERSION_ID
+  elif type lsb_release >/dev/null 2>&1; then
+    OS=$(lsb_release -si)
+    VER=$(lsb_release -sr)
+  elif [ -f /etc/lsb-release ]; then
+    . /etc/lsb-release
+    OS=$DISTRIB_ID
+    VER=$DISTRIB_RELEASE
+  elif [ -f /etc/debian_version ]; then
+    OS=Debian
+    VER=$(cat /etc/debian_version)
+  elif [ -f /etc/redhat-release ]; then
+    OS=`cat /etc/redhat-release | cut -d' ' -f1`
+    VER=`cat /etc/redhat-release | cut -d' ' -f4 | cut -d'.' -f1`
+  else
+    OS=$(uname -s)
+    VER=$(uname -r)
+  fi
+  echo "$OS-$VER"
+}
+
 if [ "$PYP" = "" ]; then
   do_exit "Must install py2pack before running this script"
 fi  
@@ -111,11 +137,18 @@ do_fetch_package_and_build() {
   copy_package_to_location "$ARTIFACTS" "$RPMDIR/$4" || do_exit "Failed to copy $4 from rpm dir to $ARTIFACTS"
 }
 
+OS_VARIANT=`get_os_version`
+
+echo "Copying patch-files to sources."
+cp "$SPECDIR/"*.patch "$SOURCEDIR/"
+
 do_fetch_package_and_build jprops 2.0.2 jprops.spec python36-jprops-blt-2.0.2-0.x86_64.rpm
 
 do_fetch_package_and_build progressbar33 2.4 progressbar33.spec python36-progressbar33-blt-2.4-0.x86_64.rpm
 
-do_fetch_package_and_build pillow 5.4.1 pillow.spec python36-pillow-blt-5.4.1-0.x86_64.rpm
+if [ "$OS_VARIANT" = "CentOS-7" ]; then
+  do_fetch_package_and_build pillow 5.4.1 pillow.spec python36-pillow-blt-5.4.1-0.x86_64.rpm
+fi
 
 do_fetch_package_and_build psycopg2 2.7.7 psycopg2.spec python36-psycopg2-blt-2.7.7-0.x86_64.rpm
 
@@ -135,7 +168,9 @@ do_fetch_package_and_build tempita 0.5.2 tempita.spec python36-tempita-blt-0.5.2
 
 do_fetch_package_and_build sqlparse 0.2.4 sqlparse.spec python36-sqlparse-blt-0.2.4-0.x86_64.rpm
 
-do_fetch_package_and_build decorator 4.3.2 decorator.spec python36-decorator-blt-4.3.2-0.x86_64.rpm
+if [ "$OS_VARIANT" = "CentOS-7" ]; then
+  do_fetch_package_and_build decorator 4.3.2 decorator.spec python36-decorator-blt-4.3.2-0.x86_64.rpm
+fi
 
 do_fetch_package_and_build pbr 1.10.0 pbr.spec python36-pbr-blt-1.10.0-0.x86_64.rpm
 

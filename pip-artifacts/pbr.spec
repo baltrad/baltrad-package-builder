@@ -3,7 +3,8 @@
 #
 # Copyright (c) 2019 root.
 #
-%{!?__python36: %global __python36 /usr/bin/python36}
+%global debug_package %{nil}
+%{!?__python36: %global __python36 /usr/bin/python3.6}
 %{!?python36_sitelib: %global python36_sitelib %(%{__python36} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
 
 Name:           python36-pbr-blt
@@ -14,6 +15,7 @@ Summary:        Python Build Reasonableness
 License:        Apache-2.0
 Group:          Development/Languages/Python
 Source:         https://files.pythonhosted.org/packages/source/p/pbr/pbr-%{version}.tar.gz
+Patch1:		pbr-python36.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 BuildRequires:  python36-devel
 Requires: python36
@@ -68,6 +70,8 @@ them as quickly as possible.
 
 %prep
 %setup -q -n pbr-%{version}
+%patch1 -p1 
+
 
 %build
 %{__python36} setup.py build
