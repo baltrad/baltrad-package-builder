@@ -20,9 +20,9 @@ BuildRequires:  python36-devel
 Requires: python36
 Requires: python36-tempita-blt
 Requires: python36-sqlparse-blt
-Requires: python36-decorator-blt
+Requires: python3-decorator
 Requires: python36-pbr-blt
-Requires: python36-six
+Requires: python3-six
 
 %description
 SQLAlchemy Migrate
