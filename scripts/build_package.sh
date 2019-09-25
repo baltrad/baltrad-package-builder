@@ -238,6 +238,7 @@ prepare_and_build_centos()
     tar -cvzf "$RPM_TOP_DIR/SOURCES/$3-$4.tar.gz" "$3"
     cd "$3"
   fi
+
   rpmbuild --define="version $4" --define "snapshot $5" -v -ba "$2" || exit 127
 
   if [ "$RPM_ARTIFACTS" != "" ]; then
@@ -245,11 +246,13 @@ prepare_and_build_centos()
     RPMS_TO_INSTALL=
     for X in $RPM_ARTIFACTS; do
       fname=`echo $X | sed -e "s/<buildver>/$PACKAGE_VERSION-$BUILD_NUMBER/g"`
-      FILES=`ls -1 $RPMS_TOPDIR/$fname`
-      for f in $FILES; do
-        copy_package_to_location "$9" "$f"
-        RPMS_TO_INSTALL="$RPMS_TO_INSTALL $f"
-      done
+      FILES=`ls -1 $RPMS_TOPDIR/$fname 2>&1`
+      if [ $? -eq 0 ]; then
+        for f in $FILES; do
+          copy_package_to_location "$9" "$f"
+          RPMS_TO_INSTALL="$RPMS_TO_INSTALL $f"
+        done
+      fi
     done
     if [ "$6" = "true" -a "$RPMS_TO_INSTALL" != "" ]; then
       echo "Installing $RPMS_TO_INSTALL"

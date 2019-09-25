@@ -9,11 +9,14 @@ Summary: Baltrad DEX
 License: GPL-3 and LGPL-3
 URL: http://www.baltrad.eu/
 Source0: %{name}-%{version}.tar.gz
+Source1: hdfobject.jar
 Patch1: 001-dex-fc-properties.patch
+Patch2: 002-hdf-java.patch
+Patch3: 003-dex-hdfobject.patch
 BuildRequires: java-1.8.0-openjdk-devel
 BuildRequires: ant
 BuildRequires: doxygen
-BuildRequires: jhdf5
+BuildRequires: java-hdf5
 BuildRequires: baltrad-db-java
 BuildRequires: baltrad-db-external
 BuildRequires: baltrad-beast
@@ -23,7 +26,8 @@ Baltrad Data Exchange System (BaltradDex) constitutes an integral part of baltra
 
 %package tomcat
 Summary: The dex node prepared to be used in the baltrad-node-tomcat
-Requires: baltrad-node-tomcat, jhdf5
+Requires: baltrad-node-tomcat, java-hdf5
+Requires: baltrad-dex
 
 %description tomcat
 The dex node that should be used within the baltrad-node-tomcat.
@@ -31,14 +35,18 @@ The dex node that should be used within the baltrad-node-tomcat.
 %prep
 %setup -q
 %patch1 -p1
+%patch2 -p1
+%patch3 -p1
 
 %build
-JAVA_HOME=%{java_home} ant -Dbeast.path=/usr/share/baltrad/baltrad-beast -Dbaltrad.db.path="/usr/share/baltrad" -Dbaltrad.db.java.path="/usr/share/baltrad/baltrad-db/java" -Djavahdf.path=/usr/share/java
+rm -f lib/jhdf/*.jar
+cp %{SOURCE1} lib/jhdf/
+JAVA_HOME=%{java_home} ant -Dbeast.path=/usr/share/baltrad/baltrad-beast -Dbaltrad.db.path="/usr/share/baltrad" -Dbaltrad.db.java.path="/usr/share/baltrad/baltrad-db/java" -Djavahdf.path=/usr/lib/java
 
 %install
 mkdir -p $RPM_BUILD_ROOT/var/lib/baltrad/baltrad-node-tomcat/webapps/BaltradDex
 mkdir -p $RPM_BUILD_ROOT/etc/baltrad/
-JAVA_HOME=%{java_home} ant install -Dapp.dist.dir.name=baltrad-dex -Dbeast.path=/usr/share/baltrad/baltrad-beast -Dbaltrad.db.path="/usr/share/baltrad" -Dbaltrad.db.java.path="/usr/share/baltrad/baltrad-db/java" -Djavahdf.path=/usr/share/java -Dinstall.prefix=$RPM_BUILD_ROOT/usr/share/baltrad
+JAVA_HOME=%{java_home} ant install -Dapp.dist.dir.name=baltrad-dex -Dbeast.path=/usr/share/baltrad/baltrad-beast -Dbaltrad.db.path="/usr/share/baltrad" -Dbaltrad.db.java.path="/usr/share/baltrad/baltrad-db/java" -Djavahdf.path=/usr/lib/java -Dinstall.prefix=$RPM_BUILD_ROOT/usr/share/baltrad
 cd $RPM_BUILD_ROOT/var/lib/baltrad/baltrad-node-tomcat/webapps/BaltradDex && jar -xvf $RPM_BUILD_ROOT/usr/share/baltrad/baltrad-dex/bin/BaltradDex.war
 echo '<?xml version="1.0" encoding="UTF-8"?>' > $RPM_BUILD_ROOT/var/lib/baltrad/baltrad-node-tomcat/webapps/BaltradDex/META-INF/context.xml
 echo '<Context path="/BaltradDex"><Resources allowLinking="true"/></Context>' >> $RPM_BUILD_ROOT/var/lib/baltrad/baltrad-node-tomcat/webapps/BaltradDex/META-INF/context.xml
@@ -51,12 +59,9 @@ ln -s ../../../../../../etc/baltrad/db.properties  $RPM_BUILD_ROOT/var/lib/baltr
 ln -s ../../../../../../etc/baltrad/dex.log4j.properties  $RPM_BUILD_ROOT/var/lib/baltrad/baltrad-node-tomcat/webapps/BaltradDex/dex.log4j.properties
 ln -s ../../../../../../../../../etc/baltrad/dex.fc.properties  $RPM_BUILD_ROOT/var/lib/baltrad/baltrad-node-tomcat/webapps/BaltradDex/WEB-INF/classes/resources/dex.fc.properties
 
-%post
+%post tomcat
 BALTRAD_USER="baltrad"
 BALTRAD_GROUP="baltrad"
-
-#[ # Reading value of  SMHI_MODE. Handles enviroments: utv, test and prod where prod is default This is just for testing & development purposes
-#-f /etc/profile.d/smhi.sh ] && . /etc/profile.d/smhi.sh
 
 # This code is uniquely defined for internal use at SMHI so that we can automatically test
 # and/or deploy the software. However, the default behaviour should always be that baltrad

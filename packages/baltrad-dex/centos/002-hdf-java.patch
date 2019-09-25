@@ -1,0 +1,20 @@
+--- a/build.xml	2019-09-23 19:12:37.630919718 +0000
++++ b/build.xml	2019-09-23 19:14:26.697660663 +0000
+@@ -112,7 +112,7 @@
+         <include name="*.jar"/>
+     </fileset>
+     <fileset dir="${javahdf.path}">
+-        <include name="jhdf*.jar"/>
++        <include name="hdf*.jar"/>
+     </fileset>
+   </path>     
+ 
+@@ -151,7 +151,7 @@
+              property="baltrad-bdb-client.jar.available" />
+     <available file="${beast.path}/bin/beast.jar" property="beast.jar.available" />
+     <available file="${beast.path}/libs" type="dir" property="beast.libs.available" />
+-    <available file="${javahdf.path}/jhdf5.jar" property="javahdf.lib.available"/>
++    <available file="${javahdf.path}/hdf5.jar" property="javahdf.lib.available"/>
+ 
+     <fail unless="baltrad-bdb-client.jar.available" 
+             message="baltrad.db.path must specify the installation dir of baltrad-db" />

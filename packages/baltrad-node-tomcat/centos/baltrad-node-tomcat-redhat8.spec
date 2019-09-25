@@ -12,12 +12,14 @@ Patch1: 001-baltrad-node.patch
 Patch2: 002-server-xml.patch
 Patch3: 003-baltrad-node-service.patch
 Source0: %{name}-%{version}.tar.gz
+Source1: hdfobject.jar
+Source2: COPYING.hdfobject
+BuildRequires: java-hdf5
+
 # Server binary needed
 BuildRequires: systemd
 Requires: java-1.8.0-openjdk
-Requires: jhdf5
-Requires: jhdf
-Requires: jhdfobj
+Requires: java-hdf5
 
 %description
 The baltrad node tomcat server is the adapted tomcat server that is suitable for
@@ -42,11 +44,12 @@ mkdir -p $RPM_BUILD_ROOT/var/cache/baltrad-node-tomcat
 mkdir -p $RPM_BUILD_ROOT/var/run/baltrad
 mkdir -p $RPM_BUILD_ROOT/etc/baltrad/baltrad-node-tomcat
 mkdir -p $RPM_BUILD_ROOT/etc/init.d
-#cp baltrad-node $RPM_BUILD_ROOT/etc/init.d/
+mkdir -p %{buildroot}/etc/ld.so.conf.d
+
 mkdir -p %{buildroot}/%{_unitdir}
+# Need to patch hdf-java to get so files into path
 cp baltrad-node.service %{buildroot}/%{_unitdir}/baltrad-node.service
 chmod 664 %{buildroot}/%{_unitdir}/baltrad-node.service
-#chmod a+x $RPM_BUILD_ROOT/etc/init.d/baltrad-node
 cp -r bin $RPM_BUILD_ROOT/usr/share/baltrad/baltrad-node-tomcat/
 cp -r lib $RPM_BUILD_ROOT/usr/share/baltrad/baltrad-node-tomcat/
 cp conf/catalina.policy $RPM_BUILD_ROOT/var/lib/baltrad/baltrad-node-tomcat/policy/
@@ -60,16 +63,26 @@ cp -r webapps/docs $RPM_BUILD_ROOT/var/lib/baltrad/baltrad-node-tomcat/webapps/
 ln -s  ../../../log/baltrad/baltrad-node-tomcat $RPM_BUILD_ROOT/var/lib/baltrad/baltrad-node-tomcat/logs
 ln -s ../../../../etc/baltrad/baltrad-node-tomcat $RPM_BUILD_ROOT/var/lib/baltrad/baltrad-node-tomcat/conf
 ln -s ../../../cache/baltrad-node-tomcat $RPM_BUILD_ROOT/var/lib/baltrad/baltrad-node-tomcat/work
-ln -s /usr/share/java/jhdf5.jar $RPM_BUILD_ROOT/usr/share/baltrad/baltrad-node-tomcat/lib/jhdf5.jar
-ln -s /usr/share/java/jhdf5obj.jar $RPM_BUILD_ROOT/usr/share/baltrad/baltrad-node-tomcat/lib/jhdf5obj.jar
-ln -s /usr/share/java/jhdf.jar $RPM_BUILD_ROOT/usr/share/baltrad/baltrad-node-tomcat/lib/jhdf.jar
-ln -s /usr/share/java/jhdfobj.jar $RPM_BUILD_ROOT/usr/share/baltrad/baltrad-node-tomcat/lib/jhdfobj.jar
+ln -s /usr/lib/java/hdf5.jar $RPM_BUILD_ROOT/usr/share/baltrad/baltrad-node-tomcat/lib/hdf5.jar
+cp %{SOURCE1} $RPM_BUILD_ROOT/usr/share/baltrad/baltrad-node-tomcat/lib/
+cp %{SOURCE2} $RPM_BUILD_ROOT/usr/share/baltrad/baltrad-node-tomcat/
 cp LICENSE $RPM_BUILD_ROOT/usr/share/baltrad/baltrad-node-tomcat/
 cp NOTICE $RPM_BUILD_ROOT/usr/share/baltrad/baltrad-node-tomcat/
 cp README.md $RPM_BUILD_ROOT/usr/share/baltrad/baltrad-node-tomcat/
 
 %preun
-sudo systemctl baltrad-node stop || :
+systemctl stop baltrad-node || :
+%systemd_preun baltrad-node.service || :
+
+%pre
+if [[ -d /var/lib/baltrad/baltrad-node-tomcat/logs ]]; then
+  rm -fr /var/lib/baltrad/baltrad-node-tomcat/logs*
+fi
+if [[ -d /var/lib/baltrad/baltrad-node-tomcat/work ]]; then
+  rm -fr /var/lib/baltrad/baltrad-node-tomcat/work*
+fi
+
+%postun
 %systemd_postun baltrad-node.service || :
 
 %post
@@ -127,7 +140,6 @@ chown $BALTRAD_USER:$BALTRAD_GROUP /var/lib/baltrad/baltrad-node-tomcat/policy/*
 chown $BALTRAD_USER:$BALTRAD_GROUP /var/lib/baltrad/baltrad-node-tomcat/webapps/*
 chown $BALTRAD_USER:$BALTRAD_GROUP /var/lib/baltrad/baltrad-node-tomcat/logs
 chown $BALTRAD_USER:$BALTRAD_GROUP /var/lib/baltrad/baltrad-node-tomcat/conf
-chown $BALTRAD_USER:$BALTRAD_GROUP /var/lib/baltrad/baltrad-node-tomcat/work
 
 chmod 4755 /var/log/baltrad/baltrad-node-tomcat
 chown $BALTRAD_USER:$BALTRAD_GROUP /var/log/baltrad/baltrad-node-tomcat
@@ -138,19 +150,21 @@ chown root:$BALTRAD_GROUP /etc/baltrad/baltrad-node-tomcat/*
 chmod 4775 /var/cache/baltrad-node-tomcat
 chown $BALTRAD_USER:$BALTRAD_GROUP /var/cache/baltrad-node-tomcat 
 
+if [[ ! -f /usr/lib64/libhdf5_java.so ]]; then
+  ln -s /usr/lib64/hdf5/libhdf5_java.so /usr/lib64/libhdf5_java.so
+fi
+
+
 %files
 /usr/share/baltrad/baltrad-node-tomcat/*
 /var/lib/baltrad/baltrad-node-tomcat
 /var/lib/baltrad/baltrad-node-tomcat/*
 /var/lib/baltrad/baltrad-node-tomcat/policy/*
 /var/lib/baltrad/baltrad-node-tomcat/webapps/*
-/var/lib/baltrad/baltrad-node-tomcat/logs
 /var/lib/baltrad/baltrad-node-tomcat/conf
-/var/lib/baltrad/baltrad-node-tomcat/work
 /var/log/baltrad/baltrad-node-tomcat
 /etc/baltrad/baltrad-node-tomcat
 /etc/baltrad/baltrad-node-tomcat/*
-#/etc/init.d/baltrad-node
 %{_unitdir}/baltrad-node.service
 /var/cache/baltrad-node-tomcat
 
