@@ -1,4 +1,4 @@
-%{!?__python36: %global __python36 /usr/bin/python36}
+%{!?__python36: %global __python36 /usr/bin/python3.6}
 %{!?python36_sitelib: %global python36_sitelib %(%{__python36} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
 %define _prefix /usr/lib/baltrad-wrwp
 

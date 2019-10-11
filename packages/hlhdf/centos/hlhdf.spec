@@ -1,4 +1,4 @@
-%{!?__python36: %global __python36 /usr/bin/python36}
+%{!?__python36: %global __python36 /usr/bin/python3.6}
 %{!?python36_sitearch: %global python36_sitearch %(%{__python36} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
 %define _prefix /usr/lib/%{name}
 
@@ -47,7 +47,7 @@ HL-HDF Python bindings
 
 %build
 make distclean || true
-%configure --prefix=/usr/lib/hlhdf  --enable-py3support --with-py3bin=python36
+%configure --prefix=/usr/lib/hlhdf  --enable-py3support --with-py3bin=python3
 make
 
 %install
