@@ -186,3 +186,5 @@ do_fetch_package_and_build werkzeug 0.14 werkzeug.spec python36-werkzeug-blt-0.1
 
 do_fetch_package_and_build cherrypy 3.8.2 cherrypy.spec python36-cherrypy-blt-3.8.2-0.x86_64.rpm
 
+do_fetch_package_and_build pyinotify 0.9.6 pyinotify.spec python36-pyinotify-blt-0.9.6-0.x86_64.rpm
+
