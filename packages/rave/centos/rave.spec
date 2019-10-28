@@ -13,6 +13,7 @@ Source1: rave.conf
 Patch1: 001-raved.patch
 Patch2: 002-rave_defines.patch
 Patch3: 003-raved-service.patch
+Patch4: 004-odiminjectord-service.patch
 BuildRequires: hlhdf-devel
 BuildRequires: hlhdf-python
 BuildRequires: hdf5-devel
@@ -67,6 +68,7 @@ RAVE development headers and libraries.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1
 
 %build
 make distclean || true
@@ -88,7 +90,8 @@ mkdir -p %{buildroot}/etc/baltrad/rave/etc
 mkdir -p %{buildroot}/etc/baltrad/rave/config
 mkdir -p %{buildroot}/var/run/baltrad
 mkdir -p %{buildroot}/var/log/baltrad
-mkdir -p %{buildroot}/var/lib/baltrad
+mkdir -p %{buildroot}/var/log/baltrad
+mkdir -p %{buildroot}/var/lib/baltrad/odim_injector/data
 mkdir -p %{buildroot}/var/lib/baltrad/MSG_CT
 mkdir -p %{buildroot}%{python36_sitelib}
 echo "/usr/lib/rave/Lib">> %{buildroot}/etc/ld.so.conf.d/rave.conf
@@ -96,6 +99,7 @@ make install DESTDIR=%{buildroot}
 install -p -D -m 0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/ld.so.conf.d/rave.conf
 mkdir -p %{buildroot}/%{_unitdir}
 cp etc/raved.service %{buildroot}/%{_unitdir}/raved.service
+cp etc/odiminjectord.service %{buildroot}/%{_unitdir}/odiminjectord.service
 mv %{buildroot}/usr/lib/rave/Lib/rave_defines.py %{buildroot}/etc/baltrad/rave/Lib/
 mv %{buildroot}/usr/lib/rave/config/*.xml %{buildroot}/etc/baltrad/rave/config/
 mv %{buildroot}/usr/lib/rave/etc/rave_pgf_quality_registry.xml %{buildroot}/etc/baltrad/rave/etc/
@@ -158,6 +162,10 @@ if [[ -f /etc/profile.d/smhi.sh ]]; then
   cat $TMPFILE > %{_unitdir}/raved.service
   chmod 644 %{_unitdir}/raved.service
   \rm -f $TMPFILE 
+  cat %{_unitdir}/odiminjectord.service | sed -e"s/User=baltrad/User=$BALTRAD_USER/g" | sed -e"s/Group=baltrad/Group=$BALTRAD_GROUP/g" > $TMPFILE
+  cat $TMPFILE > %{_unitdir}/odiminjectord.service
+  chmod 644 %{_unitdir}/odiminjectord.service
+  \rm -f $TMPFILE 
 else
   if ! getent group $BALTRAD_GROUP > /dev/null; then
     groupadd --system $BALTRAD_GROUP
@@ -191,6 +199,12 @@ EOF
 mkdir -p /var/lib/baltrad
 chmod 0775 /var/lib/baltrad
 chown root:$BALTRAD_GROUP /var/lib/baltrad
+
+mkdir -p /var/lib/baltrad/odim_injector/data
+chmod 0775 /var/lib/baltrad/odim_injector
+chown root:$BALTRAD_GROUP /var/lib/baltrad/odim_injector
+chmod 0775 /var/lib/baltrad/odim_injector/data
+chown root:$BALTRAD_GROUP /var/lib/baltrad/odim_injector/data
 
 mkdir -p /var/log/baltrad
 chmod 0775 /var/log/baltrad
@@ -250,6 +264,7 @@ chown $BALTRAD_USER:$BALTRAD_GROUP /var/lib/baltrad/MSG_CT
 %{_prefix}/etc/rave_tile_registry.xml
 %{python36_sitelib}/rave.pth
 %{_unitdir}/raved.service
+%{_unitdir}/odiminjectord.service
 /etc/baltrad/rave/Lib/*.py
 %exclude /etc/baltrad/rave/Lib/rave_defines.pyc
 %exclude /etc/baltrad/rave/Lib/rave_defines.pyo
@@ -258,9 +273,6 @@ chown $BALTRAD_USER:$BALTRAD_GROUP /var/lib/baltrad/MSG_CT
 %{_sysconfdir}/ld.so.conf.d/rave.conf
 /var/lib/baltrad/rave_pgf_queue.xml
 /var/lib/baltrad/MSG_CT
-
-#%config(noreplace) %{python36_sitelib}/rave.pth
-#%config(noreplace) %{_sysconfdir}/ld.so.conf.d/rave.conf
 
 %files devel
 %{_prefix}/include/python/*.h
