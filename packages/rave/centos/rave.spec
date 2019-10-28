@@ -24,13 +24,20 @@ BuildRequires: atlas
 BuildRequires: python36-numpy
 BuildRequires: proj-devel
 BuildRequires: systemd
-#expat requires
+BuildRequires: expat-devel
+
 Requires: expat
 Requires: netcdf
 Requires: hlhdf
 Requires: python36-numpy
 Requires: python36
-BuildRequires: expat-devel
+Requires: python36-daemon-blt
+Requires: python36-jprops-blt
+Requires: python36-keyczar-blt
+Requires: python36-psycopg2-blt
+Requires: python36-pyinotify-blt
+Requires: python36-sqlalchemy-blt
+Requires: python36-sqlalchemy-migrate-blt
 Conflicts: rave-py27
 
 %description
