@@ -14,6 +14,7 @@ Patch1: 001-raved.patch
 Patch2: 002-rave_defines.patch
 Patch3: 003-raved-service.patch
 Patch4: 004-odiminjectord-service.patch
+Patch5: 005-odim_injector_bltroot.patch
 BuildRequires: hlhdf-devel
 BuildRequires: hlhdf-python
 BuildRequires: hdf5-devel
@@ -69,6 +70,7 @@ RAVE development headers and libraries.
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
+%patch5 -p1
 
 %build
 make distclean || true
