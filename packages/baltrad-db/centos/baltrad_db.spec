@@ -12,6 +12,7 @@ URL: http://www.baltrad.eu/
 Patch1: baltrad_db_server_setup.patch
 Patch2: bdbserver_service.patch
 Source0: %{name}-%{version}.tar.gz
+Source1: baltrad-db-tmpfiles.d.conf
 BuildRequires: python36-devel
 BuildRequires: python-distribute
 BuildRequires: java-1.8.0-openjdk-devel
@@ -75,6 +76,7 @@ cd common
 mkdir -p $RPM_BUILD_ROOT/etc/init.d
 mkdir -p $RPM_BUILD_ROOT/var/lib/baltrad/bdb_storage
 mkdir -p $RPM_BUILD_ROOT/var/run/baltrad
+install -p -D -m 0644 %{SOURCE1} %{buildroot}%{_tmpfilesdir}/baltrad-db.conf
 %{__python36} setup.py install --skip-build --root $RPM_BUILD_ROOT
 cd ../server
 %{__python36} setup.py install --skip-build --root $RPM_BUILD_ROOT
@@ -112,7 +114,8 @@ if [[ -f /etc/profile.d/smhi.sh ]]; then
   cat %{_unitdir}/bdbserver.service | sed -e"s/User=baltrad/User=$BALTRAD_USER/g" | sed -e"s/Group=baltrad/Group=$BALTRAD_GROUP/g" > $TMPFILE
   cat $TMPFILE > %{_unitdir}/bdbserver.service
   chmod 644 %{_unitdir}/bdbserver.service
-  \rm -f $TMPFILE 
+  \rm -f $TMPFILE
+  echo "d /var/run/baltrad 0775 root $BALTRAD_GROUP -" > %{_tmpfilesdir}/baltrad-db.conf
 else
   if ! getent group $BALTRAD_GROUP > /dev/null; then
     groupadd --system $BALTRAD_GROUP
@@ -141,6 +144,7 @@ chown -R $BALTRAD_USER:$BALTRAD_GROUP /var/lib/baltrad/bdb_storage
 /usr/bin/baltrad-bdb-upgrade
 /usr/bin/baltrad-bdb-migrate-db
 %{_unitdir}/bdbserver.service
+%{_tmpfilesdir}/baltrad-db.conf
 %{bdb_site_install_dir}/baltrad/bdbcommon
 %{bdb_site_install_dir}/baltrad/bdbclient
 %{bdb_site_install_dir}/baltrad/bdbserver

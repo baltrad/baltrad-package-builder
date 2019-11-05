@@ -11,6 +11,7 @@ Patch1: 001-baltrad-node.patch
 Patch2: 002-server-xml.patch
 Patch3: 003-baltrad-node-service.patch
 Source0: %{name}-%{version}.tar.gz
+Source1: baltrad-node-tomcat-tmpfiles.d.conf
 # Server binary needed
 BuildRequires: systemd
 Requires: java-1.8.0-openjdk
@@ -41,11 +42,10 @@ mkdir -p $RPM_BUILD_ROOT/var/cache/baltrad-node-tomcat
 mkdir -p $RPM_BUILD_ROOT/var/run/baltrad
 mkdir -p $RPM_BUILD_ROOT/etc/baltrad/baltrad-node-tomcat
 mkdir -p $RPM_BUILD_ROOT/etc/init.d
-#cp baltrad-node $RPM_BUILD_ROOT/etc/init.d/
+install -p -D -m 0644 %{SOURCE1} %{buildroot}%{_tmpfilesdir}/baltrad-node-tomcat.conf
 mkdir -p %{buildroot}/%{_unitdir}
 cp baltrad-node.service %{buildroot}/%{_unitdir}/baltrad-node.service
 chmod 664 %{buildroot}/%{_unitdir}/baltrad-node.service
-#chmod a+x $RPM_BUILD_ROOT/etc/init.d/baltrad-node
 cp -r bin $RPM_BUILD_ROOT/usr/share/baltrad/baltrad-node-tomcat/
 cp -r lib $RPM_BUILD_ROOT/usr/share/baltrad/baltrad-node-tomcat/
 cp conf/catalina.policy $RPM_BUILD_ROOT/var/lib/baltrad/baltrad-node-tomcat/policy/
@@ -94,6 +94,7 @@ if [[ -f /etc/profile.d/smhi.sh ]]; then
   cat $TMPFILE > %{_unitdir}/baltrad-node.service
   chmod 644 %{_unitdir}/baltrad-node.service
   \rm -f $TMPFILE
+  echo "d /var/run/baltrad 0775 root $BALTRAD_GROUP -" > %{_tmpfilesdir}/baltrad-node-tomcat.conf
 else
   if ! getent group $BALTRAD_GROUP > /dev/null; then
     groupadd --system $BALTRAD_GROUP
@@ -147,5 +148,6 @@ chown $BALTRAD_USER:$BALTRAD_GROUP /var/cache/baltrad-node-tomcat
 /etc/baltrad/baltrad-node-tomcat/*
 #/etc/init.d/baltrad-node
 %{_unitdir}/baltrad-node.service
+%{_tmpfilesdir}/baltrad-node-tomcat.conf
 /var/cache/baltrad-node-tomcat
 

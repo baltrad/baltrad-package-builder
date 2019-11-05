@@ -10,6 +10,7 @@ License: LGPL-3
 URL: http://www.baltrad.eu/
 Source0: %{name}-%{version}.tar.gz
 Source1: rave.conf
+Source2: rave-tmpfiles.d.conf
 Patch1: 001-raved.patch
 Patch2: 002-rave_defines.patch
 Patch3: 003-raved-service.patch
@@ -88,6 +89,7 @@ echo "/usr/lib/rave/Lib">> %{buildroot}/etc/ld.so.conf.d/rave.conf
 make install DESTDIR=%{buildroot}
 %py_byte_compile %{__python36} %{buildroot}/usr/lib/rave/Lib || :
 install -p -D -m 0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/ld.so.conf.d/rave.conf
+install -p -D -m 0644 %{SOURCE2} %{buildroot}%{_tmpfilesdir}/rave.conf
 mkdir -p %{buildroot}/%{_unitdir}
 cp etc/raved.service %{buildroot}/%{_unitdir}/raved.service
 mv %{buildroot}/usr/lib/rave/Lib/rave_defines.py %{buildroot}/etc/baltrad/rave/Lib/
@@ -155,7 +157,8 @@ if [[ -f /etc/profile.d/smhi.sh ]]; then
   cat %{_unitdir}/raved.service | sed -e"s/User=baltrad/User=$BALTRAD_USER/g" | sed -e"s/Group=baltrad/Group=$BALTRAD_GROUP/g" > $TMPFILE
   cat $TMPFILE > %{_unitdir}/raved.service
   chmod 644 %{_unitdir}/raved.service
-  \rm -f $TMPFILE 
+  \rm -f $TMPFILE
+  echo "d /var/run/baltrad 0775 root $BALTRAD_GROUP -" > %{_tmpfilesdir}/rave.conf 
 else
   if ! getent group $BALTRAD_GROUP > /dev/null; then
     groupadd --system $BALTRAD_GROUP
@@ -254,6 +257,7 @@ chown $BALTRAD_USER:$BALTRAD_GROUP /var/lib/baltrad/MSG_CT
 /etc/baltrad/rave/config/*.xml
 /etc/baltrad/rave/etc/*.xml
 %{_sysconfdir}/ld.so.conf.d/rave.conf
+%{_tmpfilesdir}/rave.conf
 /var/lib/baltrad/rave_pgf_queue.xml
 /var/lib/baltrad/MSG_CT
 

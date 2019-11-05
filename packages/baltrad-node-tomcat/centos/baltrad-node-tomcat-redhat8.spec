@@ -14,6 +14,7 @@ Patch3: 003-baltrad-node-service.patch
 Source0: %{name}-%{version}.tar.gz
 Source1: hdfobject.jar
 Source2: COPYING.hdfobject
+Source3: baltrad-node-tomcat-tmpfiles.d.conf
 BuildRequires: java-hdf5
 
 # Server binary needed
@@ -45,6 +46,7 @@ mkdir -p $RPM_BUILD_ROOT/var/run/baltrad
 mkdir -p $RPM_BUILD_ROOT/etc/baltrad/baltrad-node-tomcat
 mkdir -p $RPM_BUILD_ROOT/etc/init.d
 mkdir -p %{buildroot}/etc/ld.so.conf.d
+install -p -D -m 0644 %{SOURCE3} %{buildroot}%{_tmpfilesdir}/baltrad-node-tomcat.conf
 
 mkdir -p %{buildroot}/%{_unitdir}
 # Need to patch hdf-java to get so files into path
@@ -112,6 +114,7 @@ if [[ -f /etc/profile.d/smhi.sh ]]; then
   cat $TMPFILE > %{_unitdir}/baltrad-node.service
   chmod 644 %{_unitdir}/baltrad-node.service
   \rm -f $TMPFILE
+  echo "d /var/run/baltrad 0775 root $BALTRAD_GROUP -" > %{_tmpfilesdir}/baltrad-node-tomcat.conf
 else
   if ! getent group $BALTRAD_GROUP > /dev/null; then
     groupadd --system $BALTRAD_GROUP
@@ -166,5 +169,6 @@ fi
 /etc/baltrad/baltrad-node-tomcat
 /etc/baltrad/baltrad-node-tomcat/*
 %{_unitdir}/baltrad-node.service
+%{_tmpfilesdir}/baltrad-node-tomcat.conf
 /var/cache/baltrad-node-tomcat
 
