@@ -68,7 +68,7 @@ cp NOTICE $RPM_BUILD_ROOT/usr/share/baltrad/baltrad-node-tomcat/
 cp README.md $RPM_BUILD_ROOT/usr/share/baltrad/baltrad-node-tomcat/
 
 %preun
-sudo systemctl baltrad-node stop || :
+sudo systemctl stop baltrad-node || :
 %systemd_postun baltrad-node.service || :
 
 %post

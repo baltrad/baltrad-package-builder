@@ -347,7 +347,11 @@ if [ ! -d build/$BUILD_NAME ]; then
       tar -xzf "../$TAR_BALL" --directory $BUILD_NAME || exit 127
     fi
     if [ "$BUILD_NUMBER" = "auto" ]; then
-      BUILD_NUMBER=1 # Always set build number to 1 on auto when unpacking tarballs
+      if [ "$GIT_PKG_BUMP" != "" ]; then
+        BUILD_NUMBER=`expr 1 + $GIT_PKG_BUMP`
+      else
+        BUILD_NUMBER=1 # Always set build number to 1 on auto when unpacking tarballs unless bump has been set
+      fi
     fi  
   else
     git clone $GIT_URI $BUILD_NAME || exit 127
