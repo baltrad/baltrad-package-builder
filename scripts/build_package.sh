@@ -80,6 +80,7 @@ GIT_URI=`cat packages/$PACKAGE_NAME/package.ini | egrep -e "^git_uri" | sed -e"s
 GIT_PKG_NBR=`cat packages/$PACKAGE_NAME/package.ini | egrep -e "^git_pkg_nbr" | sed -e"s/git_pkg_nbr=//g"`
 GIT_PKG_NO_EXTRACT=`cat packages/$PACKAGE_NAME/package.ini | egrep -e "^git_pkg_no_extract" | sed -e"s/git_pkg_no_extract=//g"`
 GIT_PKG_OFFSET=`cat packages/$PACKAGE_NAME/package.ini | egrep -e "^git_pkg_offset" | sed -e"s/git_pkg_offset=//g"`
+GIT_PKG_BUMP=`cat packages/$PACKAGE_NAME/package.ini | egrep -e "^git_pkg_bump" | sed -e"s/git_pkg_bump=//g"`
 TAR_BALL=`cat packages/$PACKAGE_NAME/package.ini | egrep -e "^tar_ball" | sed -e"s/tar_ball=//g"`
 TAR_STRIP_ROOT=`cat packages/$PACKAGE_NAME/package.ini | egrep -e "^tar_strip_root" | sed -e"s/tar_strip_root=//g"`
 CENTOS7_SPECFILE=$PACKAGENAME/`cat packages/$PACKAGE_NAME/package.ini | egrep -e "^centos7_spec_file" | sed -e"s/centos7_spec_file=//g"`
@@ -287,13 +288,18 @@ get_git_repo_version() {
   offset=$1
   gexpression=$2
   noextract=$3
+  bump=$4
+  
   TNAME=`git describe`
   VER=`echo $TNAME | sed -e "$gexpression"`
-  #echo "VER = $VER" 1>&2
+  if [ "$bump" = "" ]; then
+    bump=0
+  fi
+  
   if [ "$VER" != "" ]; then
     NBR=`echo $VER | egrep -e "^[0-9]+\$"`
     if [ "$VER" != "$TNAME" -a "$NBR" != "" ]; then
-      VER=`expr $VER - $offset + 1`
+      VER=`expr $VER - $offset + 1 + $bump`
     else
       if [ "$noextract" != "" ]; then
         VER=$noextract
@@ -348,7 +354,7 @@ if [ ! -d build/$BUILD_NAME ]; then
   fi
   cd $BUILD_NAME
   if [ "$BUILD_NUMBER" = "auto" ]; then
-    TMP_NUMBER=`get_git_repo_version "$GIT_PKG_OFFSET" "$GIT_PKG_NBR" "$GIT_PKG_NO_EXTRACT"`
+    TMP_NUMBER=`get_git_repo_version "$GIT_PKG_OFFSET" "$GIT_PKG_NBR" "$GIT_PKG_NO_EXTRACT" "$GIT_PKG_BUMP"`
     if [ "$TMP_NUMBER" != "" ]; then
       BUILD_NUMBER=$TMP_NUMBER
     else
@@ -362,7 +368,7 @@ else
   git checkout master || exit 127
   git pull || exit 127
   if [ "$BUILD_NUMBER" = "auto" ]; then
-    TMP_NUMBER=`get_git_repo_version "$GIT_PKG_OFFSET" "$GIT_PKG_NBR" "$GIT_PKG_NO_EXTRACT"`
+    TMP_NUMBER=`get_git_repo_version "$GIT_PKG_OFFSET" "$GIT_PKG_NBR" "$GIT_PKG_NO_EXTRACT" "$GIT_PKG_BUMP"`
     if [ "$TMP_NUMBER" != "" ]; then
       BUILD_NUMBER=$TMP_NUMBER
     else
