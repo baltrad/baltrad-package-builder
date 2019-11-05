@@ -69,7 +69,7 @@ EOF
 %{_prefix}/share/baltrad-ppc/pyppc/_ppcoptions.so
 %{_prefix}/share/baltrad-ppc/pyppc/_ppcradaroptions.so
 /etc/ld.so.conf.d/baltrad-ppc.conf
-/etc/baltrad/baltrad-ppc/config/ppc_options.xml
+%config /etc/baltrad/baltrad-ppc/config/ppc_options.xml
 
 %files devel
 %{_prefix}/include/*.h

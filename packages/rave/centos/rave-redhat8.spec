@@ -251,18 +251,13 @@ chown $BALTRAD_USER:$BALTRAD_GROUP /var/lib/baltrad/MSG_CT
 %{_prefix}/etc/rave_tile_registry.xml
 %{python36_sitelib}/rave.pth
 %{_unitdir}/raved.service
-/etc/baltrad/rave/Lib/*.py
-#%exclude /etc/baltrad/rave/Lib/rave_defines.pyc
-#%exclude /etc/baltrad/rave/Lib/rave_defines.pyo
-/etc/baltrad/rave/config/*.xml
-/etc/baltrad/rave/etc/*.xml
+%config /etc/baltrad/rave/Lib/*.py
+%config /etc/baltrad/rave/config/*.xml
+%config /etc/baltrad/rave/etc/*.xml
 %{_sysconfdir}/ld.so.conf.d/rave.conf
 %{_tmpfilesdir}/rave.conf
 /var/lib/baltrad/rave_pgf_queue.xml
 /var/lib/baltrad/MSG_CT
-
-#%config(noreplace) %{python36_sitelib}/rave.pth
-#%config(noreplace) %{_sysconfdir}/ld.so.conf.d/rave.conf
 
 %files devel
 %{_prefix}/include/python/*.h

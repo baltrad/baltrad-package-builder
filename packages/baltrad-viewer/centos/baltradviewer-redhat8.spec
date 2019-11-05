@@ -109,7 +109,7 @@ pip3.6 install -q "pillow==5.4.1" || true  # To get PIL (pillow) installed
 %{_prefix}
 %{python36_sitelib}/baltrad-viewer.pth
 /var/lib/baltrad/baltrad-viewer
-/etc/baltrad/baltrad-viewer
+%config /etc/baltrad/baltrad-viewer
 
 %changelog
 

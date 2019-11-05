@@ -106,8 +106,8 @@ chmod 0660 /etc/baltrad/dex.fc.properties
 
 %files tomcat
 /var/lib/baltrad/baltrad-node-tomcat/webapps/BaltradDex
-/etc/baltrad/dex.properties
-/etc/baltrad/db.properties
-/etc/baltrad/dex.log4j.properties
-/etc/baltrad/dex.fc.properties
+%config /etc/baltrad/dex.properties
+%config /etc/baltrad/db.properties
+%config /etc/baltrad/dex.log4j.properties
+%config /etc/baltrad/dex.fc.properties
 

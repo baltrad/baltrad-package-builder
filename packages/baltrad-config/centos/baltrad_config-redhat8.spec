@@ -68,7 +68,7 @@ chown root:$BALTRAD_GROUP /etc/baltrad/bltnode-keys
 
 %files
 /usr/bin/baltrad-config
-/etc/baltrad/bltnode-keys
+%config /etc/baltrad/bltnode-keys
 /usr/lib/python3.6/site-packages/baltrad/config
 /usr/lib/python3.6/site-packages/baltrad.*.pth
 /usr/lib/python3.6/site-packages/baltrad.*dev0-*.egg-info/*
