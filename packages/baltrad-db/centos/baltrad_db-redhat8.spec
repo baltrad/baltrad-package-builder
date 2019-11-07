@@ -15,7 +15,6 @@ Patch2: bdbserver_service.patch
 Source0: %{name}-%{version}.tar.gz
 Source1: baltrad-db-tmpfiles.d.conf
 BuildRequires: python36-devel
-#BuildRequires: python-distribute
 BuildRequires: java-1.8.0-openjdk-devel
 BuildRequires: ant
 BuildRequires: jpackage-utils

@@ -22,17 +22,15 @@ BuildRequires: hdf5-devel
 BuildRequires: zlib-devel
 BuildRequires: python36-devel
 BuildRequires: netcdf-devel
-# Workaround for centos6
 BuildRequires: atlas
-BuildRequires: python36-numpy
-BuildRequires: proj-devel
+BuildRequires: python3-numpy
+BuildRequires: proj49-blt
 BuildRequires: systemd
 BuildRequires: expat-devel
-
 Requires: expat
 Requires: netcdf
 Requires: hlhdf
-Requires: python36-numpy
+Requires: python3-numpy
 Requires: python36
 Requires: python36-daemon-blt
 Requires: python36-jprops-blt
@@ -51,15 +49,12 @@ Summary: RAVE development files
 Group: Development/Libraries
 Requires: %{name} = %{version}-%{release}
 # rave development headers include headers from proj
-Requires: proj-devel
+Requires: proj49-blt
 # arrayobject.h and other needs
-Requires: python36-numpy
+Requires: python3-numpy
 Requires: hlhdf-devel
 Conflicts: rave-py27-devel
-
-# Workaround for centos6
 Requires: atlas
-#
 Requires: bbufr
 
 %description devel
@@ -75,7 +70,7 @@ RAVE development headers and libraries.
 
 %build
 make distclean || true
-%configure --prefix=/usr/lib/rave --with-hlhdf=/usr/lib/hlhdf --with-expat --with-bufr=/usr/lib/bbufr --with-netcdf=yes  --enable-py3support --with-py3bin=python3 --with-py3bin-config=python3.6-config --with-python-makefile=/usr/lib64/python3.6/config-3.6m-x86_64-linux-gnu/Makefile
+%configure --prefix=/usr/lib/rave --with-hlhdf=/usr/lib/hlhdf --with-proj=/usr/lib/proj49-blt/include,/usr/lib/proj49-blt/lib64 --with-expat --with-bufr=/usr/lib/bbufr --with-netcdf=yes  --enable-py3support --with-py3bin=python3.6 --with-py3bin-config=python3.6-config --with-python-makefile=/usr/lib64/python3.6/config-3.6m-x86_64-linux-gnu/Makefile
 make
 
 %install
@@ -93,12 +88,12 @@ mkdir -p %{buildroot}/etc/baltrad/rave/etc
 mkdir -p %{buildroot}/etc/baltrad/rave/config
 mkdir -p %{buildroot}/var/run/baltrad
 mkdir -p %{buildroot}/var/log/baltrad
-mkdir -p %{buildroot}/var/log/baltrad
 mkdir -p %{buildroot}/var/lib/baltrad/odim_injector/data
 mkdir -p %{buildroot}/var/lib/baltrad/MSG_CT
 mkdir -p %{buildroot}%{python36_sitelib}
 echo "/usr/lib/rave/Lib">> %{buildroot}/etc/ld.so.conf.d/rave.conf
 make install DESTDIR=%{buildroot}
+%py_byte_compile %{__python36} %{buildroot}/usr/lib/rave/Lib || :
 install -p -D -m 0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/ld.so.conf.d/rave.conf
 install -p -D -m 0644 %{SOURCE2} %{buildroot}%{_tmpfilesdir}/rave.conf
 mkdir -p %{buildroot}/%{_unitdir}
@@ -169,11 +164,11 @@ if [[ -f /etc/profile.d/smhi.sh ]]; then
   cat %{_unitdir}/raved.service | sed -e"s/User=baltrad/User=$BALTRAD_USER/g" | sed -e"s/Group=baltrad/Group=$BALTRAD_GROUP/g" > $TMPFILE
   cat $TMPFILE > %{_unitdir}/raved.service
   chmod 644 %{_unitdir}/raved.service
-  \rm -f $TMPFILE 
+  \rm -f $TMPFILE
   cat %{_unitdir}/odiminjectord.service | sed -e"s/User=baltrad/User=$BALTRAD_USER/g" | sed -e"s/Group=baltrad/Group=$BALTRAD_GROUP/g" > $TMPFILE
   cat $TMPFILE > %{_unitdir}/odiminjectord.service
   chmod 644 %{_unitdir}/odiminjectord.service
-  \rm -f $TMPFILE
+  \rm -f $TMPFILE 
   echo "d /var/run/baltrad 0775 root $BALTRAD_GROUP -" > %{_tmpfilesdir}/rave.conf
 else
   if ! getent group $BALTRAD_GROUP > /dev/null; then
@@ -258,8 +253,7 @@ chown $BALTRAD_USER:$BALTRAD_GROUP /var/lib/baltrad/MSG_CT
 
 # Move to a python module? But the subdir name is very bad for site-packages
 %{_prefix}/Lib/*.py
-%{_prefix}/Lib/*.pyc
-%{_prefix}/Lib/*.pyo
+%{_prefix}/Lib/__pycache__/*.pyc
 %{_prefix}/Lib/_*.so
 %{_prefix}/Lib/gadjust
 %{_prefix}/Lib/ravemigrate
@@ -275,8 +269,6 @@ chown $BALTRAD_USER:$BALTRAD_GROUP /var/lib/baltrad/MSG_CT
 %{_unitdir}/raved.service
 %{_unitdir}/odiminjectord.service
 %config /etc/baltrad/rave/Lib/*.py
-%exclude /etc/baltrad/rave/Lib/rave_defines.pyc
-%exclude /etc/baltrad/rave/Lib/rave_defines.pyo
 %config /etc/baltrad/rave/config/*.xml
 %config /etc/baltrad/rave/etc/*.xml
 %{_sysconfdir}/ld.so.conf.d/rave.conf

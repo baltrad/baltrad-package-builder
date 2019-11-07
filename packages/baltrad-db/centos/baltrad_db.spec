@@ -110,6 +110,10 @@ if [[ -f /etc/profile.d/smhi.sh ]]; then
     BALTRAD_USER="baltra.t"
     BALTRAD_GROUP="baltragt"
   fi
+  if [[ "$BALTRAD_USER" == *\.* ]]; then
+    echo "User id $BALTRAD_USER contains a ., replacing with numerical user id."
+    BALTRAD_USER=`id -u $BALTRAD_USER`
+  fi
   TMPFILE=`mktemp`
   cat %{_unitdir}/bdbserver.service | sed -e"s/User=baltrad/User=$BALTRAD_USER/g" | sed -e"s/Group=baltrad/Group=$BALTRAD_GROUP/g" > $TMPFILE
   cat $TMPFILE > %{_unitdir}/bdbserver.service

@@ -84,6 +84,7 @@ GIT_PKG_BUMP=`cat packages/$PACKAGE_NAME/package.ini | egrep -e "^git_pkg_bump" 
 TAR_BALL=`cat packages/$PACKAGE_NAME/package.ini | egrep -e "^tar_ball" | sed -e"s/tar_ball=//g"`
 TAR_STRIP_ROOT=`cat packages/$PACKAGE_NAME/package.ini | egrep -e "^tar_strip_root" | sed -e"s/tar_strip_root=//g"`
 CENTOS7_SPECFILE=$PACKAGENAME/`cat packages/$PACKAGE_NAME/package.ini | egrep -e "^centos7_spec_file" | sed -e"s/centos7_spec_file=//g"`
+CENTOS8_SPECFILE=$PACKAGENAME/`cat packages/$PACKAGE_NAME/package.ini | egrep -e "^centos8_spec_file" | sed -e"s/centos8_spec_file=//g"`
 REDHAT8_SPECFILE=$PACKAGENAME/`cat packages/$PACKAGE_NAME/package.ini | egrep -e "^redhat8_spec_file" | sed -e"s/redhat8_spec_file=//g"`
 INSTALL_ARTIFACTS=`cat packages/$PACKAGE_NAME/package.ini | egrep -e "^install_artifacts" | sed -e"s/install_artifacts=//g"`
 TBUILD_NAME=`cat packages/$PACKAGE_NAME/package.ini | egrep -e "^pkg_name" | sed -e"s/pkg_name=//g"`
@@ -241,7 +242,7 @@ prepare_and_build_centos()
   fi
 
   rpmbuild --define="version $4" --define "snapshot $5" -v -ba "$2" || exit 127
-
+  
   if [ "$RPM_ARTIFACTS" != "" ]; then
     RPMS_TOPDIR=`rpmbuild --eval '%_rpmdir'`
     RPMS_TO_INSTALL=
@@ -397,6 +398,9 @@ if [ "$OS_VARIANT" = "Ubuntu-16.04" -o "$OS_VARIANT" = "Ubuntu-18.04" -o "$OS_VA
   exit 0
 elif [ "$OS_VARIANT" = "CentOS-7" ]; then
   prepare_and_build_centos "$PACKAGEDIR/$PACKAGE_NAME/centos" "$PACKAGEDIR/$PACKAGE_NAME/$CENTOS7_SPECFILE" $BUILD_NAME $PACKAGE_VERSION $BUILD_NUMBER $INSTALL_ARTIFACTS $CREATE_TAR_FROM_FOLDER "$OS_VARIANT" "$ARTIFACT_REPOSITORY"
+  exit 0
+elif [ "$OS_VARIANT" = "CentOS-8" ]; then
+  prepare_and_build_centos "$PACKAGEDIR/$PACKAGE_NAME/centos" "$PACKAGEDIR/$PACKAGE_NAME/$CENTOS8_SPECFILE" $BUILD_NAME $PACKAGE_VERSION $BUILD_NUMBER $INSTALL_ARTIFACTS $CREATE_TAR_FROM_FOLDER "$OS_VARIANT" "$ARTIFACT_REPOSITORY"
   exit 0
 elif [ "$OS_VARIANT" = "Red Hat Enterprise-8.0" ]; then
   prepare_and_build_centos "$PACKAGEDIR/$PACKAGE_NAME/centos" "$PACKAGEDIR/$PACKAGE_NAME/$REDHAT8_SPECFILE" $BUILD_NAME $PACKAGE_VERSION $BUILD_NUMBER $INSTALL_ARTIFACTS $CREATE_TAR_FROM_FOLDER "$OS_VARIANT" "$ARTIFACT_REPOSITORY"

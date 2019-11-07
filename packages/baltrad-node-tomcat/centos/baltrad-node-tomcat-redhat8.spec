@@ -166,8 +166,8 @@ fi
 /var/lib/baltrad/baltrad-node-tomcat/webapps/*
 /var/lib/baltrad/baltrad-node-tomcat/conf
 /var/log/baltrad/baltrad-node-tomcat
-/etc/baltrad/baltrad-node-tomcat
-/etc/baltrad/baltrad-node-tomcat/*
+%config /etc/baltrad/baltrad-node-tomcat
+%config /etc/baltrad/baltrad-node-tomcat/*
 %{_unitdir}/baltrad-node.service
 %{_tmpfilesdir}/baltrad-node-tomcat.conf
 /var/cache/baltrad-node-tomcat

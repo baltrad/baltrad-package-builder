@@ -25,6 +25,7 @@ usage() {
   echo "                          the specified location should be like scp:<user>@<host>:<loc>"
   echo "                          If not specifying this the packages will be placed under "
   echo "                          packages/<package>/artifacts/<OS build>"
+  echo "--rebuild-pippackages   - Rebuilds the pip-packages"
 }
 
 get_os_version()
@@ -65,6 +66,7 @@ BALTRAD_VERSION=
 HLHDF_VERSION=
 ARTIFACTS=
 OPT_INSTALL_ARTIFACTS=
+REBUILD_PIPPACKAGES=no
 
 for arg in $*; do
   case $arg in
@@ -98,6 +100,9 @@ for arg in $*; do
       ;;
     --artifacts=*)
       ARTIFACTS=`echo $arg | sed 's/[-a-zA-Z0-9]*=//'`
+      ;;
+    --rebuild-pippackages)
+      REBUILD_PIPPACKAGES=yes
       ;;
     --help)
       usage $0
@@ -137,11 +142,18 @@ if [ "$ARTIFACTS" != "" ]; then
 fi
 
 if [ "$OS_VERSION" != "Ubuntu-16.04" -a "$OS_VERSION" != "Ubuntu-18.04" ]; then
-  PIPARGS="--install --rebuild"
+  PIPARGS="--install"
+  if [ "$REBUILD_PIPPACKAGES" != "no" ]; then
+    PIPARGS="$PIPARGS --rebuild"
+  fi
   if [ "$ARTIFACTS" != "" ]; then
     PIPARGS="$PIPARGS --artifacts=$ARTIFACTS"
   fi
   ./pip-artifacts/create_3p_packages.sh $PIPARGS || print_error_and_exit "Failure during pip package build step"
+fi
+
+if [ "$OS_VERSION" = "Red Hat Enterprise-8.0" -o "$OS_VERSION" == "CentOS-8"]; then
+  ./scripts/build_package.sh proj49-blt        $PKG_BUILD_NUMBER $BALTRAD_NO_VERSION_OPT_STR || print_error_and_exit "Failed to build hdf-java"
 fi
 
 ./scripts/build_package.sh hlhdf               $PKG_BUILD_NUMBER $HLHDF_OPT_STR || print_error_and_exit "Failed to build hlhdf" 
@@ -155,7 +167,7 @@ fi
 ./scripts/build_package.sh baltrad-beast       $PKG_BUILD_NUMBER $BALTRAD_OPT_STR || print_error_and_exit "Failed to build baltrad-beast"
 ./scripts/build_package.sh baltrad-config      $PKG_BUILD_NUMBER $BALTRAD_OPT_STR || print_error_and_exit "Failed to build baltrad-config"
 
-if [ "$OS_VERSION" != "Ubuntu-16.04" -a "$OS_VERSION" != "Ubuntu-18.04" -a "$OS_VERSION" != "Red Hat Enterprise-8.0" ]; then
+if [ "$OS_VERSION" != "Ubuntu-16.04" -a "$OS_VERSION" != "Ubuntu-18.04" -a "$OS_VERSION" != "Red Hat Enterprise-8.0" -a "$OS_VERSION" != "CentOS-8" ]; then
   ./scripts/build_package.sh hdf-java            $PKG_BUILD_NUMBER $BALTRAD_NO_VERSION_OPT_STR || print_error_and_exit "Failed to build hdf-java"
 fi
 

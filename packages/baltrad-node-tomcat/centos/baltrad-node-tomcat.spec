@@ -68,7 +68,18 @@ cp NOTICE $RPM_BUILD_ROOT/usr/share/baltrad/baltrad-node-tomcat/
 cp README.md $RPM_BUILD_ROOT/usr/share/baltrad/baltrad-node-tomcat/
 
 %preun
-sudo systemctl stop baltrad-node || :
+systemctl stop baltrad-node || :
+%systemd_preun baltrad-node.service || :
+
+%pre
+if [[ -d /var/lib/baltrad/baltrad-node-tomcat/logs ]]; then
+  rm -fr /var/lib/baltrad/baltrad-node-tomcat/logs*
+fi
+if [[ -d /var/lib/baltrad/baltrad-node-tomcat/work ]]; then
+  rm -fr /var/lib/baltrad/baltrad-node-tomcat/work*
+fi
+
+%postun
 %systemd_postun baltrad-node.service || :
 
 %post
@@ -88,6 +99,10 @@ if [[ -f /etc/profile.d/smhi.sh ]]; then
   elif [[ "$SMHI_MODE" = "test" ]];then
     BALTRAD_USER="baltra.t"
     BALTRAD_GROUP="baltragt"
+  fi
+  if [[ "$BALTRAD_USER" == *\.* ]]; then
+    echo "User id $BALTRAD_USER contains a ., replacing with numerical user id."
+    BALTRAD_USER=`id -u $BALTRAD_USER`
   fi
   TMPFILE=`mktemp`
   cat %{_unitdir}/baltrad-node.service | sed -e"s/User=baltrad/User=$BALTRAD_USER/g" | sed -e"s/Group=baltrad/Group=$BALTRAD_GROUP/g" > $TMPFILE
@@ -144,9 +159,8 @@ chown $BALTRAD_USER:$BALTRAD_GROUP /var/cache/baltrad-node-tomcat
 /var/lib/baltrad/baltrad-node-tomcat/conf
 /var/lib/baltrad/baltrad-node-tomcat/work
 /var/log/baltrad/baltrad-node-tomcat
-/etc/baltrad/baltrad-node-tomcat
-/etc/baltrad/baltrad-node-tomcat/*
-#/etc/init.d/baltrad-node
+%config /etc/baltrad/baltrad-node-tomcat
+%config /etc/baltrad/baltrad-node-tomcat/*
 %{_unitdir}/baltrad-node.service
 %{_tmpfilesdir}/baltrad-node-tomcat.conf
 /var/cache/baltrad-node-tomcat

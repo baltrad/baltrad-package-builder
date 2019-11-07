@@ -168,7 +168,7 @@ do_fetch_package_and_build tempita 0.5.2 tempita.spec python36-tempita-blt-0.5.2
 
 do_fetch_package_and_build sqlparse 0.2.4 sqlparse.spec python36-sqlparse-blt-0.2.4-0.x86_64.rpm
 
-if [ "$OS_VARIANT" = "CentOS-7" ]; then
+if [ "$OS_VARIANT" = "CentOS-7" -o "$OS_VARIANT" = "CentOS-8" ]; then
   do_fetch_package_and_build decorator 4.3.2 decorator.spec python36-decorator-blt-4.3.2-0.x86_64.rpm
 fi
 
@@ -176,7 +176,7 @@ do_fetch_package_and_build pbr 1.10.0 pbr.spec python36-pbr-blt-1.10.0-0.x86_64.
 
 do_fetch_package_and_build sqlalchemy 1.0.13 sqlalchemy.spec python36-sqlalchemy-blt-1.0.13-0.x86_64.rpm
 
-if [ "$OS_VARIANT" = "Red Hat Enterprise-8.0" ]; then
+if [ "$OS_VARIANT" = "Red Hat Enterprise-8.0" -o "$OS_VARIANT" = "CentOS-8" ]; then
   do_fetch_package_and_build sqlalchemy-migrate 0.10.0 sqlalchemy-migrate-redhat8.spec python36-sqlalchemy-migrate-blt-0.10.0-0.x86_64.rpm
 else
   do_fetch_package_and_build sqlalchemy-migrate 0.10.0 sqlalchemy-migrate.spec python36-sqlalchemy-migrate-blt-0.10.0-0.x86_64.rpm

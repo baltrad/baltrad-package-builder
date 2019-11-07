@@ -49,12 +49,9 @@ ln -s ../../../../../../etc/baltrad/db.properties  $RPM_BUILD_ROOT/var/lib/baltr
 ln -s ../../../../../../etc/baltrad/dex.log4j.properties  $RPM_BUILD_ROOT/var/lib/baltrad/baltrad-node-tomcat/webapps/BaltradDex/dex.log4j.properties
 ln -s ../../../../../../../../../etc/baltrad/dex.fc.properties  $RPM_BUILD_ROOT/var/lib/baltrad/baltrad-node-tomcat/webapps/BaltradDex/WEB-INF/classes/resources/dex.fc.properties
 
-%post
+%post tomcat
 BALTRAD_USER="baltrad"
 BALTRAD_GROUP="baltrad"
-
-#[ # Reading value of  SMHI_MODE. Handles enviroments: utv, test and prod where prod is default This is just for testing & development purposes
-#-f /etc/profile.d/smhi.sh ] && . /etc/profile.d/smhi.sh
 
 # This code is uniquely defined for internal use at SMHI so that we can automatically test
 # and/or deploy the software. However, the default behaviour should always be that baltrad
