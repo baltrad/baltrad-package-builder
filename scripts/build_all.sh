@@ -152,7 +152,7 @@ if [ "$OS_VERSION" != "Ubuntu-16.04" -a "$OS_VERSION" != "Ubuntu-18.04" ]; then
   ./pip-artifacts/create_3p_packages.sh $PIPARGS || print_error_and_exit "Failure during pip package build step"
 fi
 
-if [ "$OS_VERSION" = "Red Hat Enterprise-8.0" -o "$OS_VERSION" == "CentOS-8"]; then
+if [ "$OS_VERSION" = "Red Hat Enterprise-8.0" -o "$OS_VERSION" == "CentOS-8" ]; then
   ./scripts/build_package.sh proj49-blt        $PKG_BUILD_NUMBER $BALTRAD_NO_VERSION_OPT_STR || print_error_and_exit "Failed to build hdf-java"
 fi
 
