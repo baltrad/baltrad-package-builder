@@ -1,0 +1,32 @@
+%> sudo yum groupinstall 'Development Tools'
+%> sudo yum install rpmdevtools yum-utils
+%> rpmdev-setuptree
+%> sudo yum install git
+%> sudo yum install rpm-build
+%> sudo yum install python3-devel python3-numpy atlas
+%> dnf install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm -y
+
+Depending on if you are installing on RedHat8 or CentOS8 you will have to enable some "extras" which is done by one of the following two commands. 
+(On CentOS8) %> dnf config-manager --set-enabled PowerTools
+(On RedHat8) %> subscription-manager repos --enable "codeready-builder-for-rhel-8-*-rpms"
+
+%> sudo yum install hdf-devel hdf5-devel
+%> sudo yum install java-hdf5
+%> sudo yum install libpng-devel
+%> sudo yum install netcdf-devel expat-devel
+%> sudo yum install lapack-devel blas-devel atlas-devel gsl-devel 
+%> sudo yum install java-1.8.0-openjdk-devel ant
+%> sudo yum install postgresql postgresql-devel postgresql-contrib postgresql-server postgresql-jdbc
+%> sudo yum install ImageMagick
+%> sudo yum install desktop-file-utils
+%> sudo pip3 install py2pack
+%> sudo yum install doxygen
+%> sudo yum install php php-common python3-pillow
+
+%> cd ~/
+%> mkdir repos
+%> cd repos
+%> git clone git://git.baltrad.eu/baltrad-package-builer.git
+%> cd baltrad-package-builder
+%> ./scripts/build_all.sh auto
+
