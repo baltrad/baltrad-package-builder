@@ -4,7 +4,7 @@
 %> sudo yum install git
 %> sudo yum install rpm-build
 %> sudo yum install python3-devel python3-numpy atlas
-%> dnf install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm -y
+%> sudo dnf install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm -y
 
 Depending on if you are installing on RedHat8 or CentOS8 you will have to enable some "extras" which is done by one of the following two commands. 
 (On CentOS8) %> dnf config-manager --set-enabled PowerTools
