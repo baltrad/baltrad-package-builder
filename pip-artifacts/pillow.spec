@@ -8,7 +8,7 @@
 
 Name:           python36-pillow-blt
 Version:        5.4.1
-Release:        0
+Release:        1
 Url:            http://python-pillow.org
 Summary:        Python Imaging Library (Fork)
 License:        Standard PIL License (FIXME:No SPDX)
@@ -16,7 +16,13 @@ Group:          Development/Languages/Python
 Source:         https://files.pythonhosted.org/packages/source/p/pillow/pillow-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 BuildRequires:  python36-devel
+BuildRequires:  freetype-devel
+BuildRequires:  libjpeg-turbo-devel
+BuildRequires:  libpng-devel
 Requires: python36
+Requires:  freetype
+Requires:  libjpeg-turbo
+Requires:  libpng
 
 %description
 Pillow
