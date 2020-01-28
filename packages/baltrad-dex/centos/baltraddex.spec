@@ -44,10 +44,13 @@ mv $RPM_BUILD_ROOT/var/lib/baltrad/baltrad-node-tomcat/webapps/BaltradDex/dex.pr
 mv $RPM_BUILD_ROOT/var/lib/baltrad/baltrad-node-tomcat/webapps/BaltradDex/dex.log4j.properties $RPM_BUILD_ROOT/etc/baltrad/
 mv $RPM_BUILD_ROOT/var/lib/baltrad/baltrad-node-tomcat/webapps/BaltradDex/db.properties $RPM_BUILD_ROOT/etc/baltrad/
 mv $RPM_BUILD_ROOT/var/lib/baltrad/baltrad-node-tomcat/webapps/BaltradDex/WEB-INF/classes/resources/dex.fc.properties $RPM_BUILD_ROOT/etc/baltrad/
+mv $RPM_BUILD_ROOT/var/lib/baltrad/baltrad-node-tomcat/webapps/BaltradDex/WEB-INF/classes/resources/dex.beast.properties $RPM_BUILD_ROOT/etc/baltrad/
+
 ln -s ../../../../../../etc/baltrad/dex.properties  $RPM_BUILD_ROOT/var/lib/baltrad/baltrad-node-tomcat/webapps/BaltradDex/dex.properties
 ln -s ../../../../../../etc/baltrad/db.properties  $RPM_BUILD_ROOT/var/lib/baltrad/baltrad-node-tomcat/webapps/BaltradDex/db.properties
 ln -s ../../../../../../etc/baltrad/dex.log4j.properties  $RPM_BUILD_ROOT/var/lib/baltrad/baltrad-node-tomcat/webapps/BaltradDex/dex.log4j.properties
 ln -s ../../../../../../../../../etc/baltrad/dex.fc.properties  $RPM_BUILD_ROOT/var/lib/baltrad/baltrad-node-tomcat/webapps/BaltradDex/WEB-INF/classes/resources/dex.fc.properties
+ln -s ../../../../../../../../../etc/baltrad/dex.beast.properties  $RPM_BUILD_ROOT/var/lib/baltrad/baltrad-node-tomcat/webapps/BaltradDex/WEB-INF/classes/resources/dex.beast.properties
 
 %post tomcat
 BALTRAD_USER="baltrad"
@@ -85,10 +88,12 @@ chown $BALTRAD_USER:$BALTRAD_GROUP /etc/baltrad/dex.properties
 chown $BALTRAD_USER:$BALTRAD_GROUP /etc/baltrad/db.properties
 chown $BALTRAD_USER:$BALTRAD_GROUP /etc/baltrad/dex.log4j.properties
 chown $BALTRAD_USER:$BALTRAD_GROUP /etc/baltrad/dex.fc.properties
+chown $BALTRAD_USER:$BALTRAD_GROUP /etc/baltrad/dex.beast.properties
 chmod 0660 /etc/baltrad/dex.properties
 chmod 0660 /etc/baltrad/db.properties
 chmod 0660 /etc/baltrad/dex.log4j.properties
 chmod 0660 /etc/baltrad/dex.fc.properties
+chmod 0660 /etc/baltrad/dex.beast.properties
 
 %files
 %{_prefix}/bin/BaltradDex.war
@@ -100,4 +105,5 @@ chmod 0660 /etc/baltrad/dex.fc.properties
 %config /etc/baltrad/db.properties
 %config /etc/baltrad/dex.log4j.properties
 %config /etc/baltrad/dex.fc.properties
+%config /etc/baltrad/dex.beast.properties
 
