@@ -147,7 +147,7 @@ do_fetch_package_and_build jprops 2.0.2 jprops.spec python36-jprops-blt-2.0.2-0.
 do_fetch_package_and_build progressbar33 2.4 progressbar33.spec python36-progressbar33-blt-2.4-0.x86_64.rpm
 
 if [ "$OS_VARIANT" = "CentOS-7" ]; then
-  do_fetch_package_and_build pillow 5.4.1 pillow.spec python36-pillow-blt-5.4.1-0.x86_64.rpm
+  do_fetch_package_and_build pillow 5.4.1 pillow.spec python36-pillow-blt-5.4.1-1.x86_64.rpm
 fi
 
 do_fetch_package_and_build psycopg2 2.7.7 psycopg2.spec python36-psycopg2-blt-2.7.7-0.x86_64.rpm

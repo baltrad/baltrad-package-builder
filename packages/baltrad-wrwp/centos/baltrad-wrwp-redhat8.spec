@@ -82,7 +82,8 @@ EOF
 
 %files
 %{_prefix}/lib/libwrwp.so
-%{_prefix}/bin/wrwp
+%{_prefix}/bin/wrwp_main
+%{_prefix}/config/wrwp_config.xml
 
 %files devel
 %{_prefix}/include/wrwp.h
