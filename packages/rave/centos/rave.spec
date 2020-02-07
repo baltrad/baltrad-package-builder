@@ -32,6 +32,7 @@ BuildRequires: expat-devel
 Requires: expat
 Requires: netcdf
 Requires: hlhdf
+Requires: hlhdf-python
 Requires: python36-numpy
 Requires: python36
 Requires: python36-daemon-blt
