@@ -15,6 +15,8 @@ Source0: %{name}-%{version}.tar.gz
 Source1: hdfobject.jar
 Source2: COPYING.hdfobject
 Source3: baltrad-node-tomcat-tmpfiles.d.conf
+Source4: fits.jar
+Source5: netcdf.jar
 BuildRequires: java-hdf5
 
 # Server binary needed
@@ -67,6 +69,8 @@ ln -s ../../../../etc/baltrad/baltrad-node-tomcat $RPM_BUILD_ROOT/var/lib/baltra
 ln -s ../../../cache/baltrad-node-tomcat $RPM_BUILD_ROOT/var/lib/baltrad/baltrad-node-tomcat/work
 ln -s /usr/lib/java/hdf5.jar $RPM_BUILD_ROOT/usr/share/baltrad/baltrad-node-tomcat/lib/hdf5.jar
 cp %{SOURCE1} $RPM_BUILD_ROOT/usr/share/baltrad/baltrad-node-tomcat/lib/
+cp %{SOURCE4} $RPM_BUILD_ROOT/usr/share/baltrad/baltrad-node-tomcat/lib/
+cp %{SOURCE5} $RPM_BUILD_ROOT/usr/share/baltrad/baltrad-node-tomcat/lib/
 cp %{SOURCE2} $RPM_BUILD_ROOT/usr/share/baltrad/baltrad-node-tomcat/
 cp LICENSE $RPM_BUILD_ROOT/usr/share/baltrad/baltrad-node-tomcat/
 cp NOTICE $RPM_BUILD_ROOT/usr/share/baltrad/baltrad-node-tomcat/
