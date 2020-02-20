@@ -57,11 +57,42 @@ mkdir -p %{buildroot}/usr/lib/baltrad-wrwp
 mkdir -p %{buildroot}%{_sysconfdir}/ld.so.conf.d
 mkdir -p %{buildroot}%{python36_sitelib}
 make install DESTDIR=%{buildroot}
+mkdir -p %{buildroot}/etc/baltrad/wrwp
+mv %{buildroot}/usr/lib/baltrad-wrwp/config/wrwp_config.xml %{buildroot}/etc/baltrad/wrwp/wrwp_config.xml
+rm -fr %{buildroot}/usr/lib/baltrad-wrwp/config
 %py_byte_compile %{__python36} %{buildroot}/usr/lib/baltrad-wrwp/share/wrwp/pywrwp/ || :
 echo "/usr/lib/baltrad-wrwp/lib" >> %{buildroot}%{_sysconfdir}/ld.so.conf.d/baltrad-wrwp.conf
 
 %post
 /sbin/ldconfig
+BALTRAD_USER="baltrad"
+BALTRAD_GROUP="baltrad"
+
+# This code is uniquely defined for internal use at SMHI so that we can automatically test
+# and/or deploy the software. However, the default behaviour should always be that baltrad
+# uses a system user.
+# SMHI_MODE contains utv,test,prod.
+if [[ -f /etc/profile.d/smhi.sh ]]; then
+  BALTRAD_GROUP=baltradg
+  . /etc/profile.d/smhi.sh
+  if [[ "$SMHI_MODE" = "utv" ]];then
+    BALTRAD_USER="baltra.u"
+    BALTRAD_GROUP="baltragu"
+  elif [[ "$SMHI_MODE" = "test" ]];then
+    BALTRAD_USER="baltra.t"
+    BALTRAD_GROUP="baltragt"
+  fi
+else
+  if ! getent group $BALTRAD_GROUP > /dev/null; then
+    groupadd --system $BALTRAD_GROUP
+  fi
+
+  if ! getent passwd "$BALTRAD_USER" > /dev/null; then
+    adduser --system --home /var/lib/baltrad --no-create-home --shell /bin/bash -g $BALTRAD_GROUP $BALTRAD_USER
+  fi
+fi
+chown $BALTRAD_USER:$BALTRAD_GROUP /etc/baltrad/wrwp/wrwp_config.xml
+chmod 0664 /etc/baltrad/wrwp/wrwp_config.xml
 
 %post python
 /sbin/ldconfig
@@ -83,7 +114,7 @@ EOF
 %files
 %{_prefix}/lib/libwrwp.so
 %{_prefix}/bin/wrwp_main
-%{_prefix}/config/wrwp_config.xml
+%config /etc/baltrad/wrwp/wrwp_config.xml
 
 %files devel
 %{_prefix}/include/wrwp.h
