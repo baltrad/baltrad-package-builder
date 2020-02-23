@@ -104,8 +104,8 @@ from rave_pgf_registry import PGF_Registry
 a=PGF_Registry(filename="/etc/baltrad/rave/etc/rave_pgf_registry.xml")
 a.deregister('eu.baltrad.beast.generatewrwp')
 a.deregister('se.smhi.baltrad-wrwp.generatewrwp')
-a.register('eu.baltrad.beast.generatewrwp', 'baltrad_wrwp_pgf_plugin', 'generate', 'Baltrad WRWP Plugin', 'fields','interval,maxheight,mindistance,maxdistance','minelevationangle,velocitythreshold')
-a.register('se.smhi.baltrad-wrwp.generatewrwp', 'baltrad_wrwp_pgf_plugin', 'generate', 'Baltrad WRWP Plugin', 'fields','interval,maxheight,mindistance,maxdistance','minelevationangle,velocitythreshold')
+a.register('eu.baltrad.beast.generatewrwp', 'baltrad_wrwp_pgf_plugin', 'generate', 'Baltrad WRWP Plugin', 'fields','interval,maxheight,mindistance,maxdistance,minsamplesizereflectivity,minsamplesizewind','minelevationangle,maxelevationangle,velocitythreshold,maxvelocitythreshold')
+a.register('se.smhi.baltrad-wrwp.generatewrwp', 'baltrad_wrwp_pgf_plugin', 'generate', 'Baltrad WRWP Plugin', 'fields','interval,maxheight,mindistance,maxdistance,minsamplesizereflectivity,minsamplesizewind','minelevationangle,maxelevationangle,velocitythreshold,maxvelocitythreshold')
 EOF
 %{__python36} $TMPNAME
 \rm -f $TMPNAME
