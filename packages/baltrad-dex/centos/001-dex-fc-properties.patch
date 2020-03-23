@@ -1,13 +1,15 @@
 diff --git a/src/java/resources/dex.fc.properties b/src/java/resources/dex.fc.properties
-index 7c1c7b1..e174693 100755
+index c4b6b6c..06aa20a 100755
 --- a/src/java/resources/dex.fc.properties
 +++ b/src/java/resources/dex.fc.properties
-@@ -27,8 +27,8 @@
+@@ -27,10 +27,10 @@
  # Database URI
  database.uri=http://localhost:8090
  # File catalog data storage directory
 -data.storage.folder=/opt/baltrad/bdb_storage
 +data.storage.folder=/var/lib/baltrad/bdb_storage
+ # What type of storage routine. Default is to store in database. See bdb.xml
+ data.storage.strategy=db
  # Location of keyczar folder when using keyzcar authentication
 -database.keyczar.key=/opt/baltrad/etc/bltnode-keys/nodename.priv
 +database.keyczar.key=/etc/baltrad/bltnode-keys/nodename.priv
