@@ -145,7 +145,7 @@ chown $BALTRAD_USER:$BALTRAD_GROUP /var/log/baltrad/baltrad-node-tomcat
 chmod 0775 /etc/baltrad/baltrad-node-tomcat
 chown root:$BALTRAD_GROUP /etc/baltrad/baltrad-node-tomcat
 chmod 0660 /etc/baltrad/baltrad-node-tomcat/*
-chown root:$BALTRAD_GROUP /etc/baltrad/baltrad-node-tomcat/*
+chown $BALTRAD_USER:$BALTRAD_GROUP /etc/baltrad/baltrad-node-tomcat/*
 chmod 4775 /var/cache/baltrad-node-tomcat
 chown $BALTRAD_USER:$BALTRAD_GROUP /var/cache/baltrad-node-tomcat 
 
