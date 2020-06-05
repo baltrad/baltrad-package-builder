@@ -37,7 +37,7 @@ Requires: python36
 Requires: python36-daemon-blt
 Requires: python36-jprops-blt
 Requires: python36-keyczar-blt
-Requires: python36-psycopg2-blt
+#Requires: python36-psycopg2-blt
 Requires: python36-pyinotify-blt
 Requires: python36-sqlalchemy-blt
 Requires: python36-sqlalchemy-migrate-blt
