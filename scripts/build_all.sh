@@ -25,6 +25,7 @@ usage() {
   echo "                          the specified location should be like scp:<user>@<host>:<loc>"
   echo "                          If not specifying this the packages will be placed under "
   echo "                          packages/<package>/artifacts/<OS build>"
+  echo "--build-log=<loc>       - The directory where the build log resides (if any)"
   echo "--rebuild-pippackages   - Rebuilds the pip-packages"
 }
 
@@ -67,6 +68,7 @@ HLHDF_VERSION=
 ARTIFACTS=
 OPT_INSTALL_ARTIFACTS=
 REBUILD_PIPPACKAGES=no
+BUILD_LOG=
 
 for arg in $*; do
   case $arg in
@@ -104,6 +106,9 @@ for arg in $*; do
     --rebuild-pippackages)
       REBUILD_PIPPACKAGES=yes
       ;;
+    --build-log=*)
+      BUILD_LOG=`echo $arg | sed 's/[-a-zA-Z0-9]*=//'`
+      ;;
     --help)
       usage $0
       exit 0
@@ -139,6 +144,12 @@ if [ "$ARTIFACTS" != "" ]; then
   HLHDF_OPT_STR="$HLHDF_OPT_STR --artifacts=$ARTIFACTS"
   BALTRAD_OPT_STR="$BALTRAD_OPT_STR --artifacts=$ARTIFACTS"
   BALTRAD_NO_VERSION_OPT_STR="$BALTRAD_NO_VERSION_OPT_STR --artifacts=$ARTIFACTS"
+fi
+
+if [ "$BUILD_LOG" != "" ]; then
+  HLHDF_OPT_STR="$HLHDF_OPT_STR --build-log=$BUILD_LOG"
+  BALTRAD_OPT_STR="$BALTRAD_OPT_STR --build-log=$BUILD_LOG"
+  BALTRAD_NO_VERSION_OPT_STR="$BALTRAD_NO_VERSION_OPT_STR  --build-log=$BUILD_LOG"
 fi
 
 if [ "$OS_VERSION" != "Ubuntu-16.04" -a "$OS_VERSION" != "Ubuntu-18.04" ]; then

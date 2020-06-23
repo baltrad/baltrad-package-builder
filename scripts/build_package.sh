@@ -22,6 +22,9 @@ usage() {
   echo "--install-artifacts=true|false  - If the build artifacts should be installed or not. Default is to use "
   echo "                                  the package.ini setting, but usually true is a good choice since"
   echo "                                  packages built after might have dependencies to this artifact"
+  echo "--build-log=<log>       - The file the current package with associated tag should be written to."
+  echo                            If not specified, no history will be written. This is useful for generating"
+  echo                            release notes or deployment information."
 }
 
 if [ $# -lt 2 ]; then
@@ -35,6 +38,7 @@ BUILDER_NAME=
 RELEASE_VERSION=
 ARTIFACTS=
 OPT_INSTALL_ARTIFACTS=
+BUILD_LOG=
 
 shift;shift
 
@@ -56,6 +60,9 @@ for arg in $*; do
         exit 127
       fi
       ;;
+    --build-log=*)
+      BUILD_LOG=`echo $arg | sed 's/[-a-zA-Z0-9]*=//'`
+      ;;
     --help)
       usage $0
       exit 0
@@ -67,8 +74,6 @@ for arg in $*; do
       ;;      
   esac
 done
-
-CHANGELOG_MESSAGE="Autobuild"
 
 if [ ! -f packages/$PACKAGE_NAME/package.ini ]; then
   echo "No package named $PACKAGE_NAME"
@@ -285,6 +290,86 @@ prepare_and_build_centos()
   fi
 }
 
+add_git_tag_to_history() {
+  MODULE=$1
+  BUILDVERSION=$2
+  PREVTAG=$3
+  LASTUPDATE=`date +%Y%m%d%H%M%S`
+  TNAME=`git describe 2>&1`
+  if [ $? -eq 0 ]; then
+    echo -e "$MODULE\t$LASTUPDATE\t$BUILDVERSION\t$TNAME\t$PREVTAG" >> $4
+  else
+    echo -e "$MODULE\t$LASTUPDATE\t$BUILDVERSION\tNOT_DEFINED\t$PREVTAG" >> $4
+  fi
+}
+
+get_lastupdatetime_for_module() {
+  RESULT=`cat "$2" | egrep -e "^$1" | cut -d $'\t' -f2 | tail -1`
+  if [ $? -eq 0 ]; then
+    echo "$RESULT"
+  else
+    echo ""
+  fi
+}
+
+get_buildversion_for_module() {
+  RESULT=`cat "$2" | egrep -e "^$1" | cut -d $'\t' -f3 | tail -1`
+  if [ $? -eq 0 ]; then
+    echo "$RESULT"
+  else
+    echo ""
+  fi
+}
+
+get_tag_for_module() {
+  RESULT=`cat "$2" | egrep -e "^$1" | cut -d $'\t' -f4 | tail -1`
+  if [ $? -eq 0 ]; then
+    echo "$RESULT"
+  else
+    echo ""
+  fi
+}
+
+get_prevtag_for_module() {
+  RESULT=`cat "$2" | egrep -e "^$1" | cut -d $'\t' -f5 | tail -1`
+  if [ $? -eq 0 ]; then
+    echo "$RESULT"
+  else
+    echo ""
+  fi
+}
+
+add_buildlog_information() {
+  buildName=$1
+  buildVersion=$2
+  buildLogFile=$3
+
+  lastBuiltVersion=
+  prevBuiltTag=
+  lastUpdatetime=
+
+  if [ "$buildLogFile" != "" ]; then
+    if [ ! -f "$buildLogFile" ]; then
+      touch "$buildLogFile"
+      if [ $? -ne 0 ]; then
+        echo "Failed to create build log file"
+        exit 127
+      fi
+    fi
+    
+    if [ -f "$buildLogFile" ]; then
+      lastUpdatetime=`get_lastupdatetime_for_module "$buildName" "$buildLogFile"`
+      lastBuiltVersion=`get_buildversion_for_module "$buildName" "$buildLogFile"`
+      lastBuiltTag=`get_tag_for_module "$buildName" "$buildLogFile"`
+      prevBuiltTag=`get_prevtag_for_module "$buildName" "$buildLogFile"`
+    fi
+    
+    if [ "$buildVersion" != "$lastBuiltVersion" ]; then
+      add_git_tag_to_history "$buildName" "$buildVersion" "$lastBuiltTag" "$buildLogFile"
+    fi
+  fi
+}
+
 get_git_repo_version() {
   offset=$1
   gexpression=$2
@@ -395,15 +480,19 @@ fi
 
 if [ "$OS_VARIANT" = "Ubuntu-16.04" -o "$OS_VARIANT" = "Ubuntu-18.04" -o "$OS_VARIANT" = "Ubuntu-18.10" ]; then
   prepare_and_build_debian "$PACKAGEDIR/$PACKAGE_NAME/debian" $BUILD_NAME $PACKAGE_VERSION-$BUILD_NUMBER $INSTALL_ARTIFACTS "$OS_VARIANT" "$ARTIFACT_REPOSITORY"
+  add_buildlog_information "$BUILD_NAME" "$PACKAGE_VERSION-$BUILD_NUMBER" "$BUILD_LOG"
   exit 0
 elif [ "$OS_VARIANT" = "CentOS-7" ]; then
   prepare_and_build_centos "$PACKAGEDIR/$PACKAGE_NAME/centos" "$PACKAGEDIR/$PACKAGE_NAME/$CENTOS7_SPECFILE" $BUILD_NAME $PACKAGE_VERSION $BUILD_NUMBER $INSTALL_ARTIFACTS $CREATE_TAR_FROM_FOLDER "$OS_VARIANT" "$ARTIFACT_REPOSITORY"
+  add_buildlog_information "$BUILD_NAME" "$PACKAGE_VERSION-$BUILD_NUMBER" "$BUILD_LOG"
   exit 0
 elif [ "$OS_VARIANT" = "CentOS-8" ]; then
   prepare_and_build_centos "$PACKAGEDIR/$PACKAGE_NAME/centos" "$PACKAGEDIR/$PACKAGE_NAME/$CENTOS8_SPECFILE" $BUILD_NAME $PACKAGE_VERSION $BUILD_NUMBER $INSTALL_ARTIFACTS $CREATE_TAR_FROM_FOLDER "$OS_VARIANT" "$ARTIFACT_REPOSITORY"
+  add_buildlog_information "$BUILD_NAME" "$PACKAGE_VERSION-$BUILD_NUMBER" "$BUILD_LOG"
   exit 0
 elif [ "$OS_VARIANT" = "Red Hat Enterprise-8.0" ]; then
   prepare_and_build_centos "$PACKAGEDIR/$PACKAGE_NAME/centos" "$PACKAGEDIR/$PACKAGE_NAME/$REDHAT8_SPECFILE" $BUILD_NAME $PACKAGE_VERSION $BUILD_NUMBER $INSTALL_ARTIFACTS $CREATE_TAR_FROM_FOLDER "$OS_VARIANT" "$ARTIFACT_REPOSITORY"
+  add_buildlog_information "$BUILD_NAME" "$PACKAGE_VERSION-$BUILD_NUMBER" "$BUILD_LOG"
   exit 0
 else
   echo "Unsupported build variant $OS_VARIANT"
