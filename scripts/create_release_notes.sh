@@ -212,6 +212,7 @@ EOFSSH
       mkdir -p "$DIRNAME" || exit 127
     fi
     cp $2 "$XSTR" 2>/dev/null
+    chmod ag+r "$XSTR"    
   fi
 }
 
@@ -224,6 +225,7 @@ else
     exit 127
   fi 
   create_release_note > "$TMPFILE"
+  chmod ag+r "$TMPFILE"
   copy_package_to_location "$ARTIFACT" "$TMPFILE"
   \rm -f "$TMPFILE" 
 fi
