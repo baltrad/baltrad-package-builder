@@ -158,6 +158,8 @@ chmod 775 /etc/baltrad/baltrad-viewer
 
 %postun -p /sbin/ldconfig
 
+%files
+
 %files pgf
 %{_prefix}/Lib
 %{_prefix}/README.ravepgf
