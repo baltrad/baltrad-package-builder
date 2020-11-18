@@ -12,6 +12,7 @@
 +ExecStop=/usr/lib/rave/bin/odim_injector --pidfile=/var/run/baltrad/odim_injector.pid --kill
 +User=baltrad
 +Group=baltrad
++RuntimeDirectory=baltrad
 +
 +[Install]
 +WantedBy=multi-user.target
