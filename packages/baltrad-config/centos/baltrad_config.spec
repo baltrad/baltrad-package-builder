@@ -57,7 +57,11 @@ else
   fi
 fi
 
-if [[ -L /etc/baltrad/bltnode-keys -o -e /etc/baltrad/bltnode-keys ]]; then
+if [[ -L /etc/baltrad/bltnode-keys ]]; then
+  echo "/etc/baltrad/bltnode-keys exists!"
+elif [[ -d /etc/baltrad/bltnode-keys ]]; then
+  echo "/etc/baltrad/bltnode-keys exists!"
+elif [[ -f /etc/baltrad/bltnode-keys ]]; then
   echo "/etc/baltrad/bltnode-keys exists!"
 else
   echo "/etc/baltrad/bltnode-keys does not exist, creating it!"
@@ -65,6 +69,7 @@ else
   chmod 0775 /etc/baltrad/bltnode-keys
   chown root:$BALTRAD_GROUP /etc/baltrad/bltnode-keys
 fi
+
 
 %files
 /usr/bin/baltrad-config

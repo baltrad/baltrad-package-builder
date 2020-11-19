@@ -57,7 +57,11 @@ else
   fi
 fi
 
-if [[ -L /etc/baltrad/bltnode-keys -o -e /etc/baltrad/bltnode-keys ]]; then
+if [[ -L /etc/baltrad/bltnode-keys ]]; then
+  echo "/etc/baltrad/bltnode-keys exists!"
+elif [[ -d /etc/baltrad/bltnode-keys ]]; then
+  echo "/etc/baltrad/bltnode-keys exists!"
+elif [[ -f /etc/baltrad/bltnode-keys ]]; then
   echo "/etc/baltrad/bltnode-keys exists!"
 else
   echo "/etc/baltrad/bltnode-keys does not exist, creating it!"
