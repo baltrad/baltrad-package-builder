@@ -25,7 +25,6 @@ Provides configuration features for the baltrad system
 
 %install
 %{__python36} setup.py install --skip-build --root $RPM_BUILD_ROOT
-#mkdir -p $RPM_BUILD_ROOT/etc/baltrad/bltnode-keys
 
 %post
 BALTRAD_USER="baltrad"
@@ -66,7 +65,6 @@ fi
 
 %files
 /usr/bin/baltrad-config
-#%config /etc/baltrad/bltnode-keys
 /usr/lib/python3.6/site-packages/baltrad/config
 /usr/lib/python3.6/site-packages/baltrad.*.pth
 /usr/lib/python3.6/site-packages/baltrad.*dev0-*.egg-info/*
