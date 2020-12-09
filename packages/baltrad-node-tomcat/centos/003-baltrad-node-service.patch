@@ -1,6 +1,6 @@
 --- baltrad-node.service	2019-02-07 22:31:03.948514551 +0100
 +++ baltrad-node.service	2019-02-07 22:30:53.192760476 +0100
-@@ -0,0 +1,21 @@
+@@ -0,0 +1,22 @@
 +[Unit]
 +Description=Manages the tomcat servlet engine used by baltrad node.
 +After=syslog.target network.target
@@ -13,6 +13,7 @@
 +Environment=CATALINA_TMPDIR=
 +Environment=JAVA_HOME=/usr/lib/jvm/jre-1.8.0-openjdk
 +Environment=LD_LIBRARY_PATH=/usr/lib/java:$LD_LIBRARY_PATH
++Environment=UMASK=0002
 +PIDFile=/var/run/baltrad/baltrad-node-tomcat.pid
 +ExecStart=/usr/share/baltrad/baltrad-node-tomcat/bin/catalina.sh start
 +ExecStop=/usr/share/baltrad/baltrad-node-tomcat/bin/catalina.sh stop
