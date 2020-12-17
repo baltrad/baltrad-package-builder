@@ -52,7 +52,7 @@ index 2a269f7..18441ea 100644
    
    public boolean isDouble() {
 -    return attr.getType().getDatatypeClass() == Datatype.CLASS_FLOAT;
-+    return attr.getDatatype().getDatatypeClass() == Datatype.CLASS_FLOAT;;
++    return attr.getDatatype().getDatatypeClass() == Datatype.CLASS_FLOAT;
    }
    
    public Double getDouble() {
