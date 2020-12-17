@@ -1,5 +1,5 @@
 diff --git a/src/java/eu/baltrad/dex/db/controller/BltFileDetailsController.java b/src/java/eu/baltrad/dex/db/controller/BltFileDetailsController.java
-index 4bf0299..4d685c1 100644
+index b6423e7..9802268 100644
 --- a/src/java/eu/baltrad/dex/db/controller/BltFileDetailsController.java
 +++ b/src/java/eu/baltrad/dex/db/controller/BltFileDetailsController.java
 @@ -37,9 +37,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,13 +13,13 @@ index 4bf0299..4d685c1 100644
 +import hdf.object.Group;
 +import hdf.object.Dataset;
  
+ import org.apache.log4j.LogManager;
  import org.apache.log4j.Logger;
- 
 diff --git a/src/java/eu/baltrad/dex/db/controller/BltImagePreviewController.java b/src/java/eu/baltrad/dex/db/controller/BltImagePreviewController.java
-index 6a2ddd9..5e1863c 100644
+index 65a0761..0e212a7 100644
 --- a/src/java/eu/baltrad/dex/db/controller/BltImagePreviewController.java
 +++ b/src/java/eu/baltrad/dex/db/controller/BltImagePreviewController.java
-@@ -40,9 +40,9 @@ import javax.servlet.http.HttpServletRequest;
+@@ -42,9 +42,9 @@ import javax.servlet.http.HttpServletRequest;
  import java.io.File;
  
  import java.util.UUID;
@@ -33,7 +33,7 @@ index 6a2ddd9..5e1863c 100644
  /**
   * Implements data visualization and preview functionality.
 diff --git a/src/java/eu/baltrad/dex/db/util/BltAttribute.java b/src/java/eu/baltrad/dex/db/util/BltAttribute.java
-index 2a269f7..a6e55b3 100644
+index 2a269f7..18441ea 100644
 --- a/src/java/eu/baltrad/dex/db/util/BltAttribute.java
 +++ b/src/java/eu/baltrad/dex/db/util/BltAttribute.java
 @@ -19,8 +19,8 @@ along with the BaltradDex package library.  If not, see <http://www.gnu.org/lice
@@ -52,7 +52,7 @@ index 2a269f7..a6e55b3 100644
    
    public boolean isDouble() {
 -    return attr.getType().getDatatypeClass() == Datatype.CLASS_FLOAT;
-+    return attr.getDatatype().getDatatypeClass() == Datatype.CLASS_FLOAT;
++    return attr.getDatatype().getDatatypeClass() == Datatype.CLASS_FLOAT;;
    }
    
    public Double getDouble() {
@@ -131,10 +131,10 @@ index 2a269f7..a6e55b3 100644
        throw new RuntimeException("Can not return String.");
      }
 diff --git a/src/java/eu/baltrad/dex/db/util/BltDataProcessor.java b/src/java/eu/baltrad/dex/db/util/BltDataProcessor.java
-index 716e975..be35cd3 100644
+index 68948af..d04c2fe 100644
 --- a/src/java/eu/baltrad/dex/db/util/BltDataProcessor.java
 +++ b/src/java/eu/baltrad/dex/db/util/BltDataProcessor.java
-@@ -21,14 +21,13 @@
+@@ -21,12 +21,12 @@
  
  package eu.baltrad.dex.db.util;
  
@@ -151,19 +151,9 @@ index 716e975..be35cd3 100644
 +import hdf.object.Datatype;
 +import hdf.object.Attribute;
  
--import javax.swing.tree.DefaultMutableTreeNode;
+ import javax.swing.tree.DefaultMutableTreeNode;
  import javax.imageio.ImageIO;
- 
- import org.apache.log4j.LogManager;
-@@ -39,7 +38,6 @@ import java.awt.Image;
- import java.awt.Graphics2D;
- import java.awt.Color;
- import java.awt.AlphaComposite;
--import java.awt.BasicStroke;
- 
- import java.util.List;
- 
-@@ -176,8 +174,7 @@ public class BltDataProcessor {
+@@ -179,8 +179,7 @@ public class BltDataProcessor {
       */
      public Group getH5Root(H5File h5File) throws RuntimeException {
          try {
@@ -173,11 +163,10 @@ index 716e975..be35cd3 100644
              return root;
          } catch (Exception e) {
              throw new RuntimeException("Failed to access H5 file's root", e);
-@@ -277,35 +274,46 @@ public class BltDataProcessor {
-      */
+@@ -281,34 +280,46 @@ public class BltDataProcessor {
      public Object getH5AttributeValue() {
          Object value = null;
--        
+         
 -        if (getH5Attribute().getType().getDatatypeClass() == Datatype.CLASS_INTEGER) {
 +        if (getH5Attribute().getDatatype().getDatatypeClass() == Datatype.CLASS_INTEGER) {
              try {
@@ -232,7 +221,7 @@ index 716e975..be35cd3 100644
          return value;
      }
 diff --git a/test/eu/baltrad/dex/db/util/BltDataProcessorTest.java b/test/eu/baltrad/dex/db/util/BltDataProcessorTest.java
-index 969da13..7d3b9e9 100644
+index 2bafa14..836b752 100644
 --- a/test/eu/baltrad/dex/db/util/BltDataProcessorTest.java
 +++ b/test/eu/baltrad/dex/db/util/BltDataProcessorTest.java
 @@ -22,9 +22,9 @@
