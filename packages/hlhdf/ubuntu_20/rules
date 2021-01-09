@@ -1,0 +1,38 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+# Sample debian/rules that uses debhelper.
+# This file was originally written by Joey Hess and Craig Small.
+# As a special exception, when this file is copied by dh-make into a
+# dh-make output file, you may use that output file without restriction.
+# This special exception was added by Craig Small in version 0.37 of dh-make.
+
+# Uncomment this to turn on verbose mode.
+export DH_VERBOSE=1
+export DH_OPTIONS=-v
+INSTALLROOT=$(CURDIR)/debian/tmp
+
+%:
+	dh $@ --with python3
+override_dh_auto_configure:
+	./configure --prefix=/usr/lib/hlhdf --with-python=yes --with-hdf5=/usr/include/hdf5/serial,/usr/lib/x86_64-linux-gnu/hdf5/serial --with-zlib=/usr/include,/lib/x86_64-linux-gnu --enable-py3support
+override_dh_auto_build:
+	make
+override_dh_installdirs:
+	mkdir -p $(INSTALLROOT)/etc/ld.so.conf.d/baltrad/hlhdf 
+	echo "/usr/lib/hlhdf/lib" > $(INSTALLROOT)/etc/ld.so.conf.d/hlhdf.conf
+override_dh_auto_install:
+	mkdir -p $(INSTALLROOT)/usr/lib/hlhdf
+	$(MAKE) DESTDIR=$(INSTALLROOT) prefix=/usr/lib/hlhdf install
+override_dh_shlibdeps:
+	dh_shlibdeps -l $(INSTALLROOT)/usr/lib/hlhdf/lib
+#override_dh_auto_test:
+
+override_dh_install:
+	dh_python3
+	dh_numpy3
+	dh_install --sourcedir=$(INSTALLROOT)
+	dh_link
+build:
+	dh build
+
+

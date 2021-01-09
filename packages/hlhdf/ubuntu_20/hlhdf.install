@@ -1,0 +1,6 @@
+usr/lib/hlhdf/bin/hldec
+usr/lib/hlhdf/bin/hlenc
+usr/lib/hlhdf/bin/hlinstall.sh
+usr/lib/hlhdf/bin/hllist
+usr/lib/hlhdf/lib/libhlhdf.so
+usr/lib/hlhdf/mkf/hldef.mk
