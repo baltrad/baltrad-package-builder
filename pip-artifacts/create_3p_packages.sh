@@ -152,7 +152,9 @@ fi
 
 do_fetch_package_and_build psycopg2 2.7.7 psycopg2.spec python36-psycopg2-blt-2.7.7-0.x86_64.rpm
 
-do_fetch_package_and_build pyasn1 0.4.5 pyasn1.spec python36-pyasn1-blt-0.4.5-0.x86_64.rpm
+if [ "$OS_VARIANT" = "CentOS-7" ]; then
+  do_fetch_package_and_build pyasn1 0.4.5 pyasn1.spec python36-pyasn1-blt-0.4.5-0.x86_64.rpm
+fi
 
 do_fetch_package_and_build pycrypto 2.4 pycrypto.spec python36-pycrypto-blt-2.4-0.x86_64.rpm
 
