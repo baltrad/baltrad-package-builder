@@ -156,7 +156,11 @@ do_fetch_package_and_build pyasn1 0.4.5 pyasn1.spec python36-pyasn1-blt-0.4.5-0.
 
 do_fetch_package_and_build pycrypto 2.4 pycrypto.spec python36-pycrypto-blt-2.4-0.x86_64.rpm
 
-do_fetch_package_and_build python3-keyczar 0.71rc0 python3-keyczar.spec python36-keyczar-blt-0.71rc0-0.x86_64.rpm
+if [ "$OS_VARIANT" = "Red Hat Enterprise-8.0" -o "$OS_VARIANT" = "CentOS-8" ]; then
+  do_fetch_package_and_build python3-keyczar 0.71rc0 python3-keyczar-redhat8.spec python36-keyczar-blt-0.71rc0-1.x86_64.rpm
+else
+  do_fetch_package_and_build python3-keyczar 0.71rc0 python3-keyczar.spec python36-keyczar-blt-0.71rc0-0.x86_64.rpm
+fi
 
 do_fetch_package_and_build docutils 0.14 docutils.spec python36-docutils-blt-0.14-0.x86_64.rpm
 

@@ -26,7 +26,7 @@ Requires: python36-progressbar33-blt
 #Requires: python36-psycopg2-blt
 Requires: python36-werkzeug-blt
 Requires: python36-daemon-blt
-Requires: python36-pyasn1-blt
+Requires: python3-pyasn1
 Requires: python36-keyczar-blt
 Requires: python3-setuptools
 Requires: python36-sqlalchemy-blt
