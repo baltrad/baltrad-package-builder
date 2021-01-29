@@ -1,6 +1,6 @@
 --- baltrad-node.service	2019-02-07 22:31:03.948514551 +0100
 +++ baltrad-node.service	2019-02-07 22:30:53.192760476 +0100
-@@ -0,0 +1,22 @@
+@@ -0,0 +1,23 @@
 +[Unit]
 +Description=Manages the tomcat servlet engine used by baltrad node.
 +After=syslog.target network.target
@@ -20,6 +20,7 @@
 +User=baltrad
 +Group=baltrad
 +RuntimeDirectory=baltrad
++RuntimeDirectoryPreserve=yes
 +
 +[Install]
 +WantedBy=multi-user.target
