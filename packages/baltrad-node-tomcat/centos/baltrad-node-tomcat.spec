@@ -72,6 +72,9 @@ systemctl stop baltrad-node || :
 %systemd_preun baltrad-node.service || :
 
 %pre
+if [ "$1" = "2" ]; then
+  systemctl stop baltrad-node || :
+fi
 if [[ -d /var/lib/baltrad/baltrad-node-tomcat/logs ]]; then
   rm -fr /var/lib/baltrad/baltrad-node-tomcat/logs*
 fi

@@ -92,6 +92,11 @@ mkdir -p $RPM_BUILD_ROOT%{_prefix}/share/baltrad/baltrad-db/java/libs
 cp -p lib/commons/commons-lang3-3.1.jar $RPM_BUILD_ROOT%{_prefix}/share/baltrad/baltrad-db/java/libs
 cp -p lib/joda-time/joda-time-2.0.jar $RPM_BUILD_ROOT%{_prefix}/share/baltrad/baltrad-db/java/libs
 
+%pre
+if [ "$1" = "2" ]; then
+  systemctl stop bdbserver || :
+fi
+
 %post
 BALTRAD_USER="baltrad"
 BALTRAD_GROUP="baltrad"
@@ -138,6 +143,13 @@ chmod 0775 /var/run/baltrad
 chown root:$BALTRAD_GROUP /var/log/baltrad
 chown root:$BALTRAD_GROUP /var/run/baltrad
 chown -R $BALTRAD_USER:$BALTRAD_GROUP /var/lib/baltrad/bdb_storage
+
+%preun
+systemctl stop bdbserver || :
+%systemd_preun bdbserver.service || :
+
+%postun
+%systemd_postun bdbserver.service || :
 
 %files
 /usr/bin/baltrad-bdb-client

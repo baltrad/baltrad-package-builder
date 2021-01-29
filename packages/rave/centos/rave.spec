@@ -141,6 +141,12 @@ ln -s ../../../../etc/baltrad/rave/config/swedish_areas.xml		%{buildroot}/usr/li
 ln -s ../../../../etc/baltrad/rave/config/swedish_radars.xml		%{buildroot}/usr/lib/rave/config/swedish_radars.xml
 ln -s ../../../../etc/baltrad/rave/Lib/rave_defines.py %{buildroot}/usr/lib/rave/Lib/rave_defines.py
 
+%pre
+if [ "$1" = "2" ]; then
+  systemctl stop raved || :
+  systemctl stop odiminjectord || :
+fi
+
 %post
 BALTRAD_USER="baltrad"
 BALTRAD_GROUP="baltrad"
@@ -250,7 +256,16 @@ chown $BALTRAD_USER:$BALTRAD_GROUP /etc/baltrad/rave/etc/*.xml
 chown $BALTRAD_USER:$BALTRAD_GROUP /var/lib/baltrad/rave_pgf_queue.xml
 chown $BALTRAD_USER:$BALTRAD_GROUP /var/lib/baltrad/MSG_CT
 
-%postun -p /sbin/ldconfig
+%preun
+systemctl stop raved || :
+systemctl stop odiminjectord || :
+%systemd_preun raved.service || :
+%systemd_preun odiminjectord.service || :
+
+%postun 
+/sbin/ldconfig
+%systemd_postun raved.service || :
+%systemd_postun odiminjectord.service || :
 
 %files
 %doc %{_prefix}/COPYING

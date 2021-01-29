@@ -174,7 +174,7 @@ do_fetch_package_and_build tempita 0.5.2 tempita.spec python36-tempita-blt-0.5.2
 
 do_fetch_package_and_build sqlparse 0.2.4 sqlparse.spec python36-sqlparse-blt-0.2.4-0.x86_64.rpm
 
-if [ "$OS_VARIANT" = "CentOS-7" -o "$OS_VARIANT" = "CentOS-8" ]; then
+if [ "$OS_VARIANT" = "CentOS-7" ]; then
   do_fetch_package_and_build decorator 4.3.2 decorator.spec python36-decorator-blt-4.3.2-0.x86_64.rpm
 fi
 
