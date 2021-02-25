@@ -188,7 +188,7 @@ else
   do_fetch_package_and_build sqlalchemy-migrate 0.10.0 sqlalchemy-migrate.spec python36-sqlalchemy-migrate-blt-0.10.0-0.x86_64.rpm
 fi
 
-do_fetch_package_and_build werkzeug 0.14 werkzeug.spec python36-werkzeug-blt-0.14-0.x86_64.rpm
+do_fetch_package_and_build werkzeug 1.0.1 werkzeug.spec python36-werkzeug-blt-1.0.1-0.x86_64.rpm
 
 do_fetch_package_and_build cherrypy 3.8.2 cherrypy.spec python36-cherrypy-blt-3.8.2-0.x86_64.rpm
 

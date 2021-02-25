@@ -8,7 +8,7 @@
 %{!?python36_sitelib: %global python36_sitelib %(%{__python36} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
 
 Name:           python36-werkzeug-blt
-Version:        0.14
+Version:        1.0.1
 Release:        0
 Url:            https://www.palletsprojects.org/p/werkzeug/
 Summary:        The comprehensive WSGI web application library.
