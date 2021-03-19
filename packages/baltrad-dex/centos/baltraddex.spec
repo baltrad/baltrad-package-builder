@@ -53,24 +53,17 @@ ln -s ../../../../../../../../../etc/baltrad/dex.fc.properties  $RPM_BUILD_ROOT/
 ln -s ../../../../../../../../../etc/baltrad/dex.beast.properties  $RPM_BUILD_ROOT/var/lib/baltrad/baltrad-node-tomcat/webapps/BaltradDex/WEB-INF/classes/resources/dex.beast.properties
 
 %post tomcat
-BALTRAD_USER="baltrad"
-BALTRAD_GROUP="baltrad"
+BALTRAD_USER=baltrad
+BALTRAD_GROUP=baltrad
+CREATE_BALTRAD_USER=true
 
-# This code is uniquely defined for internal use at SMHI so that we can automatically test
-# and/or deploy the software. However, the default behaviour should always be that baltrad
-# uses a system user.
-# SMHI_MODE contains utv,test,prod.
-if [[ -f /etc/profile.d/smhi.sh ]]; then
-  BALTRAD_GROUP=baltradg
-  . /etc/profile.d/smhi.sh
-  if [[ "$SMHI_MODE" = "utv" ]];then
-    BALTRAD_USER="baltra.u"
-    BALTRAD_GROUP="baltragu"
-  elif [[ "$SMHI_MODE" = "test" ]];then
-    BALTRAD_USER="baltra.t"
-    BALTRAD_GROUP="baltragt"
-  fi
-else
+if [[ -f /etc/baltrad/baltrad.rc ]]; then
+  . /etc/baltrad/baltrad.rc
+fi
+
+#echo "BALTRAD_USER=$BALTRAD_USER, BALTRAD_GROUP=$BALTRAD_GROUP, CREATE_BALTRAD_USER=$CREATE_BALTRAD_USER"
+
+if [[ "$CREATE_BALTRAD_USER" = "true" ]]; then
   if ! getent group $BALTRAD_GROUP > /dev/null; then
     groupadd --system $BALTRAD_GROUP
   fi

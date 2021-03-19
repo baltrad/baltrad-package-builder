@@ -23,7 +23,6 @@ Requires: hlhdf
 Requires: hlhdf-python
 Requires: python36
 Requires: python36-progressbar33-blt
-#Requires: python36-psycopg2-blt
 Requires: python36-werkzeug-blt
 Requires: python36-daemon-blt
 Requires: python3-pyasn1
@@ -98,34 +97,17 @@ if [ "$1" = "2" ]; then
 fi
 
 %post
-BALTRAD_USER="baltrad"
-BALTRAD_GROUP="baltrad"
+BALTRAD_USER=baltrad
+BALTRAD_GROUP=baltrad
+CREATE_BALTRAD_USER=true
 
-# This code is uniquely defined for internal use at SMHI so that we can automatically test
-# and/or deploy the software. However, the default behaviour should always be that baltrad
-# uses a system user.
-# SMHI_MODE contains utv,test,prod.
-if [[ -f /etc/profile.d/smhi.sh ]]; then
-  BALTRAD_GROUP=baltradg
-  . /etc/profile.d/smhi.sh
-  if [[ "$SMHI_MODE" = "utv" ]];then
-    BALTRAD_USER="baltra.u"
-    BALTRAD_GROUP="baltragu"
-  elif [[ "$SMHI_MODE" = "test" ]];then
-    BALTRAD_USER="baltra.t"
-    BALTRAD_GROUP="baltragt"
-  fi
-  if [[ "$BALTRAD_USER" == *\.* ]]; then
-    echo "User id $BALTRAD_USER contains a ., replacing with numerical user id."
-    BALTRAD_USER=`id -u $BALTRAD_USER`
-  fi
-  TMPFILE=`mktemp`
-  cat %{_unitdir}/bdbserver.service | sed -e"s/User=baltrad/User=$BALTRAD_USER/g" | sed -e"s/Group=baltrad/Group=$BALTRAD_GROUP/g" > $TMPFILE
-  cat $TMPFILE > %{_unitdir}/bdbserver.service
-  chmod 644 %{_unitdir}/bdbserver.service
-  \rm -f $TMPFILE
-  echo "d /var/run/baltrad 0775 root $BALTRAD_GROUP -" > %{_tmpfilesdir}/baltrad-db.conf
-else
+if [[ -f /etc/baltrad/baltrad.rc ]]; then
+  . /etc/baltrad/baltrad.rc
+fi
+
+#echo "BALTRAD_USER=$BALTRAD_USER, BALTRAD_GROUP=$BALTRAD_GROUP, CREATE_BALTRAD_USER=$CREATE_BALTRAD_USER"
+
+if [[ "$CREATE_BALTRAD_USER" = "true" ]]; then
   if ! getent group $BALTRAD_GROUP > /dev/null; then
     groupadd --system $BALTRAD_GROUP
   fi
@@ -134,6 +116,18 @@ else
     adduser --system --home /var/lib/baltrad --no-create-home --shell /bin/bash -g $BALTRAD_GROUP $BALTRAD_USER
   fi
 fi
+
+if [[ "$BALTRAD_USER" == *\.* ]]; then
+  echo "User id $BALTRAD_USER contains a ., replacing with numerical user id."
+  BALTRAD_USER=`id -u $BALTRAD_USER`
+fi
+
+TMPFILE=`mktemp`
+cat %{_unitdir}/bdbserver.service | sed -e"s/^User=baltrad.*/User=$BALTRAD_USER/g" | sed -e"s/^Group=baltrad.*/Group=$BALTRAD_GROUP/g" > $TMPFILE
+cat $TMPFILE > %{_unitdir}/bdbserver.service
+chmod 644 %{_unitdir}/bdbserver.service
+\rm -f $TMPFILE
+echo "d /var/run/baltrad 0775 root $BALTRAD_GROUP -" > %{_tmpfilesdir}/baltrad-db.conf
 
 mkdir -p /var/log/baltrad
 chmod 0775 /var/log/baltrad

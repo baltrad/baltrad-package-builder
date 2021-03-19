@@ -96,34 +96,17 @@ fi
 %systemd_postun baltrad-node.service || :
 
 %post
-BALTRAD_USER="baltrad"
-BALTRAD_GROUP="baltrad"
+BALTRAD_USER=baltrad
+BALTRAD_GROUP=baltrad
+CREATE_BALTRAD_USER=true
 
-# This code is uniquely defined for internal use at SMHI so that we can automatically test
-# and/or deploy the software. However, the default behaviour should always be that baltrad
-# uses a system user.
-# SMHI_MODE contains utv,test,prod.
-if [[ -f /etc/profile.d/smhi.sh ]]; then
-  BALTRAD_GROUP=baltradg
-  . /etc/profile.d/smhi.sh
-  if [[ "$SMHI_MODE" = "utv" ]];then
-    BALTRAD_USER="baltra.u"
-    BALTRAD_GROUP="baltragu"
-  elif [[ "$SMHI_MODE" = "test" ]];then
-    BALTRAD_USER="baltra.t"
-    BALTRAD_GROUP="baltragt"
-  fi
-  if [[ "$BALTRAD_USER" == *\.* ]]; then
-    echo "User id $BALTRAD_USER contains a ., replacing with numerical user id."
-    BALTRAD_USER=`id -u $BALTRAD_USER`
-  fi
-  TMPFILE=`mktemp`
-  cat %{_unitdir}/baltrad-node.service | sed -e"s/User=baltrad/User=$BALTRAD_USER/g" | sed -e"s/Group=baltrad/Group=$BALTRAD_GROUP/g" > $TMPFILE
-  cat $TMPFILE > %{_unitdir}/baltrad-node.service
-  chmod 644 %{_unitdir}/baltrad-node.service
-  \rm -f $TMPFILE
-  echo "d /var/run/baltrad 0775 root $BALTRAD_GROUP -" > %{_tmpfilesdir}/baltrad-node-tomcat.conf
-else
+if [[ -f /etc/baltrad/baltrad.rc ]]; then
+  . /etc/baltrad/baltrad.rc
+fi
+
+#echo "BALTRAD_USER=$BALTRAD_USER, BALTRAD_GROUP=$BALTRAD_GROUP, CREATE_BALTRAD_USER=$CREATE_BALTRAD_USER"
+
+if [[ "$CREATE_BALTRAD_USER" = "true" ]]; then
   if ! getent group $BALTRAD_GROUP > /dev/null; then
     groupadd --system $BALTRAD_GROUP
   fi
@@ -132,6 +115,19 @@ else
     adduser --system --home /var/lib/baltrad --no-create-home --shell /bin/bash -g $BALTRAD_GROUP $BALTRAD_USER
   fi
 fi
+
+if [[ "$BALTRAD_USER" == *\.* ]]; then
+  echo "User id $BALTRAD_USER contains a ., replacing with numerical user id."
+  BALTRAD_USER=`id -u $BALTRAD_USER`
+fi
+
+TMPFILE=`mktemp`
+cat %{_unitdir}/baltrad-node.service | sed -e"s/^User=baltrad.*/User=$BALTRAD_USER/g" | sed -e"s/^Group=baltrad.*/Group=$BALTRAD_GROUP/g" > $TMPFILE
+cat $TMPFILE > %{_unitdir}/baltrad-node.service
+chmod 644 %{_unitdir}/baltrad-node.service
+\rm -f $TMPFILE
+
+echo "d /var/run/baltrad 0775 root $BALTRAD_GROUP -" > %{_tmpfilesdir}/baltrad-node-tomcat.conf
 
 mkdir -p /var/run/baltrad
 
@@ -153,13 +149,13 @@ chown $BALTRAD_USER:$BALTRAD_GROUP /var/lib/baltrad/baltrad-node-tomcat/logs
 chown $BALTRAD_USER:$BALTRAD_GROUP /var/lib/baltrad/baltrad-node-tomcat/conf
 
 chmod 4755 /var/log/baltrad/baltrad-node-tomcat
-chown $BALTRAD_USER:$BALTRAD_GROUP /var/log/baltrad/baltrad-node-tomcat
+chown -R $BALTRAD_USER:$BALTRAD_GROUP /var/log/baltrad/baltrad-node-tomcat
 chmod 0775 /etc/baltrad/baltrad-node-tomcat
 chown root:$BALTRAD_GROUP /etc/baltrad/baltrad-node-tomcat
 chmod 0660 /etc/baltrad/baltrad-node-tomcat/*
 chown $BALTRAD_USER:$BALTRAD_GROUP /etc/baltrad/baltrad-node-tomcat/*
 chmod 4775 /var/cache/baltrad-node-tomcat
-chown $BALTRAD_USER:$BALTRAD_GROUP /var/cache/baltrad-node-tomcat 
+chown -R $BALTRAD_USER:$BALTRAD_GROUP /var/cache/baltrad-node-tomcat 
 
 if [[ ! -f /usr/lib64/libhdf5_java.so ]]; then
   ln -s /usr/lib64/hdf5/libhdf5_java.so /usr/lib64/libhdf5_java.so

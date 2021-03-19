@@ -40,11 +40,26 @@ make
 %install
 make install DESTDIR=%{buildroot}
 %py_byte_compile %{__python36} %{buildroot}/usr/lib/bropo/share/bropo/pyropo/ || :
+mkdir -p %{buildroot}/etc/baltrad/ropo
+mv %{buildroot}/usr/lib/bropo/share/bropo/config/ropo_options.xml %{buildroot}/etc/baltrad/ropo/ropo_options.xml
+ln -s ../../../../../../etc/baltrad/ropo/ropo_options.xml %{buildroot}/usr/lib/bropo/share/bropo/config/ropo_options.xml
+
 mkdir -p %{buildroot}/etc/ld.so.conf.d/
 mkdir -p %{buildroot}%{python36_sitelib}
+
 echo "/usr/lib/bropo/lib" >> %{buildroot}/etc/ld.so.conf.d/bropo.conf
 
 %post
+BALTRAD_USER=baltrad
+BALTRAD_GROUP=baltrad
+
+if [[ -f /etc/baltrad/baltrad.rc ]]; then
+  . /etc/baltrad/baltrad.rc
+fi
+
+chown root:$BALTRAD_GROUP /etc/baltrad/ropo
+chown $BALTRAD_USER:$BALTRAD_GROUP /etc/baltrad/ropo/ropo_options.xml
+
 /sbin/ldconfig
 TMPNAME=`mktemp /tmp/XXXXXXXXXX.py`
   
@@ -70,6 +85,7 @@ EOF
 %{_prefix}/share/bropo/pyropo/_fmiimage.so
 %{_prefix}/share/bropo/pyropo/_ropogenerator.so
 /etc/ld.so.conf.d/bropo.conf
+%config /etc/baltrad/ropo/ropo_options.xml
 
 %files devel
 %{_prefix}/include/*.h

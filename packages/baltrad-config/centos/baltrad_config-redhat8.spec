@@ -27,27 +27,17 @@ Provides configuration features for the baltrad system
 %{__python36} setup.py install --skip-build --root $RPM_BUILD_ROOT
 
 %post
-BALTRAD_USER="baltrad"
-BALTRAD_GROUP="baltrad"
+BALTRAD_USER=baltrad
+BALTRAD_GROUP=baltrad
+CREATE_BALTRAD_USER=true
 
-#[ # Reading value of  SMHI_MODE. Handles enviroments: utv, test and prod where prod is default This is just for testing & development purposes
-#-f /etc/profile.d/smhi.sh ] && . /etc/profile.d/smhi.sh
+if [[ -f /etc/baltrad/baltrad.rc ]]; then
+  . /etc/baltrad/baltrad.rc
+fi
 
-# This code is uniquely defined for internal use at SMHI so that we can automatically test
-# and/or deploy the software. However, the default behaviour should always be that baltrad
-# uses a system user.
-# SMHI_MODE contains utv,test,prod.
-if [[ -f /etc/profile.d/smhi.sh ]]; then
-  BALTRAD_GROUP=baltradg
-  . /etc/profile.d/smhi.sh
-  if [[ "$SMHI_MODE" = "utv" ]];then
-    BALTRAD_USER="baltra.u"
-    BALTRAD_GROUP="baltragu"
-  elif [[ "$SMHI_MODE" = "test" ]];then
-    BALTRAD_USER="baltra.t"
-    BALTRAD_GROUP="baltragt"
-  fi
-else
+#echo "BALTRAD_USER=$BALTRAD_USER, BALTRAD_GROUP=$BALTRAD_GROUP, CREATE_BALTRAD_USER=$CREATE_BALTRAD_USER"
+
+if [[ "$CREATE_BALTRAD_USER" = "true" ]]; then
   if ! getent group $BALTRAD_GROUP > /dev/null; then
     groupadd --system $BALTRAD_GROUP
   fi

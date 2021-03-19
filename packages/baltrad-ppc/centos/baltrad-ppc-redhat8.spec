@@ -43,44 +43,15 @@ echo "/usr/lib/baltrad-ppc/lib" >> %{buildroot}/etc/ld.so.conf.d/baltrad-ppc.con
 ln -s ../../../../../../etc/baltrad/baltrad-ppc/config/ppc_options.xml 		%{buildroot}/%{_prefix}/share/baltrad-ppc/config/ppc_options.xml
 
 %post
-BALTRAD_USER="baltrad"
-BALTRAD_GROUP="baltrad"
+BALTRAD_USER=baltrad
+BALTRAD_GROUP=baltrad
 
-# This code is uniquely defined for internal use at SMHI so that we can automatically test
-# and/or deploy the software. However, the default behaviour should always be that baltrad
-# uses a system user.
-# SMHI_MODE contains utv,test,prod.
-if [[ -f /etc/profile.d/smhi.sh ]]; then
-  BALTRAD_GROUP=baltradg
-  . /etc/profile.d/smhi.sh
-  if [[ "$SMHI_MODE" = "utv" ]];then
-    BALTRAD_USER="baltra.u"
-    BALTRAD_GROUP="baltragu"
-  elif [[ "$SMHI_MODE" = "test" ]];then
-    BALTRAD_USER="baltra.t"
-    BALTRAD_GROUP="baltragt"
-  fi
-  if [[ "$BALTRAD_USER" == *\.* ]]; then
-    echo "User id $BALTRAD_USER contains a ., replacing with numerical user id."
-    BALTRAD_USER=`id -u $BALTRAD_USER`
-  fi
-  TMPFILE=`mktemp`
-  cat %{_unitdir}/baltrad-node.service | sed -e"s/User=baltrad/User=$BALTRAD_USER/g" | sed -e"s/Group=baltrad/Group=$BALTRAD_GROUP/g" > $TMPFILE
-  cat $TMPFILE > %{_unitdir}/baltrad-node.service
-  chmod 644 %{_unitdir}/baltrad-node.service
-  \rm -f $TMPFILE
-  echo "d /var/run/baltrad 0775 root $BALTRAD_GROUP -" > %{_tmpfilesdir}/baltrad-node-tomcat.conf
-else
-  if ! getent group $BALTRAD_GROUP > /dev/null; then
-    groupadd --system $BALTRAD_GROUP
-  fi
-
-  if ! getent passwd "$BALTRAD_USER" > /dev/null; then
-    adduser --system --home /var/lib/baltrad --no-create-home --shell /bin/bash -g $BALTRAD_GROUP $BALTRAD_USER
-  fi
+if [[ -f /etc/baltrad/baltrad.rc ]]; then
+  . /etc/baltrad/baltrad.rc
 fi
 
 /sbin/ldconfig
+
 TMPNAME=`mktemp /tmp/XXXXXXXXXX.py`
   
 cat <<EOF > $TMPNAME
@@ -93,6 +64,8 @@ EOF
 %{__python36} $TMPNAME
 \rm -f $TMPNAME
 
+chown root:$BALTRAD_GROUP /etc/baltrad/baltrad-ppc
+chown root:$BALTRAD_GROUP /etc/baltrad/baltrad-ppc/config
 chown $BALTRAD_USER:$BALTRAD_GROUP /etc/baltrad/baltrad-ppc/config/ppc_options.xml
 
 %postun -p /sbin/ldconfig

@@ -167,6 +167,7 @@ if [ "$OS_VERSION" = "Red Hat Enterprise-8.0" -o "$OS_VERSION" == "CentOS-8" ]; 
   ./scripts/build_package.sh proj49-blt        $PKG_BUILD_NUMBER $BALTRAD_NO_VERSION_OPT_STR || print_error_and_exit "Failed to build hdf-java"
 fi
 
+./scripts/build_package.sh baltrad-base        $PKG_BUILD_NUMBER $BALTRAD_OPT_STR || print_error_and_exit "Failed to build baltrad-base"
 ./scripts/build_package.sh hlhdf               $PKG_BUILD_NUMBER $HLHDF_OPT_STR || print_error_and_exit "Failed to build hlhdf" 
 ./scripts/build_package.sh bbufr               $PKG_BUILD_NUMBER $BALTRAD_OPT_STR || print_error_and_exit "Failed to build bbufr"
 ./scripts/build_package.sh rave                $PKG_BUILD_NUMBER $BALTRAD_OPT_STR || print_error_and_exit "Failed to build rave"
