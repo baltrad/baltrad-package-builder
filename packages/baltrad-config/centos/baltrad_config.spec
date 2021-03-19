@@ -51,8 +51,12 @@ if [[ -L /etc/baltrad/bltnode-keys ]]; then
   echo "/etc/baltrad/bltnode-keys exists!"
 elif [[ -d /etc/baltrad/bltnode-keys ]]; then
   echo "/etc/baltrad/bltnode-keys exists!"
+  chmod 0775 /etc/baltrad/bltnode-keys
+  chown root:$BALTRAD_GROUP /etc/baltrad/bltnode-keys
 elif [[ -f /etc/baltrad/bltnode-keys ]]; then
   echo "/etc/baltrad/bltnode-keys exists!"
+  chmod 0775 /etc/baltrad/bltnode-keys
+  chown root:$BALTRAD_GROUP /etc/baltrad/bltnode-keys
 else
   echo "/etc/baltrad/bltnode-keys does not exist, creating it!"
   mkdir -p /etc/baltrad/bltnode-keys
