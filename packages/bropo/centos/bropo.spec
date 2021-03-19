@@ -81,6 +81,7 @@ EOF
 %{_prefix}/share/bropo/pyropo/ropo_*.py
 %{_prefix}/share/bropo/pyropo/ropo_*.pyc
 %{_prefix}/share/bropo/pyropo/ropo_*.pyo
+{_prefix}/share/bropo/pyropo/__pycache__/*.pyc
 %{python36_sitelib}/pyropo.pth
 %{_prefix}/share/bropo/pyropo/_fmiimage.so
 %{_prefix}/share/bropo/pyropo/_ropogenerator.so
