@@ -37,12 +37,15 @@ make
 
 %install
 make install DESTDIR=%{buildroot}
-%py_byte_compile %{__python36} %{buildroot}/usr/lib/beamb/share/beamb/pybeamb/ || :
 mkdir -p %{buildroot}%{python36_sitelib}
-#mkdir -p %{buildroot}/usr/lib/python2.7/dist-packages
 mkdir -p %{buildroot}/usr/lib/beamb
 mkdir -p %{buildroot}/etc/ld.so.conf.d
 mkdir -p %{buildroot}/var/cache/beamb
+mkdir -p %{buildroot}/etc/baltrad/beamb
+mv %{buildroot}/usr/lib/beamb/share/beamb/pybeamb/beamb_defines.py %{buildroot}/etc/baltrad/beamb/beamb_defines.py
+ln -s ../../../../../../etc/baltrad/beamb/beamb_defines.py %{buildroot}/usr/lib/beamb/share/beamb/pybeamb/beamb_defines.py
+%py_byte_compile %{__python36} %{buildroot}/usr/lib/beamb/share/beamb/pybeamb/ || :
+
 echo "/usr/lib/beamb/lib">> %{buildroot}/etc/ld.so.conf.d/beamb.conf
 
 %post
@@ -54,6 +57,7 @@ if [[ -f /etc/baltrad/baltrad.rc ]]; then
 fi
 
 chown -R $BALTRAD_USER:$BALTRAD_GROUP /var/cache/beamb
+chown -R $BALTRAD_USER:$BALTRAD_GROUP /etc/baltrad/beamb
 
 /sbin/ldconfig
 TMPNAME=`mktemp /tmp/XXXXXXXXXX.py`
@@ -82,6 +86,7 @@ EOF
 %{python36_sitelib}/pybeamb.pth
 /var/cache/beamb
 /etc/ld.so.conf.d/beamb.conf
+%config /etc/baltrad/beamb/beamb_defines.py
 
 %files devel
 %{_prefix}/include/*.h
