@@ -67,7 +67,8 @@ fi
 
 %files
 /usr/bin/baltrad-config
-/usr/bin/bltcmd
+/usr/bin/bltcfg
+/usr/bin/bltgroovyroute
 /usr/lib/python3.6/site-packages/baltrad/config
 /usr/lib/python3.6/site-packages/baltrad.*.pth
 /usr/lib/python3.6/site-packages/baltrad.*dev0-*.egg-info/*
