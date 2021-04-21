@@ -44,7 +44,7 @@ mkdir -p %{buildroot}/var/cache/beamb
 mkdir -p %{buildroot}/etc/baltrad/beamb
 mv %{buildroot}/usr/lib/beamb/share/beamb/pybeamb/beamb_defines.py %{buildroot}/etc/baltrad/beamb/beamb_defines.py
 ln -s ../../../../../../etc/baltrad/beamb/beamb_defines.py %{buildroot}/usr/lib/beamb/share/beamb/pybeamb/beamb_defines.py
-
+\rm -f 
 echo "/usr/lib/beamb/lib">> %{buildroot}/etc/ld.so.conf.d/beamb.conf
 
 %post
@@ -86,6 +86,8 @@ EOF
 /var/cache/beamb
 /etc/ld.so.conf.d/beamb.conf
 %config /etc/baltrad/beamb/beamb_defines.py
+%exclude /etc/baltrad/beamb/beamb_defines.pyc
+%exclude /etc/baltrad/beamb/beamb_defines.pyo
 
 %files devel
 %{_prefix}/include/*.h
