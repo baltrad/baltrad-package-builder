@@ -25,6 +25,8 @@ Provides configuration features for the baltrad system
 
 %install
 %{__python36} setup.py install --skip-build --root $RPM_BUILD_ROOT
+mkdir -p $RPM_BUILD_ROOT/usr/share/doc/baltrad-config
+cp README.bltcfg $RPM_BUILD_ROOT/usr/share/doc/baltrad-config/README.bltcfg
 
 %post
 BALTRAD_USER=baltrad
@@ -34,8 +36,6 @@ CREATE_BALTRAD_USER=true
 if [[ -f /etc/baltrad/baltrad.rc ]]; then
   . /etc/baltrad/baltrad.rc
 fi
-
-#echo "BALTRAD_USER=$BALTRAD_USER, BALTRAD_GROUP=$BALTRAD_GROUP, CREATE_BALTRAD_USER=$CREATE_BALTRAD_USER"
 
 if [[ "$CREATE_BALTRAD_USER" = "true" ]]; then
   if ! getent group $BALTRAD_GROUP > /dev/null; then
@@ -71,3 +71,4 @@ fi
 /usr/lib/python3.6/site-packages/baltrad/config
 /usr/lib/python3.6/site-packages/baltrad.*.pth
 /usr/lib/python3.6/site-packages/baltrad.*dev0-*.egg-info/*
+/usr/share/doc/baltrad-config/README.bltcfg
