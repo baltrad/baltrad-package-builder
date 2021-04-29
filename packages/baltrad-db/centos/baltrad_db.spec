@@ -123,6 +123,7 @@ if [[ "$BALTRAD_USER" == *\.* ]]; then
   BALTRAD_USER=`id -u $BALTRAD_USER`
 fi
 
+TMPFILE=`mktemp`
 cat %{_unitdir}/bdbserver.service | sed -e"s/^User=baltrad.*/User=$BALTRAD_USER/g" | sed -e"s/^Group=baltrad.*/Group=$BALTRAD_GROUP/g" > $TMPFILE
 cat $TMPFILE > %{_unitdir}/bdbserver.service
 chmod 644 %{_unitdir}/bdbserver.service
