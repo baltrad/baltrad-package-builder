@@ -10,7 +10,7 @@ Summary: BaltradDB
 License: GPL-3 and LGPL-3
 URL: http://www.baltrad.eu/
 Patch1: baltrad_db_server_setup.patch
-Patch2: bdbserver_service.patch
+Patch2: bdbserver_service-RH7.patch
 Source0: %{name}-%{version}.tar.gz
 Source1: baltrad-db-tmpfiles.d.conf
 BuildRequires: python36-devel

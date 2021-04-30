@@ -7,12 +7,12 @@
 +
 +[Service]
 +Type=forking
-+PIDFile=/var/run/baltrad/odim_injector.pid
-+ExecStart=/usr/lib/rave/bin/odim_injector --pidfile=/var/run/baltrad/odim_injector.pid --logfile=/var/log/baltrad/odim_injector.log --indir=/var/lib/baltrad/odim_injector/data
-+ExecStop=/usr/lib/rave/bin/odim_injector --pidfile=/var/run/baltrad/odim_injector.pid --kill
++PIDFile=/var/run/odim_injector/odim_injector.pid
++ExecStart=/usr/lib/rave/bin/odim_injector --pidfile=/var/run/odim_injector/odim_injector.pid --logfile=/var/log/baltrad/odim_injector.log --indir=/var/lib/baltrad/odim_injector/data
++ExecStop=/usr/lib/rave/bin/odim_injector --pidfile=/var/run/odim_injector/odim_injector.pid --kill
 +User=baltrad
 +Group=baltrad
-+RuntimeDirectory=baltrad
++RuntimeDirectory=odim_injector
 +RuntimeDirectoryPreserve=yes
 +
 +[Install]

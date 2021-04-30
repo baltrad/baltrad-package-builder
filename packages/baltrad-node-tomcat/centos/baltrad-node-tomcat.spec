@@ -9,7 +9,7 @@ License: See LICENSE information for tomcat
 URL: http://www.baltrad.eu/
 Patch1: 001-baltrad-node.patch
 Patch2: 002-server-xml.patch
-Patch3: 003-baltrad-node-service.patch
+Patch3: 004-baltrad-node-service-RH7.patch
 Source0: %{name}-%{version}.tar.gz
 Source1: baltrad-node-tomcat-tmpfiles.d.conf
 # Server binary needed

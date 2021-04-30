@@ -12,8 +12,8 @@ Source0: %{name}-%{version}.tar.gz
 Source1: rave.conf
 Source2: rave-tmpfiles.d.conf
 Patch1: 001-raved.patch
-Patch2: 002-rave_defines.patch
-Patch3: 003-raved-service.patch
+Patch2: 006-rave_defines-RH7.patch
+Patch3: 007-raved-service-RH7.patch
 Patch4: 004-odiminjectord-service.patch
 Patch5: 005-odim_injector_bltroot.patch
 BuildRequires: hlhdf-devel
