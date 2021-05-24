@@ -3,7 +3,7 @@
 %define _prefix /usr/lib/%{name}
 
 Name: hlhdf
-Version: 0.9.0
+Version: %{version}
 Release: %{snapshot}%{?dist}
 Summary: HL-HDF
 License: GPL-3 and LGPL-3

@@ -8,7 +8,7 @@ Release: %{snapshot}%{?dist}
 Summary: Baltrad weather radar wind products
 License: LGPL-3
 URL: http://www.baltrad.eu/
-Patch1: make-for-atlas.patch
+#Patch1: make-for-atlas.patch
 Source0: %{name}-%{version}.tar.gz
 BuildRequires: rave
 BuildRequires: rave-devel
@@ -42,7 +42,7 @@ Baltrad weather radar wind products Python module.
 
 %prep
 %setup -q
-%patch1 -p1
+#%patch1 -p1
 
 %build
 %configure --prefix=/usr/lib/baltrad-wrwp --with-rave=/usr/lib/rave --with-lapack=/usr/lib64 --with-lapacke=/usr/include/lapacke,/usr/lib64 --with-cblas=/usr/include,/usr/lib64/atlas --with-blas=/usr/lib64

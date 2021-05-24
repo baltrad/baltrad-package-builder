@@ -248,7 +248,6 @@ prepare_and_build_centos()
     tar -cvzf "$RPM_TOP_DIR/SOURCES/$3-$4.tar.gz" "$3"
     cd "$3"
   fi
-
   rpmbuild --define="version $4" --define "snapshot $5" -v -ba "$2" || exit 127
   
   if [ "$RPM_ARTIFACTS" != "" ]; then
