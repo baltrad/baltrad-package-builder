@@ -68,7 +68,7 @@ RAVE development headers and libraries.
 
 %build
 make distclean || true
-%configure --prefix=/usr/lib/rave --with-hlhdf=/usr/lib/hlhdf --with-proj=/usr/lib/proj49-blt/include,/usr/lib/proj49-blt/lib64 --with-expat --with-bufr=/usr/lib/bbufr --with-netcdf=yes  --enable-py3support --with-py3bin=python3.6 --with-py3bin-config=python3.6-config --with-python-makefile=/usr/lib64/python3.6/config-3.6m-x86_64-linux-gnu/Makefile
+%configure --prefix=/usr/lib/rave --with-hlhdf=/usr/lib/hlhdf --with-legacy-proj=/usr/lib/proj49-blt/include,/usr/lib/proj49-blt/lib64 --with-expat --with-bufr=/usr/lib/bbufr --with-netcdf=yes  --enable-py3support --with-py3bin=python3.6 --with-py3bin-config=python3.6-config --with-python-makefile=/usr/lib64/python3.6/config-3.6m-x86_64-linux-gnu/Makefile
 make
 
 %install
