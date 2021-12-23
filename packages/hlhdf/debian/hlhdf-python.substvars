@@ -1,5 +1,5 @@
-python:Depends=python-numpy (>= 1:1.10.0~b1), python-numpy-abi9, python (>= 2.7), python (<< 2.8)
-python:Versions=2.7
-shlibs:Depends=libc6 (>= 2.14), libhdf5-10
+python:Depends=python3-numpy (>= 1:1.10.0~b1), python3-numpy-abi9, python (>= 3.6)
+python:Versions=3.6
+shlibs:Depends=libc6 (>= 2.14), libhdf5-100
 misc:Depends=
 misc:Pre-Depends=
