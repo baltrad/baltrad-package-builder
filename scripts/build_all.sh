@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 print_error_and_exit() {
   echo $1
@@ -69,6 +69,7 @@ ARTIFACTS=
 OPT_INSTALL_ARTIFACTS=
 REBUILD_PIPPACKAGES=no
 BUILD_LOG=
+DOCKER_BUILD=
 
 for arg in $*; do
   case $arg in
@@ -109,6 +110,9 @@ for arg in $*; do
     --build-log=*)
       BUILD_LOG=`echo $arg | sed 's/[-a-zA-Z0-9]*=//'`
       ;;
+    --docker=*)
+      DOCKER_BUILD=`echo $arg | sed 's/--docker=//'`
+      ;;      
     --help)
       usage $0
       exit 0
@@ -152,7 +156,13 @@ if [ "$BUILD_LOG" != "" ]; then
   BALTRAD_NO_VERSION_OPT_STR="$BALTRAD_NO_VERSION_OPT_STR  --build-log=$BUILD_LOG"
 fi
 
-if [ "$OS_VERSION" != "Ubuntu-16.04" -a "$OS_VERSION" != "Ubuntu-18.04" ]; then
+if [ "$DOCKER_BUILD" != "" ]; then
+  HLHDF_OPT_STR="$HLHDF_OPT_STR --docker=$DOCKER_BUILD"
+  BALTRAD_OPT_STR="$BALTRAD_OPT_STR --docker=$DOCKER_BUILD"
+  BALTRAD_NO_VERSION_OPT_STR="$BALTRAD_NO_VERSION_OPT_STR --docker=$DOCKER_BUILD"
+fi
+
+if [[ "$OS_VERSION" != "Ubuntu-"* ]]; then
   PIPARGS="--install"
   if [ "$REBUILD_PIPPACKAGES" != "no" ]; then
     PIPARGS="$PIPARGS --rebuild"
@@ -160,14 +170,19 @@ if [ "$OS_VERSION" != "Ubuntu-16.04" -a "$OS_VERSION" != "Ubuntu-18.04" ]; then
   if [ "$ARTIFACTS" != "" ]; then
     PIPARGS="$PIPARGS --artifacts=$ARTIFACTS"
   fi
+  if [ "$DOCKER_BUILD" != "" ]; then
+    PIPARGS="$PIPARGS --docker=$DOCKER_BUILD"
+  fi
   ./pip-artifacts/create_3p_packages.sh $PIPARGS || print_error_and_exit "Failure during pip package build step"
 fi
 
-if [ "$OS_VERSION" = "Red Hat Enterprise-8.0" -o "$OS_VERSION" == "CentOS-8" ]; then
+if [ "$OS_VERSION" = "Red Hat Enterprise-8.0" -o "$OS_VERSION" = "CentOS-8" -o "$DOCKER_BUILD" = "CentOS-8" -o "$DOCKER_BUILD" = "RedHat-8" ]; then
   ./scripts/build_package.sh proj49-blt        $PKG_BUILD_NUMBER $BALTRAD_NO_VERSION_OPT_STR || print_error_and_exit "Failed to build hdf-java"
 fi
 
-./scripts/build_package.sh baltrad-base        $PKG_BUILD_NUMBER $BALTRAD_OPT_STR || print_error_and_exit "Failed to build baltrad-base"
+if [ "$OS_VERSION" = "Red Hat Enterprise-8.0" -o "$OS_VERSION" = "CentOS-8" -o "$DOCKER_BUILD" = "CentOS-8" -o "$DOCKER_BUILD" = "RedHat-8" ]; then
+  ./scripts/build_package.sh baltrad-base        $PKG_BUILD_NUMBER $BALTRAD_OPT_STR || print_error_and_exit "Failed to build baltrad-base"
+fi
 ./scripts/build_package.sh hlhdf               $PKG_BUILD_NUMBER $HLHDF_OPT_STR || print_error_and_exit "Failed to build hlhdf" 
 ./scripts/build_package.sh bbufr               $PKG_BUILD_NUMBER $BALTRAD_OPT_STR || print_error_and_exit "Failed to build bbufr"
 ./scripts/build_package.sh rave                $PKG_BUILD_NUMBER $BALTRAD_OPT_STR || print_error_and_exit "Failed to build rave"
@@ -179,7 +194,7 @@ fi
 ./scripts/build_package.sh baltrad-beast       $PKG_BUILD_NUMBER $BALTRAD_OPT_STR || print_error_and_exit "Failed to build baltrad-beast"
 ./scripts/build_package.sh baltrad-config      $PKG_BUILD_NUMBER $BALTRAD_OPT_STR || print_error_and_exit "Failed to build baltrad-config"
 
-if [ "$OS_VERSION" != "Ubuntu-16.04" -a "$OS_VERSION" != "Ubuntu-18.04" -a "$OS_VERSION" != "Red Hat Enterprise-8.0" -a "$OS_VERSION" != "CentOS-8" ]; then
+if [ "$OS_VERSION" = "CentOS-7" -o "$DOCKER_BUILD" = "CentOS-7" ]; then
   ./scripts/build_package.sh hdf-java            $PKG_BUILD_NUMBER $BALTRAD_NO_VERSION_OPT_STR || print_error_and_exit "Failed to build hdf-java"
 fi
 

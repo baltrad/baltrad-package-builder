@@ -1,8 +1,23 @@
 #!/bin/bash
 
+SCRIPTPATH="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
+PROJECTPATH="$(dirname $SCRIPTPATH)"
+DOCKERPATH="$PROJECTPATH/docker"
+
 # Brief usage
 usage_brief() {
   echo "Usage: `basename $0` [<options>]"
+}
+
+exit_with_error()
+{
+  echo "$2" 1>&2
+  exit $1
+}
+
+echo_to_stderr()
+{
+  echo "$2" 1>&2
 }
 
 # Usage
@@ -45,11 +60,12 @@ copy_package_to_location() {
   fi
 }
 
-SCRIPTDIR=`dirname $(python3.6 -c "import os; print(os.path.abspath(\"$0\"))")`
+SCRIPTDIR=$SCRIPTPATH
 SPECDIR=$SCRIPTDIR
 INSTALLPACKAGES=no
 REBUILDPACKAGES=no
 ARTIFACTS="$SCRIPTDIR/artifacts"
+DOCKER_BUILD=
 
 for arg in $*; do
   case $arg in
@@ -62,6 +78,9 @@ for arg in $*; do
     --artifacts=*)
       ARTIFACTS=`echo $arg | sed 's/[-a-zA-Z0-9]*=//'`
       ;;
+    --docker=*)
+      DOCKER_BUILD=`echo $arg | sed 's/--docker=//'`
+      ;;      
     --help)
       usage $0
       exit 0
@@ -73,6 +92,65 @@ for arg in $*; do
       ;;      
   esac
 done
+
+run_docker_build() {
+  dockerver=$1
+  dockerimage=`echo $dockerver | tr A-Z a-z`-bpb-image
+  artifactrepo=$2
+  
+  pipargs="--install"
+  if [ "$REBUILDPACKAGE" = "yes" ]; then
+    pipargs="$pipargs --rebuild"
+  fi
+  
+  if [ -d "$DOCKERPATH/$dockerver" ]; then
+    BUILT=$(docker image ls | grep $dockerimage)
+    if [ "$BUILT" == "" ]; then
+      cd "$DOCKERPATH/$1"
+      docker build -t $dockerimage .
+    fi
+    docker container rm "$dockerimage" >> /dev/null 2>&1
+    TMPSOURCES=`mktemp -d`    TMPSOURCES=`mktemp -d`
+    cd "$PROJECTPATH"
+    git ls-files | tar -cf "$TMPSOURCES/docker_build.tar" -T - || exit_with_error 127 "Failed to create tar-file"
+    docker run --name "$dockerimage" -v "$TMPSOURCES":/projects/sources -it $dockerimage /bin/bash -c "tar -xf /projects/sources/docker_build.tar -C /projects/baltrad-package-builder/ && mkdir -p /projects/artifacts/3p_packages && \rm -f /projects/artifacts/3p_packages/*.* && \rm -f /projects/artifacts/3p_packages.tar && /projects/baltrad-package-builder/pip-artifacts/create_3p_packages.sh $pipargs --artifacts=/projects/artifacts/3p_packages && tar -cf /projects/artifacts/3p_packages.tar -C /projects/artifacts 3p_packages" || (echo_to_stderr "Failed to run build" && \rm -fr "$TMPSOURCES" && exit 127)
+    #docker run --name "$dockerimage" -v "$PROJECTPATH":/projects/baltrad-package-builder -u $(id -u ${USER}):$(id -g ${USER}) -it $dockerimage /bin/bash -c "mkdir -p /projects/artifacts/3p_packages && \rm -f /projects/artifacts/3p_packages/*.* && \rm -f /projects/artifacts/3p_packages.tar && /projects/baltrad-package-builder/pip-artifacts/create_3p_packages.sh $pipargs --artifacts=/projects/artifacts/3p_packages && tar -cf /projects/artifacts/3p_packages.tar -C /projects/artifacts 3p_packages" || exit_with_error 127 "Failed to run command"
+    \rm -fr "$TMPSOURCES"
+    echo "Updating $dockerimage commit for $pkgname"
+    LAST_COMMIT=`docker ps --all | grep $dockerimage | head -1 | cut -d' ' -f1` || exit_with_error 127 "Failed list ran commit"
+    docker commit "$LAST_COMMIT" $dockerimage || exit_with_error 127 "Failed to commit build for $dockerimage"
+    TMPD=`mktemp -d` || exit_with_error 127 "Could not create temporary directory"
+    echo "docker container cp $dockerimage:/projects/artifacts/3p_packages.tar $TMPD"
+    docker cp $dockerimage:/projects/artifacts/3p_packages.tar $TMPD
+    if [ $? -ne 0 ]; then
+      \rm -fr "$TMPD"
+      echo "Could not perform docker cp $dockerimage:/projects/artifacts/3p_packages.tar to $TMPD"
+      exit 127
+    fi
+    tar -xf "$TMPD/3p_packages.tar" -C "$TMPD"
+    if [ $? -ne 0 ]; then
+      \rm -fr "$TMPD"
+      echo "Could not extract $TMPD/3p_packages.tar"
+      exit 127
+    fi
+    echo "copy_package_to_location \"$artifactrepo\" \"$TMPD/3p_packages/*.*\""
+    copy_package_to_location "$artifactrepo" "$TMPD/3p_packages/*.*"
+    if [ $? -ne 0 ]; then
+      \rm -fr "$TMPD"
+      echo "Could not distribute files from $TMPD/3p_packages.tar"
+      exit 127
+    fi    
+    \rm -fr "$TMPD"
+  else
+    echo "No docker support for OS-version: $ver"
+    exit 127
+  fi
+}
+
+if [ "$DOCKER_BUILD" != "" ]; then
+  run_docker_build "$DOCKER_BUILD" "$ARTIFACTS"
+  exit 0
+fi
 
 SOURCEDIR=`rpmbuild --eval '%_topdir'/SOURCES/`
 RPMDIR=`rpmbuild --eval '%_topdir'/RPMS/x86_64/`

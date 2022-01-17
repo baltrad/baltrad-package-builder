@@ -1,3 +1,109 @@
+Copyright (C) 2010- Swedish Meteorological and Hydrological Institute (SMHI)
+
+This file is part of baltrad-package-builder.
+
+baltrad-package-builder is free software: you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+baltrad-package-builder is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+See the GNU Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public License
+along with baltrad-package-builder.  If not, see <http://www.gnu.org/licenses/>.
+
+Author: Anders Henja
+Date: 2022-01-14
+
+==== INTRODUCTION ====
+To simplify building and installation of the BALTRAD software a number of scripts
+and configuration files has been added to this project. The original intention
+was to build the packages on the same OS as the software should be installed on and
+still is.
+
+However, to simplify building and creating packages for different operating systems (Linuces),
+we have added a docker-solution that makes it possible to create individual packages for a target
+OS as well. 
+
+There are a few folders that are of interest:
+- scripts  - Here are all build scripts (except pip-artifacts)
+  + scripts/build_package.sh         is used to create the baltrad packages
+  + scripts/build_all.sh             will build both pip-artifacts as well as all baltrad-artifacts
+  + scripts/build_docker.sh          is used when it is necessary to force a build or rebuild of a docker image
+  + scripts/remove_builds.sh         removes the build(s)-catalogues
+  + scripts/create_release_notes.sh  creates the release notes
+
+- pip-artifacts - Several dependencies are only available as pip-packages. However, since we want to install all our dependencies using yum we are creating packages from a number of pip-packages.
+  + pip-artifacts/create_3p_packages.sh   Creates all pip-packages for the requested OS
+  
+- packages - Here are all baltrad-specific packages defined.
+  Each directory under packages is defined as an baltrad-artifact and each of these directories should contain a file called package.ini
+  
+- docker - Here are the supported docker containers defined.
+  Each directory under this package maps to one operating system. For example Ubuntu-21.10 or CentOS-8.
+  
+==== BUILDING ====
+As mentioned earlier, there are two variants for building the system. Either on the operating system that
+the packages are ment to be run on or by using the builtin docker support.
+
+======= Host =========
+In order to build the system you will have to setup the necessary requirements. A good start is to look at the Dockerfiles that
+are located under the different OS-variants in the "docker"-folder. The Dockerfiles will contain necessary third-party requirements
+as well as necessary commands in order to get all dependencies in place before building the system.
+
+Most likely you are interested in building all packages at the same time and the command to use for that is something like:
+
+%> ./scripts/build_all.sh auto --build-log=build.log --artifacts=/<software repo>/artifacts
+
+Which will atempt to build all artifacts for the current operating system. However, in a lot of cases this will
+obviously not work and then it might be time to look at the "Docker" support instead.
+
+======= Docker =========
+First, if you are planning to build packages continously for one specific operating system the best approach
+it to create a proper docker container and then clone the baltrad-package-builder in that container and build
+everything in there and this approach is quite similar to how the system is built on any other server.
+
+For developing / building separate packages for specific operating system we have added a specific option
+so that it is possible to build the packages within a docker containter directly from the host. This options is
+named "--docker" and is specified with --docker=<OS variant> where OS-variant is defined in the folder "docker". 
+This option is supported by build_package.sh, build_all.sh and create_3p_packages.sh.
+
+You can list all supported OS-variants by listing the folders inside the docker-folder, for example by running "ls -1 docker/" or
+"./scripts/build_docker.sh list". 
+
+At the time of writing this README, there are two different operating systems defined, CentOS-8 & Ubuntu-21.10. The created docker 
+image will be named <OS-variant>-bpb-image where the <OS-variant> will be translated to lower-characters.
+
+When issuing the --docker=<OS-variant>. A new docker container will be spawned with the same name as the docker image for each package build by using docker run. 
+If the command is executed successfully in the docker container then the successful container change will be committed to the image to keep track on previous
+builds and to be able to ensure that dependencies are in place. 
+
+The docker image is only built once for the specified operating system and if the Dockerfile is modified or
+you want to ensure that the package is installed from scratch and not updated then you can use the build_docker.sh script.
+
+========== Docker caveats ================
+In order to make the docker build process not affecting the local file system in any way, this project (baltrad-package-builder) will
+be archived into a tar-file that will be unpacked inside the docker container. To only archive the relevant scripts the command
+"git ls-files" has been used which has the downside that files that hasn't been added to the project will not be archived. Obviously,
+this means that any files that should be used in the build-process must be added (git add...) to the project before trying to use
+the docker support.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 To get started there are a few dependencies that has to be installed before atempting
 to build the various packages.
 
