@@ -9,8 +9,8 @@
 +[Service]
 +Type=forking
 +PIDFile=/var/run/baltrad/rave_pgf_server.pid
-+ExecStart=/usr/lib/rave/bin/rave_pgf start
-+ExecStop=/usr/lib/rave/bin/rave_pgf stop
++ExecStart=/usr/bin/rave_pgf start
++ExecStop=/usr/bin/rave_pgf stop
 +User=baltrad
 +Group=baltrad
 +RuntimeDirectory=baltrad

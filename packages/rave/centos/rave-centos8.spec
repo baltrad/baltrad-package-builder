@@ -79,6 +79,7 @@ make
 rm -rf %{buildroot}
 mkdir -p %{buildroot}
 mkdir -p %{buildroot}/usr/lib/rave
+mkdir -p %{buildroot}/usr/bin
 mkdir -p %{buildroot}/etc/init.d
 mkdir -p %{buildroot}/etc/ld.so.conf.d
 mkdir -p %{buildroot}/etc/baltrad/rave/Lib
@@ -91,6 +92,11 @@ mkdir -p %{buildroot}/var/lib/baltrad/MSG_CT
 mkdir -p %{buildroot}%{python36_sitelib}
 echo "/usr/lib/rave/Lib">> %{buildroot}/etc/ld.so.conf.d/rave.conf
 make install DESTDIR=%{buildroot}
+cp %{buildroot}/usr/lib/rave/bin/fm12_importer %{buildroot}/usr/bin/ 
+cp %{buildroot}/usr/lib/rave/bin/odim_injector %{buildroot}/usr/bin/ 
+cp %{buildroot}/usr/lib/rave/bin/odim_injector.sh %{buildroot}/usr/bin/ 
+cp %{buildroot}/usr/lib/rave/bin/rave_pgf %{buildroot}/usr/bin/ 
+cp %{buildroot}/usr/lib/rave/bin/rave_pgf_logger %{buildroot}/usr/bin/ 
 %py_byte_compile %{__python36} %{buildroot}/usr/lib/rave/Lib || :
 install -p -D -m 0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/ld.so.conf.d/rave.conf
 install -p -D -m 0644 %{SOURCE2} %{buildroot}%{_tmpfilesdir}/rave.conf
@@ -266,6 +272,7 @@ systemctl stop odiminjectord || :
 %{_prefix}/Lib/ravemigrate
 %{_prefix}/lib/*.so
 %{_prefix}/bin/*
+/usr/bin/*
 %{_prefix}/config/*.xml
 %{_prefix}/mkf/def.mk
 %{_prefix}/rave.xbm

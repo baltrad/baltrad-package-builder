@@ -7,7 +7,7 @@ index e8ad925..dfa8e4e 100755
  # Checks if the process is running
  check_rave_status() {
 -  RAVEPGFPROCESS=`su $BALTRAD_USER -s /bin/bash -c "/opt/baltrad/rave/bin/rave_pgf status"`
-+  RAVEPGFPROCESS=`su $BALTRAD_USER -s /bin/bash -c "/usr/lib/rave/bin/rave_pgf status"`
++  RAVEPGFPROCESS=`su $BALTRAD_USER -s /bin/bash -c "/usr/bin/rave_pgf status"`
    if [ "$RAVEPGFPROCESS" = "rave_pgf is not running" ]; then
      return 1
    else
@@ -16,7 +16,7 @@ index e8ad925..dfa8e4e 100755
        echo "already running"
      else
 -      su $BALTRAD_USER -s /bin/bash -c "/opt/baltrad/rave/bin/rave_pgf start"
-+      su $BALTRAD_USER -s /bin/bash -c "/usr/lib/rave/bin/rave_pgf start"
++      su $BALTRAD_USER -s /bin/bash -c "/usr/bin/rave_pgf start"
        if [ $? -ne 0 ]; then
          echo "failed."
        else
@@ -25,7 +25,7 @@ index e8ad925..dfa8e4e 100755
    stop)
      echo -n "Stopping Rave..."
 -    su $BALTRAD_USER -s /bin/bash -c "/opt/baltrad/rave/bin/rave_pgf stop"
-+    su $BALTRAD_USER -s /bin/bash -c "/usr/lib/rave/bin/rave_pgf stop"
++    su $BALTRAD_USER -s /bin/bash -c "/usr/bin/rave_pgf stop"
        if [ $? -ne 0 ]; then
          echo "failed."
        else
