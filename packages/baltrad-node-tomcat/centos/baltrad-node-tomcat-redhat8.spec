@@ -72,6 +72,9 @@ cp %{SOURCE1} $RPM_BUILD_ROOT/usr/share/baltrad/baltrad-node-tomcat/lib/
 cp %{SOURCE4} $RPM_BUILD_ROOT/usr/share/baltrad/baltrad-node-tomcat/lib/
 cp %{SOURCE5} $RPM_BUILD_ROOT/usr/share/baltrad/baltrad-node-tomcat/lib/
 cp %{SOURCE2} $RPM_BUILD_ROOT/usr/share/baltrad/baltrad-node-tomcat/
+chmod 755 $RPM_BUILD_ROOT/usr/share/baltrad/baltrad-node-tomcat/lib/hdfobject.jar
+chmod 755 $RPM_BUILD_ROOT/usr/share/baltrad/baltrad-node-tomcat/lib/fits.jar
+chmod 755 $RPM_BUILD_ROOT/usr/share/baltrad/baltrad-node-tomcat/lib/netcdf.jar
 cp LICENSE $RPM_BUILD_ROOT/usr/share/baltrad/baltrad-node-tomcat/
 cp NOTICE $RPM_BUILD_ROOT/usr/share/baltrad/baltrad-node-tomcat/
 cp README.md $RPM_BUILD_ROOT/usr/share/baltrad/baltrad-node-tomcat/
@@ -156,6 +159,9 @@ chmod 0660 /etc/baltrad/baltrad-node-tomcat/*
 chown $BALTRAD_USER:$BALTRAD_GROUP /etc/baltrad/baltrad-node-tomcat/*
 chmod 4775 /var/cache/baltrad-node-tomcat
 chown -R $BALTRAD_USER:$BALTRAD_GROUP /var/cache/baltrad-node-tomcat 
+chmod 755 /usr/share/baltrad/baltrad-node-tomcat/lib/fits.jar
+chmod 755 /usr/share/baltrad/baltrad-node-tomcat/lib/hdfobject.jar
+chmod 755 /usr/share/baltrad/baltrad-node-tomcat/lib/netcdf.jar
 
 if [[ ! -f /usr/lib64/libhdf5_java.so ]]; then
   ln -s /usr/lib64/hdf5/libhdf5_java.so /usr/lib64/libhdf5_java.so

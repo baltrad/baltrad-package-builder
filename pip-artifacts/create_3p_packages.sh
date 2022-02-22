@@ -223,9 +223,9 @@ cp "$SPECDIR/"*.patch "$SOURCEDIR/"
 
 do_fetch_package_and_build jprops 2.0.2 jprops.spec python36-jprops-blt-2.0.2-0.x86_64.rpm
 
-do_fetch_package_and_build progressbar33 2.4 progressbar33.spec python36-progressbar33-blt-2.4-0.x86_64.rpm
-
 if [ "$OS_VARIANT" = "CentOS-7" ]; then
+  do_fetch_package_and_build progressbar33 2.4 progressbar33.spec python36-progressbar33-blt-2.4-0.x86_64.rpm
+
   do_fetch_package_and_build pillow 5.4.1 pillow.spec python36-pillow-blt-5.4.1-1.x86_64.rpm
 fi
 
@@ -237,39 +237,43 @@ fi
 
 do_fetch_package_and_build pycrypto 2.4 pycrypto.spec python36-pycrypto-blt-2.4-0.x86_64.rpm
 
-if [ "$OS_VARIANT" = "Red Hat Enterprise-8.0" -o "$OS_VARIANT" = "CentOS-8" ]; then
+if [ "$OS_VARIANT" = "Red Hat Enterprise-8.0" -o "$OS_VARIANT" = "CentOS-8" -o "$OS_VARIANT" = "CentOS Stream-8" ]; then
   do_fetch_package_and_build python3-keyczar 0.71rc0 python3-keyczar-redhat8.spec python36-keyczar-blt-0.71rc0-1.x86_64.rpm
 else
   do_fetch_package_and_build python3-keyczar 0.71rc0 python3-keyczar.spec python36-keyczar-blt-0.71rc0-0.x86_64.rpm
 fi
 
-do_fetch_package_and_build docutils 0.14 docutils.spec python36-docutils-blt-0.14-0.x86_64.rpm
-
-do_fetch_package_and_build "lockfile" 0.12.2 lockfile.spec python36-lockfile-blt-0.12.2-0.x86_64.rpm
-
-do_fetch_package_and_build python-daemon 2.2.3 python-daemon.spec python36-daemon-blt-2.2.3-0.x86_64.rpm
-
-do_fetch_package_and_build tempita 0.5.2 tempita.spec python36-tempita-blt-0.5.2-0.x86_64.rpm
-
-do_fetch_package_and_build sqlparse 0.2.4 sqlparse.spec python36-sqlparse-blt-0.2.4-0.x86_64.rpm
 
 if [ "$OS_VARIANT" = "CentOS-7" ]; then
+  do_fetch_package_and_build docutils 0.14 docutils.spec python36-docutils-blt-0.14-0.x86_64.rpm
+
+  do_fetch_package_and_build "lockfile" 0.12.2 lockfile.spec python36-lockfile-blt-0.12.2-0.x86_64.rpm
+
+  do_fetch_package_and_build python-daemon 2.2.3 python-daemon.spec python36-daemon-blt-2.2.3-0.x86_64.rpm
+
+  do_fetch_package_and_build tempita 0.5.2 tempita.spec python36-tempita-blt-0.5.2-0.x86_64.rpm
+
+  do_fetch_package_and_build sqlparse 0.2.4 sqlparse.spec python36-sqlparse-blt-0.2.4-0.x86_64.rpm
+
   do_fetch_package_and_build decorator 4.3.2 decorator.spec python36-decorator-blt-4.3.2-0.x86_64.rpm
+
+  do_fetch_package_and_build pbr 1.10.0 pbr.spec python36-pbr-blt-1.10.0-0.x86_64.rpm
+
+  do_fetch_package_and_build sqlalchemy 1.0.13 sqlalchemy.spec python36-sqlalchemy-blt-1.0.13-0.x86_64.rpm
 fi
 
-do_fetch_package_and_build pbr 1.10.0 pbr.spec python36-pbr-blt-1.10.0-0.x86_64.rpm
 
-do_fetch_package_and_build sqlalchemy 1.0.13 sqlalchemy.spec python36-sqlalchemy-blt-1.0.13-0.x86_64.rpm
-
-if [ "$OS_VARIANT" = "Red Hat Enterprise-8.0" -o "$OS_VARIANT" = "CentOS-8" ]; then
+if [ "$OS_VARIANT" = "Red Hat Enterprise-8.0" -o "$OS_VARIANT" = "CentOS-8" -o "$OS_VARIANT" = "CentOS Stream-8" ]; then
   do_fetch_package_and_build sqlalchemy-migrate 0.10.0 sqlalchemy-migrate-redhat8.spec python36-sqlalchemy-migrate-blt-0.10.0-1.x86_64.rpm
 else
   do_fetch_package_and_build sqlalchemy-migrate 0.10.0 sqlalchemy-migrate.spec python36-sqlalchemy-migrate-blt-0.10.0-1.x86_64.rpm
 fi
 
-do_fetch_package_and_build werkzeug 1.0.1 werkzeug.spec python36-werkzeug-blt-1.0.1-0.x86_64.rpm
+if [ "$OS_VARIANT" = "CentOS-7" ]; then
+  do_fetch_package_and_build werkzeug 1.0.1 werkzeug.spec python36-werkzeug-blt-1.0.1-0.x86_64.rpm
 
-do_fetch_package_and_build cherrypy 3.8.2 cherrypy.spec python36-cherrypy-blt-3.8.2-0.x86_64.rpm
+  do_fetch_package_and_build cherrypy 3.8.2 cherrypy.spec python36-cherrypy-blt-3.8.2-0.x86_64.rpm
 
-do_fetch_package_and_build pyinotify 0.9.6 pyinotify.spec python36-pyinotify-blt-0.9.6-0.x86_64.rpm
+  do_fetch_package_and_build pyinotify 0.9.6 pyinotify.spec python36-pyinotify-blt-0.9.6-0.x86_64.rpm
+fi
 
