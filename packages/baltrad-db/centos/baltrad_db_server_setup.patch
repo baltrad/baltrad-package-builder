@@ -1,17 +1,47 @@
 diff --git a/server/setup.py b/server/setup.py
-index ea05f1a..29ff1a8 100755
+index ea05f1a..2368710 100755
 --- a/server/setup.py
 +++ b/server/setup.py
-@@ -12,9 +12,9 @@ REQUIRED_PACKAGES= [
-     "pycrypto >= 2.4",
-     "python-daemon >= 1.6",
-     "python-keyczar >= 0.7b",
+@@ -4,31 +4,17 @@ import setuptools
+ import sys
+ 
+ REQUIRED_PACKAGES= [
+-    "baltrad.bdbcommon",
+-    "jprops >= 2.0.2",
+-    "progressbar >= 2.0",
+-    "psycopg2",
+-    "pyasn1",
+-    "pycrypto >= 2.4",
+-    "python-daemon >= 1.6",
+-    "python-keyczar >= 0.7b",
 -    "SQLAlchemy >= 1.0.13",
 -    "sqlalchemy-migrate >= 0.10.0",
 -    "werkzeug >= 0.14"
-+    "SQLAlchemy >= 0.7",
-+    "sqlalchemy-migrate >= 0.7.2",
-+    "werkzeug >= 0.8"
+-]
+-if sys.version_info > (3,):
+-    REQUIRED_PACKAGES= [
+-        "baltrad.bdbcommon",
+-        "jprops >= 2.0.2",
+-        "progressbar33 >= 2.4",
+-        "psycopg2",
+-        "pyasn1",
+-        "pycrypto >= 2.4",
+-        "python-daemon >= 1.6",
+-        "python3-keyczar >= 0.71rc0",
+-        "SQLAlchemy >= 1.0.13",
+-        "sqlalchemy-migrate >= 0.10.0",
+-        "werkzeug >= 0.14"
++  "baltrad.bdbcommon",
++  "jprops >= 2.0.2",
++  "progressbar2 >= 2.4",
++  "psycopg2",
++  "pyasn1",
++  "pycrypto >= 2.4",
++  "python-daemon >= 1.6",
++  "python3-keyczar >= 0.71rc0",
++  "SQLAlchemy >= 1.0.13",
++  "sqlalchemy-migrate >= 0.10.0",
++  "werkzeug >= 0.12"
  ]
- if sys.version_info > (3,):
-     REQUIRED_PACKAGES= [
+ 
+ 

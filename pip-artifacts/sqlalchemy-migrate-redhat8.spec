@@ -9,7 +9,7 @@
 
 Name:           python36-sqlalchemy-migrate-blt
 Version:        0.10.0
-Release:        0
+Release:        1
 Url:            http://www.openstack.org/
 Summary:        Database schema migration for SQLAlchemy
 License:        Apache-2.0
@@ -18,11 +18,12 @@ Source:         https://files.pythonhosted.org/packages/source/s/sqlalchemy-migr
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 BuildRequires:  python36-devel
 Requires: python36
-Requires: python36-tempita-blt
-Requires: python36-sqlparse-blt
+Requires: python3-tempita
+Requires: python3-sqlparse
 Requires: python3-decorator
-Requires: python36-pbr-blt
+Requires: python3-pbr
 Requires: python3-six
+Patch1: sqlalchemy_migrate_patch.patch
 
 %description
 SQLAlchemy Migrate
@@ -79,6 +80,7 @@ Please report any issues with sqlalchemy-migrate to the issue tracker at
 
 %prep
 %setup -q -n sqlalchemy-migrate-%{version}
+%patch1 -p1
 
 %build
 %{__python36} setup.py build

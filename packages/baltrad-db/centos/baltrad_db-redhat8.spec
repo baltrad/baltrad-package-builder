@@ -22,17 +22,17 @@ BuildRequires: systemd
 Requires: hlhdf
 Requires: hlhdf-python
 Requires: python36
-Requires: python36-progressbar33-blt
-Requires: python36-werkzeug-blt
-Requires: python36-daemon-blt
+Requires: python3-progressbar2
+Requires: python3-werkzeug
+Requires: python3-daemon
 Requires: python3-pyasn1
-Requires: python36-keyczar-blt
 Requires: python3-setuptools
-Requires: python36-sqlalchemy-blt
-Requires: python36-sqlalchemy-migrate-blt
-Requires: python36-cherrypy-blt
+Requires: python3-sqlalchemy
+Requires: python3-cherrypy
 Requires: python36-jprops-blt
 Requires: python36-pycrypto-blt
+Requires: python36-keyczar-blt
+Requires: python36-sqlalchemy-migrate-blt
 Conflicts: baltrad-db-py27
 
 %description

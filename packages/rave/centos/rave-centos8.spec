@@ -32,10 +32,10 @@ Requires: netcdf
 Requires: hlhdf
 Requires: python3-numpy
 Requires: python36
-Requires: python36-daemon-blt
+Requires: python3-daemon
+Requires: python3-sqlalchemy
 Requires: python36-jprops-blt
 Requires: python36-keyczar-blt
-Requires: python36-sqlalchemy-blt
 Requires: python36-sqlalchemy-migrate-blt
 Conflicts: rave-py27
 

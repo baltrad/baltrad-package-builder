@@ -206,6 +206,7 @@ do_fetch_package_and_build() {
       do_exit "Could not identify package"
     fi
   fi
+
   if [ ! -f "$RPMDIR/$4" -o "$REBUILDPACKAGES" = "yes" ]; then
     rpmbuild -v -ba "$SPECDIR/$3" || do_exit "Failed to build $SPECDIR/$3"
   fi
@@ -261,9 +262,9 @@ do_fetch_package_and_build pbr 1.10.0 pbr.spec python36-pbr-blt-1.10.0-0.x86_64.
 do_fetch_package_and_build sqlalchemy 1.0.13 sqlalchemy.spec python36-sqlalchemy-blt-1.0.13-0.x86_64.rpm
 
 if [ "$OS_VARIANT" = "Red Hat Enterprise-8.0" -o "$OS_VARIANT" = "CentOS-8" ]; then
-  do_fetch_package_and_build sqlalchemy-migrate 0.10.0 sqlalchemy-migrate-redhat8.spec python36-sqlalchemy-migrate-blt-0.10.0-0.x86_64.rpm
+  do_fetch_package_and_build sqlalchemy-migrate 0.10.0 sqlalchemy-migrate-redhat8.spec python36-sqlalchemy-migrate-blt-0.10.1-0.x86_64.rpm
 else
-  do_fetch_package_and_build sqlalchemy-migrate 0.10.0 sqlalchemy-migrate.spec python36-sqlalchemy-migrate-blt-0.10.0-0.x86_64.rpm
+  do_fetch_package_and_build sqlalchemy-migrate 0.10.0 sqlalchemy-migrate.spec python36-sqlalchemy-migrate-blt-0.10.0-1.x86_64.rpm
 fi
 
 do_fetch_package_and_build werkzeug 1.0.1 werkzeug.spec python36-werkzeug-blt-1.0.1-0.x86_64.rpm
