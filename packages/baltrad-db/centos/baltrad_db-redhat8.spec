@@ -29,6 +29,7 @@ Requires: python3-pyasn1
 Requires: python3-setuptools
 Requires: python3-sqlalchemy
 Requires: python3-cherrypy
+Requires: python3-psycopg2
 Requires: python36-jprops-blt
 Requires: python36-pycrypto-blt
 Requires: python36-keyczar-blt
