@@ -97,7 +97,7 @@ get_buildversion_for_module() {
 }
 
 get_tag_for_module() {
-  RESULT=`cat "$2" | egrep -e "^$1" | cut -d $'\t' -f4 | tail -1`
+  RESULT=`cat "$2" | egrep -e "^$1" | cut -d $'\t' -f4 | tail -1 | sed 's/^\s*\(.*[^ \t]\)\(\s\+\)*$/\1/'`
   if [ $? -eq 0 ]; then
     echo "$RESULT"
   else
@@ -106,7 +106,7 @@ get_tag_for_module() {
 }
 
 get_prevtag_for_module() {
-  RESULT=`cat "$2" | egrep -e "^$1" | cut -d $'\t' -f5 | tail -1`
+  RESULT=`cat "$2" | egrep -e "^$1" | cut -d $'\t' -f5 | tail -1 | sed 's/^\s*\(.*[^ \t]\)\(\s\+\)*$/\1/'`
   if [ $? -eq 0 ]; then
     echo "$RESULT"
   else
@@ -135,14 +135,14 @@ generate_changelog() {
     fi
     echo "$full_name - $buildVersion"
     if [ "$fromTag" != "NOT_DEFINED" -a "$toTag" != "NOT_DEFINED" ]; then
-      echo "Versions: $fromTag to $toTag"
+      echo "Versions: '$fromTag' to '$toTag'"
       echo ""
       CDIR=`pwd`
       cd "$PACKAGEDIR/$module/build/$pkgname"
       if [ "$fromTag" = "$toTag" ]; then
-        git log -n 1 --pretty="%s%n" | egrep -e "^Ticket\s+[0-9]+:" | sort | uniq -w 12
+        git log -n 1 --pretty="%s%n" | egrep -e "^Ticket\s+[#0-9]+:" | sort | uniq -w 12
       else
-        git log "$fromTag".."$toTag" --pretty="%s%n" | egrep -e "^Ticket\s+[0-9]+:" | sort | uniq -w 12
+        git log $fromTag..$toTag --pretty="%s%n" | egrep -e "^Ticket\s+[#0-9]+:" | sort | uniq -w 12
       fi
       cd "$CDIR"
     else
