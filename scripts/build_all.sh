@@ -193,6 +193,7 @@ fi
 ./scripts/build_package.sh baltrad-db          $PKG_BUILD_NUMBER $BALTRAD_OPT_STR || print_error_and_exit "Failed to build baltrad-db"
 ./scripts/build_package.sh baltrad-beast       $PKG_BUILD_NUMBER $BALTRAD_OPT_STR || print_error_and_exit "Failed to build baltrad-beast"
 ./scripts/build_package.sh baltrad-config      $PKG_BUILD_NUMBER $BALTRAD_OPT_STR || print_error_and_exit "Failed to build baltrad-config"
+./scripts/build_package.sh baltrad-exchange      $PKG_BUILD_NUMBER $BALTRAD_OPT_STR || print_error_and_exit "Failed to build baltrad-exchange"
 
 if [ "$OS_VERSION" = "CentOS-7" -o "$DOCKER_BUILD" = "CentOS-7" ]; then
   ./scripts/build_package.sh hdf-java            $PKG_BUILD_NUMBER $BALTRAD_NO_VERSION_OPT_STR || print_error_and_exit "Failed to build hdf-java"
