@@ -9,7 +9,7 @@
 +[Service]
 +Type=forking
 +PIDFile=/var/run/baltrad/baltrad-exchange-server.pid
-+ExecStart=/usr/bin/baltrad-exchange-server --pidfile=/var/run/baltrad/baltrad-exchange-server.pid --conf=/etc/baltrad/baltrad-exchange.properties --logfile=/var/log/baltrad/baltrad-exchange-server.log
++ExecStart=/usr/bin/baltrad-exchange-server --pidfile=/var/run/baltrad/baltrad-exchange-server.pid --conf=/etc/baltrad/exchange/etc/baltrad-exchange.properties --logfile=/var/log/baltrad/baltrad-exchange-server.log
 +KillSignal=SIGHUP
 +User=baltrad
 +Group=baltrad

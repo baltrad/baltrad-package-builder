@@ -25,6 +25,8 @@ Requires: python3-pyasn1
 Requires: python3-setuptools
 Requires: python3-sqlalchemy
 Requires: python3-cherrypy
+Requires: python3-paramiko
+Requires: python3-scp
 Requires: python36-jprops-blt
 
 %description
@@ -42,10 +44,16 @@ Provides exchange functionality for the baltrad network.
 mkdir -p $RPM_BUILD_ROOT/var/cache/baltrad/baltrad_exchange
 mkdir -p $RPM_BUILD_ROOT/var/run/baltrad
 mkdir -p $RPM_BUILD_ROOT/var/lib/baltrad/baltrad_exchange
+mkdir -p $RPM_BUILD_ROOT/etc/baltrad/exchange
+mkdir -p $RPM_BUILD_ROOT/etc/baltrad/exchange/etc
+mkdir -p $RPM_BUILD_ROOT/etc/baltrad/exchange/config/examples
+
 install -p -D -m 0644 %{SOURCE1} %{buildroot}%{_tmpfilesdir}/baltrad-exchange.conf
 %{__python36} setup.py install --skip-build --root $RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT/%{_unitdir}
 cp etc/baltrad-exchange.service $RPM_BUILD_ROOT/%{_unitdir}
+cp etc/*.json $RPM_BUILD_ROOT/etc/baltrad/exchange/config/examples/
+cp etc/baltrad-exchange.properties $RPM_BUILD_ROOT/etc/baltrad/exchange/etc/
 
 %pre
 if [ "$1" = "2" ]; then
@@ -94,6 +102,10 @@ chown root:$BALTRAD_GROUP /var/log/baltrad
 chown root:$BALTRAD_GROUP /var/run/baltrad
 chown root:$BALTRAD_GROUP /var/cache/baltrad
 chown root:$BALTRAD_GROUP /var/cache/baltrad/baltrad-exchange
+chown root:$BALTRAD_GROUP /etc/baltrad/exchange
+chown root:$BALTRAD_GROUP /etc/baltrad/exchange/etc
+chown root:$BALTRAD_GROUP /etc/baltrad/exchange/config
+chown root:$BALTRAD_GROUP /etc/baltrad/exchange/config/examples
 
 %preun
 systemctl stop baltrad-exchange || :
@@ -113,4 +125,5 @@ systemctl stop baltrad-exchange || :
 %{bdb_site_install_dir}/baltrad.exchange-*.egg-info/*
 /var/cache/baltrad/baltrad_exchange
 /var/lib/baltrad/baltrad_exchange
+/etc/baltrad/exchange
 
