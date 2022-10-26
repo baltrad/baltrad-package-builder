@@ -32,7 +32,7 @@ BUILD_VERSION=---
 DISTR=
 ARTIFACT=
 
-MODULES="hlhdf rave baltrad-beast baltrad-config baltrad-db baltrad-dex baltrad-node-tomcat baltrad-ppc baltrad-viewer baltrad-wrwp bbufr beamb bropo hdf-java"
+MODULES="hlhdf rave baltrad-beast baltrad-config baltrad-db baltrad-exchange baltrad-dex baltrad-node-tomcat baltrad-ppc baltrad-viewer baltrad-wrwp bbufr beamb bropo hdf-java"
 
 for arg in $*; do
   case $arg in
