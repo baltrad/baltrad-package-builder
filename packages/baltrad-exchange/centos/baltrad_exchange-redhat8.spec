@@ -41,9 +41,9 @@ Provides exchange functionality for the baltrad network.
 %{__python36} setup.py build
 
 %install
-mkdir -p $RPM_BUILD_ROOT/var/cache/baltrad/baltrad_exchange
+mkdir -p $RPM_BUILD_ROOT/var/cache/baltrad/exchange
 mkdir -p $RPM_BUILD_ROOT/var/run/baltrad
-mkdir -p $RPM_BUILD_ROOT/var/lib/baltrad/baltrad_exchange
+mkdir -p $RPM_BUILD_ROOT/var/lib/baltrad/exchange
 mkdir -p $RPM_BUILD_ROOT/etc/baltrad/exchange
 mkdir -p $RPM_BUILD_ROOT/etc/baltrad/exchange/etc
 mkdir -p $RPM_BUILD_ROOT/etc/baltrad/exchange/config/examples
@@ -91,21 +91,36 @@ chmod 644 %{_unitdir}/baltrad-exchange.service
 \rm -f $TMPFILE
 echo "d /var/run/baltrad 0775 root $BALTRAD_GROUP -" > %{_tmpfilesdir}/baltrad-exchange.conf
 
-mkdir -p /var/run/baltrad
 chmod 0775 /var/run/baltrad
-mkdir -p /var/log/baltrad
-chmod 0775 /var/log/baltrad
-mkdir -p /var/cache/baltrad/baltrad-exchange
-chmod 0775 /var/cache/baltrad/baltrad-exchange
-
-chown root:$BALTRAD_GROUP /var/log/baltrad
 chown root:$BALTRAD_GROUP /var/run/baltrad
+
+chmod 0775 /var/log/baltrad
+chown root:$BALTRAD_GROUP /var/log/baltrad
+
+chmod 0775 /var/lib/baltrad
+chown root:$BALTRAD_GROUP /var/lib/baltrad
+chmod 0775 /var/lib/baltrad/exchange
+chown $BALTRAD_USER:$BALTRAD_GROUP /var/lib/baltrad/exchange
+
+chmod 0775 /var/cache/baltrad/exchange
+chmod 0775 /var/cache/baltrad
 chown root:$BALTRAD_GROUP /var/cache/baltrad
-chown root:$BALTRAD_GROUP /var/cache/baltrad/baltrad-exchange
+chown $BALTRAD_USER:$BALTRAD_GROUP /var/cache/baltrad/exchange
+
+chmod 0775 /etc/baltrad/exchange
 chown root:$BALTRAD_GROUP /etc/baltrad/exchange
-chown root:$BALTRAD_GROUP /etc/baltrad/exchange/etc
+
+chmod 0775 /etc/baltrad/exchange/config
 chown root:$BALTRAD_GROUP /etc/baltrad/exchange/config
+
+chmod 0775 /etc/baltrad/exchange/etc
+chown root:$BALTRAD_GROUP /etc/baltrad/exchange/etc
+chmod 0660 /etc/baltrad/exchange/etc/baltrad-exchange.properties
+chown root:$BALTRAD_GROUP /etc/baltrad/exchange/etc/baltrad-exchange.properties
+
+chmod 0775 /etc/baltrad/exchange/etc
 chown root:$BALTRAD_GROUP /etc/baltrad/exchange/config/examples
+
 
 if [ "$1" = "2" ] ; then  # upgrade
   #restart app on upgrade
@@ -128,7 +143,7 @@ systemctl stop baltrad-exchange || :
 # Investigate the different paths and at least split these up amongst split packages
 %{bdb_site_install_dir}/baltrad.*.pth
 %{bdb_site_install_dir}/baltrad.exchange-*.egg-info/*
-/var/cache/baltrad/baltrad_exchange
-/var/lib/baltrad/baltrad_exchange
+/var/cache/baltrad/exchange
+/var/lib/baltrad/exchange
 /etc/baltrad/exchange
 
