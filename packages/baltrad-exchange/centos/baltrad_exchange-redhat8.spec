@@ -107,6 +107,11 @@ chown root:$BALTRAD_GROUP /etc/baltrad/exchange/etc
 chown root:$BALTRAD_GROUP /etc/baltrad/exchange/config
 chown root:$BALTRAD_GROUP /etc/baltrad/exchange/config/examples
 
+if [ "$1" = "2" ] ; then  # upgrade
+  #restart app on upgrade
+  /usr/bin/systemctl daemon-reload
+fi
+
 %preun
 systemctl stop baltrad-exchange || :
 %systemd_preun baltrad-exchange.service || :
