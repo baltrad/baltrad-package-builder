@@ -137,6 +137,7 @@ systemctl stop baltrad-exchange || :
 %files
 /usr/bin/baltrad-exchange-client
 /usr/bin/baltrad-exchange-server
+/usr/bin/baltrad-exchange-config
 %{_unitdir}/baltrad-exchange.service
 %{_tmpfilesdir}/baltrad-exchange.conf
 %{bdb_site_install_dir}/baltrad/exchange
