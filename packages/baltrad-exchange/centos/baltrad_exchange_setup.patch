@@ -1,10 +1,10 @@
 diff --git a/setup.py b/setup.py
-index a17b193..04be5ca 100755
+index 2c6e41d..073ee40 100755
 --- a/setup.py
 +++ b/setup.py
-@@ -9,7 +9,7 @@ REQUIRED_PACKAGES= [
-     "pyasn1",
+@@ -10,7 +10,7 @@ REQUIRED_PACKAGES= [
      "pycryptodomex",
+     "pyinotify",
      "python-daemon >= 1.6",
 -    "werkzeug >= 1.0.1"
 +    "werkzeug >= 0.12"
