@@ -27,6 +27,7 @@ Requires: python3-sqlalchemy
 Requires: python3-cherrypy
 Requires: python3-paramiko
 Requires: python3-scp
+Requires: python3-inotify
 Requires: python36-jprops-blt
 
 %description
