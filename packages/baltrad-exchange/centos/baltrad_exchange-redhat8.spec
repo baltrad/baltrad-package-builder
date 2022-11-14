@@ -147,5 +147,6 @@ systemctl stop baltrad-exchange || :
 %{bdb_site_install_dir}/baltrad.exchange-*.egg-info/*
 /var/cache/baltrad/exchange
 /var/lib/baltrad/exchange
-%config /etc/baltrad/exchange
+%config(noreplace) /etc/baltrad/exchange
+
 
