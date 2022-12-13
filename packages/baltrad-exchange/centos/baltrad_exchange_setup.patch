@@ -2,7 +2,7 @@ diff --git a/setup.py b/setup.py
 index 2c6e41d..073ee40 100755
 --- a/setup.py
 +++ b/setup.py
-@@ -10,7 +10,7 @@ REQUIRED_PACKAGES= [
+@@ -9,7 +9,7 @@ REQUIRED_PACKAGES= [
      "pycryptodomex",
      "pyinotify",
      "python-daemon >= 1.6",
