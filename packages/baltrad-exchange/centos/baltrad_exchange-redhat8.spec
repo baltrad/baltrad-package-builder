@@ -141,10 +141,10 @@ systemctl stop baltrad-exchange || :
 /usr/bin/baltrad-exchange-config
 %{_unitdir}/baltrad-exchange.service
 %{_tmpfilesdir}/baltrad-exchange.conf
-%{bdb_site_install_dir}/baltrad/exchange
+%{bdb_site_install_dir}/bexchange
 # Investigate the different paths and at least split these up amongst split packages
-%{bdb_site_install_dir}/baltrad.*.pth
-%{bdb_site_install_dir}/baltrad.exchange-*.egg-info/*
+%{bdb_site_install_dir}/bexchange-*.pth
+%{bdb_site_install_dir}/bexchange-*.egg-info/*
 /var/cache/baltrad/exchange
 /var/lib/baltrad/exchange
 %config(noreplace) /etc/baltrad/exchange

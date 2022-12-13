@@ -10,4 +10,4 @@ index 2c6e41d..073ee40 100755
 +    "werkzeug >= 0.12"
  ]
  
- setuptools.setup(name="baltrad.exchange",
+ setuptools.setup(name="bexchange",
