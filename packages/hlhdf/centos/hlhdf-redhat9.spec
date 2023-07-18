@@ -83,7 +83,7 @@ ln -sf ../../usr/lib/hlhdf/lib/libhlhdf.so %{buildroot}/usr/lib/libhlhdf.so
 /usr/lib/libhlhdf.so
 
 %files python
-%{python36_sitearch}/_pyhl.so
+%{python3_sitearch}/_pyhl.so
 %config(noreplace) %{_sysconfdir}/ld.so.conf.d/hlhdf-python.conf
 
 %files devel

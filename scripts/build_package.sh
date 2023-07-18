@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -xe
 
 SCRIPTPATH="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 PROJECTPATH="$(dirname $SCRIPTPATH)"
@@ -121,6 +121,7 @@ REDHAT9_SPECFILE=$PACKAGENAME/`cat packages/$PACKAGE_NAME/package.ini | egrep -e
 INSTALL_ARTIFACTS=`cat packages/$PACKAGE_NAME/package.ini | egrep -e "^install_artifacts" | sed -e"s/install_artifacts=//g"`
 TBUILD_NAME=`cat packages/$PACKAGE_NAME/package.ini | egrep -e "^pkg_name" | sed -e"s/pkg_name=//g"`
 RPM_ARTIFACTS=`cat packages/$PACKAGE_NAME/package.ini | egrep -e "^rpm_artifacts" | sed -e "s/rpm_artifacts=//g"`
+SOURCES=src/$PACKAGE_NAME
 
 if [ "$TBUILD_NAME" != "" ]; then
   BUILD_NAME=$TBUILD_NAME
@@ -251,13 +252,14 @@ prepare_and_build_centos()
   RPM_PCK_DIR=`rpmbuild --eval '%_rpmdir/%_arch'`
   RPM_PCK_NOARCH_DIR=`rpmbuild --eval '%_rpmdir/noarch'`
   #First we need to create a source tarball. Remove the old one
-  if [ -f "$RPM_TOP_DIR/SOURCES/$2-$3.tar.gz" ]; then
-    \rm -f "$RPM_TOP_DIR/SOURCES/$2-$3.tar.gz"
+  if [ -f "$RPM_TOP_DIR/$SOURCES/$2-$3.tar.gz" ]; then
+    \rm -f "$RPM_TOP_DIR/$SOURCES/$2-$3.tar.gz"
   fi
   BNAME=`basename $2`
   FILES=`ls -1 "$1"/ | grep -v "$BNAME"`
+	mkdir -p "$RPM_TOP_DIR/$SOURCES/"
   for f in $FILES; do
-    cp "$1/$f" "$RPM_TOP_DIR/SOURCES/"
+    cp "$1/$f" "$RPM_TOP_DIR/$SOURCES/"
   done
 
   \rm -f "$RPM_PCK_DIR/$3-*.rpm"
@@ -265,14 +267,15 @@ prepare_and_build_centos()
 
   #HOW DO WE DETERMINE BUILDROOT? NOW, just fake it...
   if [ "$7" = "false" ]; then # If not tar ball should be created from folder, it must be a git archive
-    git archive --format="tar.gz" --prefix="$3-$4/" master -o "$RPM_TOP_DIR/SOURCES/$3-$4.tar.gz"
+    #git archive --format="tar.gz" --prefix="$3-$4/" $GIT_BRANCH -o "$RPM_TOP_DIR/$SOURCES/$3/$3-$4.tar.gz"
+		git archive --format="tar.gz" --prefix="$3-$4/" "$GIT_BRANCH" -o "$RPM_TOP_DIR/$SOURCES/$3-$4.tar.gz"
     if [ $? -ne 0 ]; then
       echo "Failed to create source archive..."
       exit 127
     fi
   else
     cd ..
-    tar -cvzf "$RPM_TOP_DIR/SOURCES/$3-$4.tar.gz" "$3"
+    tar -cvzf "$RPM_TOP_DIR/$SOURCES/$3-$4.tar.gz" "$3"
     cd "$3"
   fi
   rpmbuild --define="version $4" --define "snapshot $5" -v -ba "$2" || exit 127
@@ -625,6 +628,10 @@ elif [ "$OS_VARIANT" = "CentOS-8" -o "$OS_VARIANT" = "CentOS Stream-8"  ]; then
   exit 0
 elif [ "$OS_VARIANT" = "Red Hat Enterprise-8.0" ]; then
   prepare_and_build_centos "$PACKAGEDIR/$PACKAGE_NAME/centos" "$PACKAGEDIR/$PACKAGE_NAME/$REDHAT8_SPECFILE" $BUILD_NAME $PACKAGE_VERSION $BUILD_NUMBER $INSTALL_ARTIFACTS $CREATE_TAR_FROM_FOLDER "$OS_VARIANT" "$ARTIFACT_REPOSITORY"
+  add_buildlog_information "$BUILD_NAME" "$PACKAGE_VERSION-$BUILD_NUMBER" "$BUILD_LOG"
+  exit 0
+elif [ "$OS_VARIANT" = "Red Hat Enterprise-9.2" ]; then
+  prepare_and_build_centos "$PACKAGEDIR/$PACKAGE_NAME/centos" "$PACKAGEDIR/$PACKAGE_NAME/$REDHAT9_SPECFILE" $BUILD_NAME $PACKAGE_VERSION $BUILD_NUMBER $INSTALL_ARTIFACTS $CREATE_TAR_FROM_FOLDER "$OS_VARIANT" "$ARTIFACT_REPOSITORY"
   add_buildlog_information "$BUILD_NAME" "$PACKAGE_VERSION-$BUILD_NUMBER" "$BUILD_LOG"
   exit 0
 else
