@@ -13,6 +13,14 @@ Source0: %{name}-%{version}.tar.gz
 BuildRequires: rave-devel
 Requires: rave
 
+
+# Turn off strip of binaries
+%define debug_package %{nil}
+%global __os_install_post %{nil}
+%global __spec_install_post %{nil}
+%global __os_install_post_scriptlets %{nil}
+%global __spec_install_post_scriptlets %{nil}
+
 %description
 baltrad-ppc defines a polar processing chain originally developed by ...
 
