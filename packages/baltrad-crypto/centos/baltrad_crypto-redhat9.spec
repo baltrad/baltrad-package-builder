@@ -30,7 +30,6 @@ mkdir -p $RPM_BUILD_ROOT/usr/share/doc/baltrad-crypto
 %post
 
 %files
-/usr/lib/python3.9/site-packages/baltrad/crypto
-/usr/lib/python3.9/site-packages/baltrad.*.pth
-/usr/lib/python3.9/site-packages/baltrad.*dev0-*.egg-info/*
-/usr/share/doc/baltrad-crypto/README.md
+/usr/lib/python3.9/site-packages/baltradcrypto/crypto
+/usr/lib/python3.9/site-packages/baltradcrypto.*.pth
+/usr/lib/python3.9/site-packages/baltradcrypto.*dev0-*.egg-info/*
