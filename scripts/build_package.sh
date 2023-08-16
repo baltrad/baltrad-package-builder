@@ -252,11 +252,13 @@ prepare_and_build_centos()
   RPM_PCK_DIR=`rpmbuild --eval '%_rpmdir/%_arch'`
   RPM_PCK_NOARCH_DIR=`rpmbuild --eval '%_rpmdir/noarch'`
   #First we need to create a source tarball. Remove the old one
-  if [ -f "$RPM_TOP_DIR/$SOURCES/$2-$3.tar.gz" ]; then
-    \rm -f "$RPM_TOP_DIR/$SOURCES/$2-$3.tar.gz"
+  if [ -f "$RPM_TOP_DIR/$SOURCES/$3-$4.tar.gz" ]; then
+    \rm -f "$RPM_TOP_DIR/$SOURCES/$3-$4.tar.gz"
   fi
   BNAME=`basename $2`
-  FILES=`ls -1 "$1"/ | grep -v "$BNAME"`
+	# Why grep -v ??
+  # FILES=`ls -1 "$1"/ | grep -v "$BNAME"`
+	FILES=`ls -1 "$1"/ | grep -i "$BNAME"`
 	mkdir -p "$RPM_TOP_DIR/$SOURCES/"
   for f in $FILES; do
     cp "$1/$f" "$RPM_TOP_DIR/$SOURCES/"
@@ -268,7 +270,11 @@ prepare_and_build_centos()
   #HOW DO WE DETERMINE BUILDROOT? NOW, just fake it...
   if [ "$7" = "false" ]; then # If not tar ball should be created from folder, it must be a git archive
     #git archive --format="tar.gz" --prefix="$3-$4/" $GIT_BRANCH -o "$RPM_TOP_DIR/$SOURCES/$3/$3-$4.tar.gz"
-		git archive --format="tar.gz" --prefix="$3-$4/" "$GIT_BRANCH" -o "$RPM_TOP_DIR/$SOURCES/$3-$4.tar.gz"
+		if [ "$GIT_BRANCH" != "" ]; then
+			git archive --format="tar.gz" --prefix="$3-$4/" "$GIT_BRANCH" -o "$RPM_TOP_DIR/$SOURCES/$3-$4.tar.gz"
+		else
+			git archive --format="tar.gz" --prefix="$3-$4/" "main" -o "$RPM_TOP_DIR/$SOURCES/$3-$4.tar.gz"
+		fi
     if [ $? -ne 0 ]; then
       echo "Failed to create source archive..."
       exit 127
@@ -555,11 +561,11 @@ fi
 cd packages/$PACKAGE_NAME
 
 # If tar ball, then always remove previous build
-if [ "$TAR_BALL" != "" ]; then
+#if [ "$TAR_BALL" != "" ]; then
   if [ -d "build/$BUILD_NAME" ]; then
     \rm -fr "build/$BUILD_NAME" || exit 127
   fi
-fi
+#fi
 
 if [ ! -d build/$BUILD_NAME ]; then
   if [ ! -d build ]; then
@@ -581,7 +587,11 @@ if [ ! -d build/$BUILD_NAME ]; then
       fi
     fi  
   else
-    git clone $GIT_URI $BUILD_NAME || exit 127
+		if [ "$GIT_BRANCH" != "" ]; then
+			git clone -b $GIT_BRANCH $GIT_URI $BUILD_NAME || exit 127
+		else
+			git clone $GIT_URI $BUILD_NAME || exit 127
+		fi
   fi
   cd $BUILD_NAME
   if [ "$BUILD_NUMBER" = "auto" ]; then
