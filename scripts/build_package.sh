@@ -121,7 +121,8 @@ REDHAT9_SPECFILE=$PACKAGENAME/`cat packages/$PACKAGE_NAME/package.ini | egrep -e
 INSTALL_ARTIFACTS=`cat packages/$PACKAGE_NAME/package.ini | egrep -e "^install_artifacts" | sed -e"s/install_artifacts=//g"`
 TBUILD_NAME=`cat packages/$PACKAGE_NAME/package.ini | egrep -e "^pkg_name" | sed -e"s/pkg_name=//g"`
 RPM_ARTIFACTS=`cat packages/$PACKAGE_NAME/package.ini | egrep -e "^rpm_artifacts" | sed -e "s/rpm_artifacts=//g"`
-SOURCES=src/$PACKAGE_NAME
+# SOURCES=src/$PACKAGE_NAME
+SOURCES="SOURCES"
 
 if [ "$TBUILD_NAME" != "" ]; then
   BUILD_NAME=$TBUILD_NAME

@@ -12,6 +12,9 @@ URL: http://www.baltrad.eu/
 Source0: %{name}-%{version}.tar.gz
 BuildRequires: python3-devel
 Requires: python3
+Requires: baltrad-crypto
+Requires: SMHI-python3-radar_pyutils
+
 Conflicts: baltrad-config-py27
 
 %description
