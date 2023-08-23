@@ -8,8 +8,8 @@
 +
 +[Service]
 +Type=forking
-+PIDFile=/var/run/baltrad/baltrad-bdb-server.pid
-+ExecStart=/usr/bin/baltrad-bdb-server --pidfile=/var/run/baltrad/baltrad-bdb-server.pid --conf=/etc/baltrad/bltnode.properties --logfile=/var/log/baltrad/baltrad-bdb-server.log
++PIDFile=/run/baltrad/baltrad-bdb-server.pid
++ExecStart=/usr/bin/baltrad-bdb-server --pidfile=/run/baltrad/baltrad-bdb-server.pid --conf=/etc/baltrad/bltnode.properties --logfile=/var/log/baltrad/baltrad-bdb-server.log
 +KillSignal=SIGHUP
 +User=baltrad
 +Group=baltrad
