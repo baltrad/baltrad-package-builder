@@ -259,7 +259,8 @@ prepare_and_build_centos()
   BNAME=`basename $2`
 	# Why grep -v ??
   # FILES=`ls -1 "$1"/ | grep -v "$BNAME"`
-	FILES=`ls -1 "$1"/ | grep -i "$BNAME"`
+	# FILES=`ls -1 "$1"/ | grep -i "$BNAME"`
+	FILES=`ls -1 "$1"`
 	mkdir -p "$RPM_TOP_DIR/$SOURCES/"
   for f in $FILES; do
     cp "$1/$f" "$RPM_TOP_DIR/$SOURCES/"
