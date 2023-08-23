@@ -260,7 +260,7 @@ prepare_and_build_centos()
   fi
   BNAME=`basename $2`
   FILES=`ls -1 "$1"/ | grep -v "$BNAME"`
-	mkdir -p "$RPM_TOP_DIR/SOURCES/"
+  mkdir -p "$RPM_TOP_DIR/SOURCES/"
   for f in $FILES; do
     cp "$1/$f" "$RPM_TOP_DIR/SOURCES/"
   done
