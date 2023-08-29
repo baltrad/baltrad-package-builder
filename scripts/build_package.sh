@@ -18,6 +18,7 @@ usage() {
   echo "--builder-name=<name>   - Name of the node building this packages if it's relevant somehow'"
   echo "--version=<version>     - Version that the packages should get. Should be in format, <major>.<minor>.<patch>." 
   echo "                          Will override the setting in respective packages package.ini file"
+	echo "--build-locally=<true,false> -If true, builds without checking out from github/lab, default false."
   echo "--artifacts=<loc>       - The directory where the artifacts should be placed (also support scp if "
   echo "                          the target location accepts copying without a password). In that case,"
   echo "                          the specified location should be like scp:<user>@<host>:<loc>"
@@ -54,6 +55,7 @@ BUILDER_NAME=
 RELEASE_VERSION=
 ARTIFACTS=
 OPT_INSTALL_ARTIFACTS=
+OPT_BUILD_LOCALLY="false"
 BUILD_LOG=
 DOCKER_BUILD=
 DOCKER_ARGS=
@@ -69,6 +71,14 @@ for arg in $*; do
       RELEASE_VERSION=`echo $arg | sed 's/[-a-zA-Z0-9]*=//'`
       DOCKER_ARGS="$DOCKER_ARGS $arg"
       ;;
+			
+		--build-locally=*)
+      OPT_BUILD_LOCALLY=`echo $arg | sed 's/[-a-zA-Z0-9]*=//'`
+      if [ "$OPT_BUILD_LOCALLY" != "true" -a "$OPT_BUILD_LOCALLY" != "false" ]; then
+        echo "--build-locally must be either true or false"
+        exit 127
+      fi
+			;;
     --artifacts=*)
       ARTIFACTS=`echo $arg | sed 's/[-a-zA-Z0-9]*=//'`
       ;;
@@ -270,7 +280,7 @@ prepare_and_build_centos()
   \rm -f "$RPM_PCK_NOARCH_DIR/$3-*.rpm"
 
   #HOW DO WE DETERMINE BUILDROOT? NOW, just fake it...
-  if [ "$7" = "false" ]; then # If not tar ball should be created from folder, it must be a git archive
+  if [ "$OPT_BUILD_LOCALLY" = "false" ]; then # If not tar ball should be created from folder, it must be a git archive
     #git archive --format="tar.gz" --prefix="$3-$4/" $GIT_BRANCH -o "$RPM_TOP_DIR/$SOURCES/$3/$3-$4.tar.gz"
 		if [ "$GIT_BRANCH" != "" ]; then
 			git archive --format="tar.gz" --prefix="$3-$4/" "$GIT_BRANCH" -o "$RPM_TOP_DIR/$SOURCES/$3-$4.tar.gz"
@@ -283,7 +293,9 @@ prepare_and_build_centos()
     fi
   else
     cd ..
-    tar -cvzf "$RPM_TOP_DIR/$SOURCES/$3-$4.tar.gz" "$3"
+		mv "$3" "$3-$4"
+    tar --exclude=".git" --exclude=".github" -cvzf "$RPM_TOP_DIR/$SOURCES/$3-$4.tar.gz" "$3-$4"
+		mv "$3-$4" "$3"
     cd "$3"
   fi
   rpmbuild --define="version $4" --define "snapshot $5" -v -ba "$2" || exit 127
@@ -563,11 +575,13 @@ fi
 cd packages/$PACKAGE_NAME
 
 # If tar ball, then always remove previous build
-#if [ "$TAR_BALL" != "" ]; then
-  if [ -d "build/$BUILD_NAME" ]; then
-    \rm -fr "build/$BUILD_NAME" || exit 127
-  fi
-#fi
+if [ "$TAR_BALL" != "" ]; then
+  if [ "$OPT_BUILD_LOCALLY" = "false" ]; then
+		if [ -d "build/$BUILD_NAME" ]; then
+			\rm -fr "build/$BUILD_NAME" || exit 127
+		fi
+	fi
+fi
 
 if [ ! -d build/$BUILD_NAME ]; then
   if [ ! -d build ]; then
