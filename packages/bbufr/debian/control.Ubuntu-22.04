@@ -1,0 +1,11 @@
+Source: bbufr
+Section: science
+Priority: extra
+Maintainer: Anders Henja <anders@baltrad.eu>
+Build-Depends: debhelper (>= 8.0.0), libhdf5-dev, zlib1g-dev, libproj-dev, libpng-dev, automake, autotools-dev, libtool, dh-autoreconf
+Standards-Version: 3.9.4
+
+Package: bbufr
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libhdf5-103-1, zlib1g, libpng16-16
+Description: High Level Interface to the HDF5 File Format
