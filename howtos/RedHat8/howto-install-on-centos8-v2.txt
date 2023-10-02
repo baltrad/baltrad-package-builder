@@ -1,0 +1,21 @@
+%> sudo yum install postgresql postgresql-server
+%> sudo service postgresql initdb
+Edit /var/lib/pgsql/data/pg_hba.conf and change METHOD to appropriate method. For example ident/trust/...
+%> sudo systemctl start postgresql
+%> sudo systemctl enable postgresql
+%> sudo createuser --username=postgres --pwprompt baltrad
+%> sudo createdb --username=postgres --encoding=utf8 --owner=baltrad baltrad
+%> sudo yum -y install epel-release
+%> sudo wget http://git.baltrad.eu/baltrad-packages/CentOS/7/latest/baltrad-package.repo -O - > /etc/yum.repos.d/baltrad-package.repo
+%> sudo yum update
+CentOS8: %> sudo dnf config-manager --set-enabled PowerTools
+CentOS8: %> sudo yum install python3-devel python3-numpy atlas hdf5 hdf5-devel hdf5-static
+CentOS8: %> sudo yum install python3-inotify python3-decorator
+CentOS8: %> sudo yum install `yum list available | grep baltrad-repo | awk '{print $1;}' | grep -v inotify | grep -v decorator`
+%> sudo baltrad-config init
+Edit /etc/baltrad/localhost.properties Change relevant values, including baltrad.node.name since it's going to be used when creating keys
+%> sudo baltrad-config create_keys
+%> sudo baltrad-config setup --install-database
+%> sudo systemctl start raved;systemctl start bdbserver;systemctl start baltrad-node
+Login to http://localhost:8080/BaltradDex and verify that it works
+%> sudo systemctl enable raved;systemctl enable bdbserver;systemctl enable baltrad-node
