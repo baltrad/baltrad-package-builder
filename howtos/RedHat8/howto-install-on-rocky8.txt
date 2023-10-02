@@ -1,0 +1,46 @@
+============ First steps to prepare for installation =============
+%> sudo dnf install python3-devel python3-numpy atlas
+%> sudo dnf install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm -y
+%> sudo dnf config-manager --set-enabled powertools
+
+============ Initial setup (postgres) =============
+Before we start to configure the system, we need to setup the database If you already have a working database with the baltrad database 
+user created you can skip this step.
+
+%> sudo dnf install -y postgresql postgresql-contrib postgresql-devel postgresql-server
+%> sudo postgresql-setup initdb
+%> sudo vi /var/lib/pgsql/data/pg_hba.conf
+# Change ident to md5
+%> sudo systemctl start postgresql
+%> sudo su - postgres
+postgres ~]$ psql
+postgres=# create user baltrad with password 'baltrad';
+postgres=# create database baltrad with owner baltrad;
+postgres=# \q
+postgres ~]$ logout
+%> sudo systemctl enable postgresql
+
+============ Install the baltrad node from RPMs =============
+The node will be installed when issuing the following command since the packages will ensure that the dependencies also are installed.
+ 
+%> sudo yum install python36*
+%> sudo yum install proj49-blt baltrad* hlhdf* rave* bbufr* beamb* bropo*
+
+============ Configuring the node =============
+When creating the configuration file, the default will be /etc/baltrad/localhost.properties but if you 
+for some reason want to use a different properties file, you can just add
+"--conf=..../myproperties.properties" to all of the below baltrad-config calls.
+
+%> baltrad-config init
+%> baltrad-config create_keys
+# Edit the configuration file /etc/baltrad/localhost.properties (or self-defined) and modify the properties as needed
+%> baltrad-config setup --install-database
+
+
+============ Starting the system =============
+Now it's hopefully just to start and enable the services.
+%> systemctl start bdbserver;systemctl start raved;systemctl start baltrad-node
+# And if all good above? 
+%> systemctl enable bdbserver;systemctl enable raved;systemctl enable baltrad-node
+
+

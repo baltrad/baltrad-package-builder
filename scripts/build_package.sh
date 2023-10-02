@@ -165,7 +165,7 @@ get_os_version()
     . /etc/os-release
     OS=`echo $NAME | sed -e "s/Linux//g" | sed -e"s/^[[:space:]]*//g" | sed -e's/[[:space:]]*$//g'`
     VER=$VERSION_ID
-    if [ "$NAME" = "Rocky Linux" ]; then
+    if [ "$NAME" = "Rocky Linux" -o "$NAME" = "Red Hat Enterprise" ]; then
       VER=`echo $VER | cut -d'.' -f1`
     fi    
   elif type lsb_release >/dev/null 2>&1; then
@@ -587,7 +587,12 @@ if [ ! -d build/$BUILD_NAME ]; then
       fi
     fi  
   else
+    gitbranch=$GIT_BRANCH
+    if [ "$gitbranch" = "" ]; then
+      gitbranch="master"
+    fi
     git clone $GIT_URI $BUILD_NAME || exit 127
+    git checkout $gitbranch || exit 127
   fi
   cd $BUILD_NAME
   if [ "$BUILD_NUMBER" = "auto" ]; then
@@ -601,7 +606,7 @@ if [ ! -d build/$BUILD_NAME ]; then
     fi
   fi
 else
-   gitbranch=$GIT_BRANCH
+  gitbranch=$GIT_BRANCH
   if [ "$gitbranch" = "" ]; then
     gitbranch="master"
   fi
@@ -636,11 +641,11 @@ elif [ "$OS_VARIANT" = "CentOS-8" -o "$OS_VARIANT" = "CentOS Stream-8" -o "$OS_V
   prepare_and_build_centos "$PACKAGEDIR/$PACKAGE_NAME/centos" "$PACKAGEDIR/$PACKAGE_NAME/$CENTOS8_SPECFILE" $BUILD_NAME $PACKAGE_VERSION $BUILD_NUMBER $INSTALL_ARTIFACTS $CREATE_TAR_FROM_FOLDER "$OS_VARIANT" "$ARTIFACT_REPOSITORY"
   add_buildlog_information "$BUILD_NAME" "$PACKAGE_VERSION-$BUILD_NUMBER" "$BUILD_LOG"
   exit 0
-elif [ "$OS_VARIANT" = "Red Hat Enterprise-8.0" ]; then
+elif [ "$OS_VARIANT" = "Red Hat Enterprise-8" ]; then
   prepare_and_build_centos "$PACKAGEDIR/$PACKAGE_NAME/centos" "$PACKAGEDIR/$PACKAGE_NAME/$REDHAT8_SPECFILE" $BUILD_NAME $PACKAGE_VERSION $BUILD_NUMBER $INSTALL_ARTIFACTS $CREATE_TAR_FROM_FOLDER "$OS_VARIANT" "$ARTIFACT_REPOSITORY"
   add_buildlog_information "$BUILD_NAME" "$PACKAGE_VERSION-$BUILD_NUMBER" "$BUILD_LOG"
   exit 0
-elif [ "$OS_VARIANT" = "Red Hat Enterprise-9.2" ]; then
+elif [ "$OS_VARIANT" = "Red Hat Enterprise-9" -o "$OS_VARIANT" = "Rocky-9" ]; then
   prepare_and_build_centos "$PACKAGEDIR/$PACKAGE_NAME/centos" "$PACKAGEDIR/$PACKAGE_NAME/$REDHAT9_SPECFILE" $BUILD_NAME $PACKAGE_VERSION $BUILD_NUMBER $INSTALL_ARTIFACTS $CREATE_TAR_FROM_FOLDER "$OS_VARIANT" "$ARTIFACT_REPOSITORY"
   add_buildlog_information "$BUILD_NAME" "$PACKAGE_VERSION-$BUILD_NUMBER" "$BUILD_LOG"
   exit 0

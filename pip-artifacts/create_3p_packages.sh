@@ -168,7 +168,7 @@ get_os_version()
     . /etc/os-release
     OS=`echo $NAME | sed -e "s/Linux//g" | sed -e"s/^[[:space:]]*//g" | sed -e's/[[:space:]]*$//g'`
     VER=$VERSION_ID
-    if [ "$NAME" = "Rocky Linux" ]; then
+    if [ "$NAME" = "Rocky Linux" -o "$NAME" = "Red Hat Enterprise" ]; then
       VER=`echo $VER | cut -d'.' -f1`
     fi      
   elif type lsb_release >/dev/null 2>&1; then
@@ -224,7 +224,11 @@ OS_VARIANT=`get_os_version`
 echo "Copying patch-files to sources."
 cp "$SPECDIR/"*.patch "$SOURCEDIR/"
 
-do_fetch_package_and_build jprops 2.0.2 jprops.spec python36-jprops-blt-2.0.2-0.x86_64.rpm
+if [ "$OS_VARIANT" = "CentOS-7" -o "$OS_VARIANT" = "Red Hat Enterprise-8" -o "$OS_VARIANT" = "CentOS-8" -o "$OS_VARIANT" = "CentOS Stream-8" -o "$OS_VARIANT" = "Rocky-8" ]; then
+  do_fetch_package_and_build jprops 2.0.2 jprops.spec python36-jprops-blt-2.0.2-0.x86_64.rpm
+elif [ "$OS_VARIANT" = "Red Hat Enterprise-9" -o "$OS_VARIANT" = "CentOS-9" -o "$OS_VARIANT" = "CentOS Stream-9" -o "$OS_VARIANT" = "Rocky-9" ]; then
+  do_fetch_package_and_build jprops 2.0.2 jprops-redhat9.spec python3-jprops-blt-2.0.2-0.x86_64.rpm
+fi
 
 if [ "$OS_VARIANT" = "CentOS-7" ]; then
   do_fetch_package_and_build progressbar33 2.4 progressbar33.spec python36-progressbar33-blt-2.4-0.x86_64.rpm
@@ -236,11 +240,13 @@ if [ "$OS_VARIANT" = "CentOS-7" ]; then
   do_fetch_package_and_build pyasn1 0.4.5 pyasn1.spec python36-pyasn1-blt-0.4.5-0.x86_64.rpm
 fi
 
-do_fetch_package_and_build pycrypto 2.4 pycrypto.spec python36-pycrypto-blt-2.4-0.x86_64.rpm
+if [ "$OS_VARIANT" = "CentOS-7" -o "$OS_VARIANT" = "Red Hat Enterprise-8" -o "$OS_VARIANT" = "CentOS-8" -o "$OS_VARIANT" = "CentOS Stream-8" -o "$OS_VARIANT" = "Rocky-8" ]; then
+  do_fetch_package_and_build pycrypto 2.4 pycrypto.spec python36-pycrypto-blt-2.4-0.x86_64.rpm
+fi
 
-if [ "$OS_VARIANT" = "Red Hat Enterprise-8.0" -o "$OS_VARIANT" = "CentOS-8" -o "$OS_VARIANT" = "CentOS Stream-8" -o "$OS_VARIANT" = "Rocky-8" ]; then
+if [ "$OS_VARIANT" = "Red Hat Enterprise-8" -o "$OS_VARIANT" = "CentOS-8" -o "$OS_VARIANT" = "CentOS Stream-8" -o "$OS_VARIANT" = "Rocky-8" ]; then
   do_fetch_package_and_build python3-keyczar 0.71rc0 python3-keyczar-redhat8.spec python36-keyczar-blt-0.71rc0-1.x86_64.rpm
-else
+elif [ "$OS_VARIANT" = "CentOS-7" ]; then
   do_fetch_package_and_build python3-keyczar 0.71rc0 python3-keyczar.spec python36-keyczar-blt-0.71rc0-0.x86_64.rpm
 fi
 
@@ -264,10 +270,12 @@ if [ "$OS_VARIANT" = "CentOS-7" ]; then
 fi
 
 
-if [ "$OS_VARIANT" = "Red Hat Enterprise-8.0" -o "$OS_VARIANT" = "CentOS-8" -o "$OS_VARIANT" = "CentOS Stream-8" ]; then
+if [ "$OS_VARIANT" = "Red Hat Enterprise-8" -o "$OS_VARIANT" = "CentOS-8" -o "$OS_VARIANT" = "CentOS Stream-8" -o "$OS_VARIANT" = "Rocky-8" ]; then
   do_fetch_package_and_build sqlalchemy-migrate 0.10.0 sqlalchemy-migrate-redhat8.spec python36-sqlalchemy-migrate-blt-0.10.0-1.x86_64.rpm
-else
+elif [ "$OS_VARIANT" = "CentOS-7" ]; then
   do_fetch_package_and_build sqlalchemy-migrate 0.10.0 sqlalchemy-migrate.spec python36-sqlalchemy-migrate-blt-0.10.0-1.x86_64.rpm
+elif [ "$OS_VARIANT" = "Red Hat Enterprise-9" -o "$OS_VARIANT" = "CentOS-9" -o "$OS_VARIANT" = "CentOS Stream-9" -o "$OS_VARIANT" = "Rocky-9" ]; then
+  do_fetch_package_and_build sqlalchemy-migrate 0.10.0 sqlalchemy-migrate-redhat9.spec python3-sqlalchemy-migrate-blt-0.10.0-1.x86_64.rpm
 fi
 
 if [ "$OS_VARIANT" = "CentOS-7" ]; then
