@@ -62,7 +62,7 @@ mv %{buildroot}/usr/lib/baltrad-wrwp/config/wrwp_config.xml %{buildroot}/etc/bal
 rm -fr %{buildroot}/usr/lib/baltrad-wrwp/config
 %py_byte_compile %{__python3} %{buildroot}/usr/lib/baltrad-wrwp/share/wrwp/pywrwp/ || :
 echo "/usr/lib/baltrad-wrwp/lib" >> %{buildroot}%{_sysconfdir}/ld.so.conf.d/baltrad-wrwp.conf
-# mv %{buildroot}/usr/lib/python3.9/site-packages/pywrwp.pth %{buildroot}%{python3_sitelib}
+mv %{buildroot}/usr/lib64/python3.9/site-packages/pywrwp.pth %{buildroot}%{python3_sitelib}
 
 %post
 BALTRAD_USER=baltrad
@@ -107,6 +107,6 @@ EOF
 
 %files python
 %{_prefix}/share/wrwp/pywrwp/
-# %{python3_sitelib}/pywrwp.pth
+%{python3_sitelib}/pywrwp.pth
 
 %config(noreplace) %{_sysconfdir}/ld.so.conf.d/baltrad-wrwp.conf
