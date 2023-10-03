@@ -1,0 +1,102 @@
+diff --git a/client/python/itest/__init__.py b/client/python/itest/__init__.py
+index 5f0e45f..3c7c37f 100644
+--- a/client/python/itest/__init__.py
++++ b/client/python/itest/__init__.py
+@@ -1,6 +1,6 @@
+ from baltrad.bdbclient import rest
+ import os, errno, subprocess, time, string
+-from baltradutils import jprops
++import jprops
+ 
+ PIDFILE="./build/bdb.pid"
+ LOGFILE="./build/bdb.log"
+diff --git a/client/python/setup.py b/client/python/setup.py
+index 9001827..8d26e0b 100755
+--- a/client/python/setup.py
++++ b/client/python/setup.py
+@@ -5,8 +5,8 @@ import sys
+ REQUIRED_PACKAGES= [
+     "baltrad.bdbcommon",
+     "pyasn1",
+-    "baltradcrypto",
+-    "baltradutils"
++    "pycrypto >= 2.4",
++    "python3-keyczar >= 0.71rc0"
+ ]
+ 
+ setuptools.setup(name="baltrad.bdbclient",
+@@ -40,6 +40,6 @@ setuptools.setup(name="baltrad.bdbclient",
+     test_suite="nose.collector",
+     tests_require=[
+         "mock >= 0.7",
+-        "baltradutils"
++        "jprops >= 2.0.2"
+     ],
+ )
+diff --git a/client/python/src/baltrad/bdbclient/rest.py b/client/python/src/baltrad/bdbclient/rest.py
+index 991c856..6dd84f7 100644
+--- a/client/python/src/baltrad/bdbclient/rest.py
++++ b/client/python/src/baltrad/bdbclient/rest.py
+@@ -29,7 +29,7 @@ import json
+ import os
+ import socket
+ 
+-from baltradcrypto.crypto import keyczarcrypto
++from keyczar import keyczar
+ 
+ from baltrad.bdbcommon import oh5
+ from baltrad.bdbclient import db
+@@ -434,7 +434,7 @@ class KeyczarAuth(Auth):
+     """authenicate by signing messages with Keyczar
+     """
+     def __init__(self, key_path, key_name=None):
+-        self._signer = keyczarcrypto.keyczar_signer.read(key_path)
++        self._signer = keyczar.Signer.Read(key_path)
+         if key_name:
+             self._key_name = key_name
+         else:
+@@ -442,7 +442,7 @@ class KeyczarAuth(Auth):
+ 
+     def add_credentials(self, req):
+         signable = create_signable_string(req)
+-        signature = self._signer.sign(signable)
++        signature = self._signer.Sign(signable)
+         auth = "bdb-keyczar %s:%s" % (self._key_name, signature)
+         req.headers["authorization"] = auth
+ 
+diff --git a/server/setup.py b/server/setup.py
+index 7f65d2b..f81c84b 100755
+--- a/server/setup.py
++++ b/server/setup.py
+@@ -5,15 +5,16 @@ import sys
+ 
+ REQUIRED_PACKAGES= [
+     "baltrad.bdbcommon",
+-    "baltradutils",
++    "jprops >= 2.0.2",
+     "progressbar2 >= 2.4",
+     "psycopg2",
+     "pyasn1",
++    "pycrypto >= 2.4",
+     "python-daemon >= 1.6",
+-    "baltradcrypto",
+-    "sqlalchemy >= 1.0.13",
++    "python3-keyczar >= 0.71rc0",
++    "SQLAlchemy >= 1.0.13",
+     "sqlalchemy-migrate >= 0.10.0",
+-    "werkzeug >= 0.14"
++    "werkzeug >= 0.12"
+ ]
+ 
+ 
+diff --git a/server/src/baltrad/bdbserver/config.py b/server/src/baltrad/bdbserver/config.py
+index 37fc2d6..9fb24da 100644
+--- a/server/src/baltrad/bdbserver/config.py
++++ b/server/src/baltrad/bdbserver/config.py
+@@ -1,5 +1,5 @@
+ 
+-from baltradutils import jprops
++import jprops
+ 
+ _undefined = object()
+ 
