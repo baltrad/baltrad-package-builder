@@ -58,6 +58,8 @@ OPT_INSTALL_ARTIFACTS=
 BUILD_LOG=
 DOCKER_BUILD=
 DOCKER_ARGS=
+LOCALREPO=
+OPT_TARBALL_STRIP=false
 
 shift;shift
 
@@ -80,6 +82,12 @@ for arg in $*; do
         exit 127
       fi
       DOCKER_ARGS="$DOCKER_ARGS $arg"      
+      ;;
+    --tarball=*)
+      OPT_TARBALL=`echo $arg | sed 's/[-a-zA-Z0-9]*=//'`
+      ;;
+    --tarstriproot)
+      OPT_TARBALL_STRIP=true
       ;;
     --build-log=*)
       BUILD_LOG=`echo $arg | sed 's/[-a-zA-Z0-9]*=//'`
@@ -130,6 +138,12 @@ fi
 if [ "$PACKAGE_VERSION" = "" -o "$INSTALL_ARTIFACTS" = "" ]; then
   echo "Could not extract information from packages/$PACKAGE_NAME/package.ini"
   exit 127
+fi
+
+if [ "$OPT_TARBALL" != "" ]; then
+  TAR_BALL="$OPT_TARBALL"
+  TAR_STRIP_ROOT="$OPT_TARBALL_STRIP"
+  GIT_URI=""
 fi
 
 if [ "$GIT_URI" = "" -a "$TAR_BALL" = "" ]; then
@@ -281,11 +295,19 @@ prepare_and_build_centos()
     fi
   else
     cd ..
-    tar -cvzf "$RPM_TOP_DIR/SOURCES/$3-$4.tar.gz" "$3"
+    if [ "$OPT_TARBALL" != "" ]; then
+      TMPD=`mktemp -d` || exit 127
+      cp -R "$3" "$TMPD/$3-$4" || exit 127
+      cd $TMPD || exit 127
+      tar -cvzf "$RPM_TOP_DIR/SOURCES/$3-$4.tar.gz" "$3-$4" || exit 127
+      cd - || exit 127
+      \rm -fr "$TMPD" || exit 127
+    else
+      tar -cvzf "$RPM_TOP_DIR/SOURCES/$3-$4.tar.gz" "$3"
+    fi
     cd "$3"
   fi
   rpmbuild --define="version $4" --define "snapshot $5" -v -ba "$2" || exit 127
-  
   if [ "$RPM_ARTIFACTS" != "" ]; then
     RPMS_TOPDIR=`rpmbuild --eval '%_rpmdir'`
     RPMS_TO_INSTALL=
@@ -574,10 +596,14 @@ if [ ! -d build/$BUILD_NAME ]; then
   cd build || exit 127
   if [ "$TAR_BALL" != "" ]; then
     mkdir $BUILD_NAME || exit 127
+    USETARBALL="$TAR_BALL"
+    if [ ! -f "$TAR_BALL" ]; then
+      USETARBALL="../$TAR_BALL"
+    fi
     if [ "$TAR_STRIP_ROOT" = "true" ]; then
-      tar -xzf "../$TAR_BALL" --strip 1 --directory $BUILD_NAME || exit 127
+      tar -xzf "$USETARBALL" --strip 1 --directory $BUILD_NAME || exit 127
     else
-      tar -xzf "../$TAR_BALL" --directory $BUILD_NAME || exit 127
+      tar -xzf "$USETARBALL" --directory $BUILD_NAME || exit 127
     fi
     if [ "$BUILD_NUMBER" = "auto" ]; then
       if [ "$GIT_PKG_BUMP" != "" ]; then

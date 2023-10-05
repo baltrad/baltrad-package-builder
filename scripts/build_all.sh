@@ -165,35 +165,33 @@ if [ "$DOCKER_BUILD" != "" ]; then
   BALTRAD_NO_VERSION_OPT_STR="$BALTRAD_NO_VERSION_OPT_STR --docker=$DOCKER_BUILD"
 fi
 
-#if [[ "$OS_VERSION" != "Ubuntu-"* ]]; then
-#  PIPARGS="--install"
-#  if [ "$REBUILD_PIPPACKAGES" != "no" ]; then
-#    PIPARGS="$PIPARGS --rebuild"
-#  fi
-#  if [ "$ARTIFACTS" != "" ]; then
-#    PIPARGS="$PIPARGS --artifacts=$ARTIFACTS"
-#  fi
-#  if [ "$DOCKER_BUILD" != "" ]; then
-#    PIPARGS="$PIPARGS --docker=$DOCKER_BUILD"
-#  fi
-#  ./pip-artifacts/create_3p_packages.sh $PIPARGS || print_error_and_exit "Failure during pip package build step"
-#fi
+if [[ "$OS_VERSION" != "Ubuntu-"* ]]; then
+  PIPARGS="--install"
+  if [ "$REBUILD_PIPPACKAGES" != "no" ]; then
+    PIPARGS="$PIPARGS --rebuild"
+  fi
+  if [ "$ARTIFACTS" != "" ]; then
+    PIPARGS="$PIPARGS --artifacts=$ARTIFACTS"
+  fi
+  if [ "$DOCKER_BUILD" != "" ]; then
+    PIPARGS="$PIPARGS --docker=$DOCKER_BUILD"
+  fi
+  ./pip-artifacts/create_3p_packages.sh $PIPARGS || print_error_and_exit "Failure during pip package build step"
+fi
 
-#echo "OS_VERSION=$OS_VERSION"
+if [ "$OS_VERSION" = "Red Hat Enterprise-8" -o "$OS_VERSION" = "CentOS-8" -o "$DOCKER_BUILD" = "CentOS-8" -o "$DOCKER_BUILD" = "RedHat-8" -o "$OS_VERSION" = "CentOS Stream-8" -o "$OS_VERSION" = "Rocky-8" ]; then
+  ./scripts/build_package.sh proj49-blt        $PKG_BUILD_NUMBER $BALTRAD_NO_VERSION_OPT_STR || print_error_and_exit "Failed to build proj49-blt"
+fi
 
-#if [ "$OS_VERSION" = "Red Hat Enterprise-8" -o "$OS_VERSION" = "CentOS-8" -o "$DOCKER_BUILD" = "CentOS-8" -o "$DOCKER_BUILD" = "RedHat-8" -o "$OS_VERSION" = "CentOS Stream-8" -o "$OS_VERSION" = "Rocky-8" ]; then
-#  ./scripts/build_package.sh proj49-blt        $PKG_BUILD_NUMBER $BALTRAD_NO_VERSION_OPT_STR || print_error_and_exit "Failed to build proj49-blt"
-#fi
-
-#if [ "$OS_VERSION" = "Red Hat Enterprise-8" -o "$OS_VERSION" = "CentOS-8" -o "$DOCKER_BUILD" = "CentOS-8" -o "$DOCKER_BUILD" = "RedHat-8" -o "$OS_VERSION" = "CentOS Stream-8" -o "$OS_VERSION" = "Rocky-8"  -o "$OS_VERSION" = "Rocky-9" -o "$OS_VERSION" = "Red Hat Enterprise-9.0" ]; then
-#  ./scripts/build_package.sh baltrad-base        $PKG_BUILD_NUMBER $BALTRAD_OPT_STR || print_error_and_exit "Failed to build baltrad-base"
-#  ./scripts/build_package.sh baltrad-crypto      $PKG_BUILD_NUMBER $BALTRAD_OPT_STR || print_error_and_exit "Failed to build baltrad-crypto"
-#fi
+if [ "$OS_VERSION" = "Red Hat Enterprise-8" -o "$OS_VERSION" = "CentOS-8" -o "$DOCKER_BUILD" = "CentOS-8" -o "$DOCKER_BUILD" = "RedHat-8" -o "$OS_VERSION" = "CentOS Stream-8" -o "$OS_VERSION" = "Rocky-8"  -o "$OS_VERSION" = "Rocky-9" -o "$OS_VERSION" = "Red Hat Enterprise-9" ]; then
+  ./scripts/build_package.sh baltrad-base        $PKG_BUILD_NUMBER $BALTRAD_OPT_STR || print_error_and_exit "Failed to build baltrad-base"
+  ./scripts/build_package.sh baltrad-utils      $PKG_BUILD_NUMBER $BALTRAD_OPT_STR || print_error_and_exit "Failed to build baltrad-crypto"
+  ./scripts/build_package.sh baltrad-crypto      $PKG_BUILD_NUMBER $BALTRAD_OPT_STR || print_error_and_exit "Failed to build baltrad-crypto"
+fi
 
 ./scripts/build_package.sh hlhdf               $PKG_BUILD_NUMBER $HLHDF_OPT_STR || print_error_and_exit "Failed to build hlhdf" 
 ./scripts/build_package.sh bbufr               $PKG_BUILD_NUMBER $BALTRAD_OPT_STR || print_error_and_exit "Failed to build bbufr"
 ./scripts/build_package.sh rave                $PKG_BUILD_NUMBER $BALTRAD_OPT_STR || print_error_and_exit "Failed to build rave"
-exit 0
 ./scripts/build_package.sh bropo               $PKG_BUILD_NUMBER $BALTRAD_OPT_STR || print_error_and_exit "Failed to build bropo"
 ./scripts/build_package.sh beamb               $PKG_BUILD_NUMBER $BALTRAD_OPT_STR || print_error_and_exit "Failed to build beamb"
 ./scripts/build_package.sh baltrad-ppc         $PKG_BUILD_NUMBER $BALTRAD_OPT_STR || print_error_and_exit "Failed to build baltrad-ppc"
