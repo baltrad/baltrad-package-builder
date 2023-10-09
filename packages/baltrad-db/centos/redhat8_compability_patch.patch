@@ -1,0 +1,342 @@
+diff --git a/client/python/itest/__init__.py b/client/python/itest/__init__.py
+index 5f0e45f..3c7c37f 100644
+--- a/client/python/itest/__init__.py
++++ b/client/python/itest/__init__.py
+@@ -1,6 +1,6 @@
+ from baltrad.bdbclient import rest
+ import os, errno, subprocess, time, string
+-from baltradutils import jprops
++import jprops
+ 
+ PIDFILE="./build/bdb.pid"
+ LOGFILE="./build/bdb.log"
+diff --git a/client/python/itest/rest_test.py b/client/python/itest/rest_test.py
+index 2d1a3c0..4f5b667 100644
+--- a/client/python/itest/rest_test.py
++++ b/client/python/itest/rest_test.py
+@@ -16,6 +16,8 @@
+ # along with baltrad-db. If not, see <http://www.gnu.org/licenses/>.
+ import os
+ 
++from keyczar import errors as kzerrors
++
+ from nose.tools import eq_, ok_, raises
+ 
+ from baltrad.bdbclient import rest
+@@ -26,11 +28,11 @@ from . import get_database
+ class TestKeyczarAuth(object):
+     pass
+     
+-    @raises(Exception)
++    @raises(kzerrors.KeyczarError)
+     def test_ctor_nx_key(self):
+         rest.KeyczarAuth("/path/to/nxkey")
+     
+-    @raises(Exception)
++    @raises(kzerrors.KeyczarError)
+     def test_ctor_invalid_key(self):
+         rest.KeyczarAuth(
+             os.path.join(
+diff --git a/client/python/setup.py b/client/python/setup.py
+index 9001827..928cf09 100755
+--- a/client/python/setup.py
++++ b/client/python/setup.py
+@@ -5,8 +5,8 @@ import sys
+ REQUIRED_PACKAGES= [
+     "baltrad.bdbcommon",
+     "pyasn1",
+-    "baltradcrypto",
+-    "baltradutils"
++    "pycrypto >= 2.4",
++    "python3-keyczar >= 0.71rc0"
+ ]
+ 
+ setuptools.setup(name="baltrad.bdbclient",
+diff --git a/client/python/src/baltrad/bdbclient/rest.py b/client/python/src/baltrad/bdbclient/rest.py
+index 991c856..6dd84f7 100644
+--- a/client/python/src/baltrad/bdbclient/rest.py
++++ b/client/python/src/baltrad/bdbclient/rest.py
+@@ -29,7 +29,7 @@ import json
+ import os
+ import socket
+ 
+-from baltradcrypto.crypto import keyczarcrypto
++from keyczar import keyczar
+ 
+ from baltrad.bdbcommon import oh5
+ from baltrad.bdbclient import db
+@@ -434,7 +434,7 @@ class KeyczarAuth(Auth):
+     """authenicate by signing messages with Keyczar
+     """
+     def __init__(self, key_path, key_name=None):
+-        self._signer = keyczarcrypto.keyczar_signer.read(key_path)
++        self._signer = keyczar.Signer.Read(key_path)
+         if key_name:
+             self._key_name = key_name
+         else:
+@@ -442,7 +442,7 @@ class KeyczarAuth(Auth):
+ 
+     def add_credentials(self, req):
+         signable = create_signable_string(req)
+-        signature = self._signer.sign(signable)
++        signature = self._signer.Sign(signable)
+         auth = "bdb-keyczar %s:%s" % (self._key_name, signature)
+         req.headers["authorization"] = auth
+ 
+diff --git a/client/python/test/rest_test.py b/client/python/test/rest_test.py
+index cf0b099..cb167a8 100644
+--- a/client/python/test/rest_test.py
++++ b/client/python/test/rest_test.py
+@@ -56,7 +56,7 @@ def test_create_signable_string():
+     eq_(expected, result)
+ 
+ class TestKeyczarAuth(object):
+-    @mock.patch("baltradcrypto.crypto.keyczarcrypto.keyczar_signer.read")
++    @mock.patch("keyczar.keyczar.Signer.Read")
+     def test_ctor(self, signer_read):
+         signer_read.return_value = mock.sentinel.signer
+ 
+@@ -65,7 +65,7 @@ class TestKeyczarAuth(object):
+         eq_(mock.sentinel.signer, result._signer)
+         signer_read.assert_called_with("/path/to/key")
+     
+-    @mock.patch("baltradcrypto.crypto.keyczarcrypto.keyczar_signer.read")
++    @mock.patch("keyczar.keyczar.Signer.Read")
+     def test_ctor_default_keyname(self, signer_read):
+         signer_read.return_value = mock.sentinel.signer
+ 
+@@ -75,11 +75,11 @@ class TestKeyczarAuth(object):
+         signer_read.assert_called_with("/path/to/key")
+     
+     @mock.patch("baltrad.bdbclient.rest.create_signable_string")
+-    @mock.patch("baltradcrypto.crypto.keyczarcrypto.keyczar_signer.read")
++    @mock.patch("keyczar.keyczar.Signer.Read")
+     def test_sign(self, signer_read, create_signable):
+         signer = mock.Mock()
+         create_signable.return_value = "signable"
+-        signer.sign.return_value = "signature"
++        signer.Sign.return_value = "signature"
+         signer_read.return_value = signer
+         auth = rest.KeyczarAuth("/path/to/key")
+         req = rest.Request(
+@@ -95,7 +95,7 @@ class TestKeyczarAuth(object):
+         auth.add_credentials(req)
+         eq_("bdb-keyczar key:signature", req.headers["authorization"])
+         create_signable.assert_called_with(req)
+-        signer.sign.assert_called_with("signable")
++        signer.Sign.assert_called_with("signable")
+ 
+ class TestRestfulFileResult(object):
+     def setup(self):
+diff --git a/server/itest/sqla/backend_test.py b/server/itest/sqla/backend_test.py
+index 2a787a4..37dc23c 100644
+--- a/server/itest/sqla/backend_test.py
++++ b/server/itest/sqla/backend_test.py
+@@ -24,8 +24,6 @@ from baltrad.bdbcommon.oh5.node import Attribute, Group
+ 
+ from . import get_backend
+ 
+-from sqlalchemy import func, sql
+-
+ def create_metadata(what_object, what_date, what_time, what_source):
+     meta = Metadata()
+     meta.add_node("/", Group("what"))
+@@ -404,7 +402,7 @@ class TestSqlAlchemyBackendItest(object):
+         self.backend.remove_all_files()
+ 
+         with self.backend.get_connection() as conn:
+-            delete_count = conn.execute(sql.select(func.count()).select_from(schema.files)).scalar_one()
++            delete_count = conn.execute(schema.files.count()).scalar()
+         eq_(0, delete_count) 
+     
+ class TestSqlAlchemySourceManager(object):
+diff --git a/server/itest/web/auth_test.py b/server/itest/web/auth_test.py
+index d117184..fd8a61c 100644
+--- a/server/itest/web/auth_test.py
++++ b/server/itest/web/auth_test.py
+@@ -17,7 +17,7 @@
+ 
+ import os
+ 
+-from baltradcrypto.crypto import keyczarcrypto as keyczar
++from keyczar import errors as kzerrors
+ 
+ from nose.tools import eq_, ok_, raises
+ 
+@@ -37,11 +37,11 @@ class TestKeyczarAuth(object):
+     def add_key(self):
+         self.auth.add_key("testkey", "testkey")
+     
+-    @raises(Exception)
++    @raises(kzerrors.KeyczarError)
+     def test_add_nx_key(self):
+         self.auth.add_key("testkey", "/path/to/nxkey")
+     
+-    @raises(Exception)
++    @raises(kzerrors.KeyczarError)
+     def test_add_invalid_key(self):
+         self.auth.add_key("testkey", "invalidkey")
+     
+diff --git a/server/setup.py b/server/setup.py
+index 258ea09..4d8a155 100755
+--- a/server/setup.py
++++ b/server/setup.py
+@@ -5,15 +5,16 @@ import sys
+ 
+ REQUIRED_PACKAGES= [
+     "baltrad.bdbcommon",
+-    "baltradutils",
+-    "progressbar2 >= 2.4",
++    "jprops >= 2.0.2",
++    "progressbar2 >= 2.0",
+     "psycopg2",
+     "pyasn1",
+     "python-daemon >= 1.6",
+-    "baltradcrypto",
+-    "sqlalchemy >= 1.4.31",
+-    "sqlalchemy-migrate >= 0.13.0",
+-    "werkzeug >= 0.14"
++    "pycrypto >= 2.4",
++    "python3-keyczar >= 0.71rc0",
++    "SQLAlchemy >= 1.0.13",
++    "sqlalchemy-migrate >= 0.10.0",
++    "werkzeug >= 0.12"
+ ]
+ 
+ 
+diff --git a/server/src/baltrad/bdbserver/config.py b/server/src/baltrad/bdbserver/config.py
+index 37fc2d6..9a8ad86 100644
+--- a/server/src/baltrad/bdbserver/config.py
++++ b/server/src/baltrad/bdbserver/config.py
+@@ -1,5 +1,4 @@
+-
+-from baltradutils import jprops
++import jprops
+ 
+ _undefined = object()
+ 
+diff --git a/server/src/baltrad/bdbserver/sqla/migrate/versions/005_add_what_source.py b/server/src/baltrad/bdbserver/sqla/migrate/versions/005_add_what_source.py
+index 34ac20a..012a097 100644
+--- a/server/src/baltrad/bdbserver/sqla/migrate/versions/005_add_what_source.py
++++ b/server/src/baltrad/bdbserver/sqla/migrate/versions/005_add_what_source.py
+@@ -10,7 +10,6 @@ from sqlalchemy import (
+     Table,
+     UniqueConstraint,
+     sql,
+-    func,
+ )
+ 
+ meta = MetaData()
+@@ -62,17 +61,17 @@ file_what_source = Table("bdb_file_what_source", meta,
+     PrimaryKeyConstraint("file_id", "source_kv_id"),
+ )
+ 
+-_what_source_qry = sql.select(func.count()).select_from(sql.select(
++_what_source_qry = sql.select(
+     [files.c.id, attribute_values.c.value_string],
+     whereclause=sql.and_(
+         nodes.c.path=="/what",
+         nodes.c.name=="source"
+     ),
+     from_obj=files.join(nodes).join(attribute_values),
+-))
++)
+ 
+ def _upgrade_what_source(conn):
+-    rowcount = conn.execute(_what_source_qry.alias("cnt")).scalar_one()
++    rowcount = conn.execute(_what_source_qry.alias("cnt").count()).scalar()
+     if rowcount == 0:
+         return
+     print("Selecting %d /what/source attributes for update" % rowcount)
+diff --git a/server/src/baltrad/bdbserver/web/auth.py b/server/src/baltrad/bdbserver/web/auth.py
+index 7a3d413..e84aaaf 100644
+--- a/server/src/baltrad/bdbserver/web/auth.py
++++ b/server/src/baltrad/bdbserver/web/auth.py
+@@ -20,7 +20,10 @@ import logging
+ import pkg_resources
+ import os
+ 
+-from baltradcrypto.crypto import keyczarcrypto as keyczar
++from keyczar import (
++    errors as kzerrors,
++    keyczar,
++)
+ 
+ from baltrad.bdbcommon import util
+ 
+@@ -195,7 +198,7 @@ class KeyczarAuth(Auth):
+         if not os.path.isabs(path):
+             path = os.path.join(self._keystore_root, path)
+         logger.info("adding key %s from %s", name, path)
+-        verifier = keyczar.keyczar_verifier.read(path)
++        verifier = keyczar.Verifier.Read(path)
+         self._verifiers[name] = verifier
+     
+     def authenticate(self, req, credentials):
+@@ -209,9 +212,9 @@ class KeyczarAuth(Auth):
+             raise AuthError("no verifier for key: %s" % keyname)
+         signed_str = create_signable_string(req)
+         try:
+-            return verifier.verify(signed_str, signature)
+-        except Exception as e:
+-            logger.exception("unhandled keyczar error %s", e.__str__())
++            return verifier.Verify(signed_str, signature)
++        except kzerrors.KeyczarError as e:
++            logger.exception("unhandled Keyczar error %s", e.__str__())
+             return False
+ 
+     @classmethod
+diff --git a/server/test/web/auth_test.py b/server/test/web/auth_test.py
+index 8c0c561..18abebf 100644
+--- a/server/test/web/auth_test.py
++++ b/server/test/web/auth_test.py
+@@ -15,7 +15,7 @@
+ # You should have received a copy of the GNU Lesser General Public License
+ # along with baltrad-db. If not, see <http://www.gnu.org/licenses/>.
+ 
+-from baltradcrypto.crypto import keyczarcrypto as keyczar
++from keyczar import keyczar
+ 
+ import mock
+ 
+@@ -48,13 +48,13 @@ class TestAuth(object):
+ class TestKeyczarAuth(object):
+     def setup(self):
+         self.auth = auth.KeyczarAuth("/path/to/keys")
+-        self.verifier = mock.Mock(spec=keyczar.keyczar_verifier)
++        self.verifier = mock.Mock(spec=keyczar.Verifier)
+     
+     @raises(ValueError)
+     def test_construct_relative_keystore_root(self):
+         auth.KeyczarAuth("relpath")
+     
+-    @mock.patch("baltradcrypto.crypto.keyczarcrypto.keyczar_verifier.read")
++    @mock.patch("keyczar.keyczar.Verifier.Read")
+     def test_add_key_abspath(self, load_verifier):
+         load_verifier.return_value = self.verifier
+ 
+@@ -63,7 +63,7 @@ class TestKeyczarAuth(object):
+         assert_called_once_with(load_verifier, "/path/to/key")
+         eq_(self.verifier, self.auth._verifiers["keyname"])
+ 
+-    @mock.patch("baltradcrypto.crypto.keyczarcrypto.keyczar_verifier.read")
++    @mock.patch("keyczar.keyczar.Verifier.Read")
+     def test_add_key_relpath(self, load_verifier):
+         load_verifier.return_value = self.verifier
+ 
+@@ -101,13 +101,13 @@ class TestKeyczarAuth(object):
+     def test_authenticate(self, create_signable_string):
+         req = mock.Mock(spec=webutil.Request)
+         self.auth._verifiers["keyname"] = self.verifier
+-        self.verifier.verify.return_value = True
++        self.verifier.Verify.return_value = True
+         create_signable_string.return_value = "signable_string"
+ 
+         ok_(self.auth.authenticate(req, "keyname:signature"))
+         ok_(called_once_with(create_signable_string, req))
+         ok_(called_once_with(
+-            self.verifier.verify, "signable_string", "signature"
++            self.verifier.Verify, "signable_string", "signature"
+         ))
+     
+     @raises(auth.AuthError)

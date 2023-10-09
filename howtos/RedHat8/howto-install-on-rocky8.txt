@@ -2,6 +2,7 @@
 %> sudo dnf install python3-devel python3-numpy atlas
 %> sudo dnf install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm -y
 %> sudo dnf config-manager --set-enabled powertools
+%> sudo dnf module enable javapackages-tools
 
 ============ Initial setup (postgres) =============
 Before we start to configure the system, we need to setup the database If you already have a working database with the baltrad database 
