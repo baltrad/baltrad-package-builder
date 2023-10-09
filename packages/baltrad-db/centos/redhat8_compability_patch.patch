@@ -178,7 +178,7 @@ index d117184..fd8a61c 100644
          self.auth.add_key("testkey", "invalidkey")
      
 diff --git a/server/setup.py b/server/setup.py
-index 258ea09..4d8a155 100755
+index d0e73e8..4d8a155 100755
 --- a/server/setup.py
 +++ b/server/setup.py
 @@ -5,15 +5,16 @@ import sys
@@ -187,9 +187,10 @@ index 258ea09..4d8a155 100755
      "baltrad.bdbcommon",
 -    "baltradutils",
 -    "progressbar2 >= 2.4",
+-    "psycopg2 >= 2.8",
 +    "jprops >= 2.0.2",
 +    "progressbar2 >= 2.0",
-     "psycopg2",
++    "psycopg2",
      "pyasn1",
      "python-daemon >= 1.6",
 -    "baltradcrypto",
