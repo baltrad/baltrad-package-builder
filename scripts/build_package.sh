@@ -618,6 +618,7 @@ if [ ! -d build/$BUILD_NAME ]; then
       gitbranch="master"
     fi
     git clone $GIT_URI $BUILD_NAME || exit 127
+    cd $BUILD_NAME || exit 127
     git checkout $gitbranch || exit 127
   fi
   cd $BUILD_NAME
@@ -636,13 +637,14 @@ else
   if [ "$gitbranch" = "" ]; then
     gitbranch="master"
   fi
-  cd build/$BUILD_NAME
-  git checkout . || exit 127 # REMOVE ALL OLD STUFF
+  cd build/$BUILD_NAME || exit 127
+  if [ ! -f .git/config ]; then
+    echo "Seems like this folder (build/$BUILD_NAME) previously was built using tar-ball"
+    exit 127
+  fi
   git checkout $gitbranch || exit 127
   git pull || exit 127
-  #if [ "$GIT_BRANCH" != "" ]; then
-  #  git checkout "$GIT_BRANCH" || exit 127
-  #fi
+
   if [ "$BUILD_NUMBER" = "auto" ]; then
     TMP_NUMBER=`get_git_repo_version "$GIT_PKG_OFFSET" "$GIT_PKG_NBR" "$GIT_PKG_NO_EXTRACT" "$GIT_PKG_BUMP"`
     if [ "$TMP_NUMBER" != "" ]; then
