@@ -34,9 +34,9 @@ Requires: python3-numpy
 Requires: python3
 Requires: python3-daemon
 Requires: python3-sqlalchemy
-# Requires: python3-jprops
-# Requires: python3-keyczar
-# Requires: python3-sqlalchemy-migrate-blt
+Requires: baltrad-crypto
+Requires: baltrad-utils
+Requires: python3-migrate
 Conflicts: rave-py27
 
 %description

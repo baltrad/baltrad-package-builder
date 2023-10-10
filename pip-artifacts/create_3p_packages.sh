@@ -226,8 +226,6 @@ cp "$SPECDIR/"*.patch "$SOURCEDIR/"
 
 if [ "$OS_VARIANT" = "CentOS-7" -o "$OS_VARIANT" = "Red Hat Enterprise-8" -o "$OS_VARIANT" = "CentOS-8" -o "$OS_VARIANT" = "CentOS Stream-8" -o "$OS_VARIANT" = "Rocky-8" ]; then
   do_fetch_package_and_build jprops 2.0.2 jprops.spec python36-jprops-blt-2.0.2-0.x86_64.rpm
-elif [ "$OS_VARIANT" = "Red Hat Enterprise-9" -o "$OS_VARIANT" = "CentOS-9" -o "$OS_VARIANT" = "CentOS Stream-9" -o "$OS_VARIANT" = "Rocky-9" ]; then
-  do_fetch_package_and_build jprops 2.0.2 jprops-redhat9.spec python3-jprops-blt-2.0.2-0.x86_64.rpm
 fi
 
 if [ "$OS_VARIANT" = "CentOS-7" ]; then
@@ -274,8 +272,6 @@ if [ "$OS_VARIANT" = "Red Hat Enterprise-8" -o "$OS_VARIANT" = "CentOS-8" -o "$O
   do_fetch_package_and_build sqlalchemy-migrate 0.10.0 sqlalchemy-migrate-redhat8.spec python36-sqlalchemy-migrate-blt-0.10.0-1.x86_64.rpm
 elif [ "$OS_VARIANT" = "CentOS-7" ]; then
   do_fetch_package_and_build sqlalchemy-migrate 0.10.0 sqlalchemy-migrate.spec python36-sqlalchemy-migrate-blt-0.10.0-1.x86_64.rpm
-elif [ "$OS_VARIANT" = "Red Hat Enterprise-9" -o "$OS_VARIANT" = "CentOS-9" -o "$OS_VARIANT" = "CentOS Stream-9" -o "$OS_VARIANT" = "Rocky-9" ]; then
-  do_fetch_package_and_build sqlalchemy-migrate 0.10.0 sqlalchemy-migrate-redhat9.spec python3-sqlalchemy-migrate-blt-0.10.0-1.x86_64.rpm
 fi
 
 if [ "$OS_VARIANT" = "CentOS-7" ]; then

@@ -31,9 +31,8 @@ Requires: python3-sqlalchemy
 Requires: python3-cherrypy
 Requires: python3-psycopg2
 Requires: baltrad-crypto
-#Requires: python3-pycrypto-blt
-#Requires: python3-keyczar-blt
-#Requires: python3-sqlalchemy-migrate-blt
+Requires: baltrad-utils
+Requires: python3-migrate
 Conflicts: baltrad-db-py27
 
 %description

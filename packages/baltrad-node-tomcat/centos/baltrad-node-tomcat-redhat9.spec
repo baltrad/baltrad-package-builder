@@ -8,9 +8,9 @@ Release: %{snapshot}%{?dist}
 Summary: The Baltrad nodes tomcat server
 License: See LICENSE information for tomcat
 URL: http://www.baltrad.eu/
-Patch1: 001-baltrad-node.patch
+Patch1: 001-baltrad-node-rh9.patch
 Patch2: 002-server-xml.patch
-Patch3: 003-baltrad-node-service.patch
+Patch3: 003-baltrad-node-service-rh9.patch
 Source0: %{name}-%{version}.tar.gz
 Source1: hdfobject.jar
 Source2: COPYING.hdfobject

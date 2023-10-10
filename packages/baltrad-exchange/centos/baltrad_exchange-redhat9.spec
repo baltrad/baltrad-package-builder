@@ -20,7 +20,6 @@ Requires: baltrad-db
 Requires: hlhdf-python
 Requires: python3
 Requires: python3-daemon
-Requires: python3-pycryptodomex
 Requires: python3-pyasn1
 Requires: python3-setuptools
 Requires: python3-sqlalchemy
@@ -28,7 +27,8 @@ Requires: python3-cherrypy
 Requires: python3-paramiko
 Requires: python3-scp
 Requires: python3-inotify
-Requires: SMHI-python3-radar_pyutils
+Requires: baltrad-crypto
+Requires: baltrad-utils
 
 %description
 Provides exchange functionality for the baltrad network.
