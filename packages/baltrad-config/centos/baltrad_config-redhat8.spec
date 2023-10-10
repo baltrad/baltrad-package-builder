@@ -10,6 +10,7 @@ Summary: Baltrad Config
 License: GPL-3 and LGPL-3
 URL: http://www.baltrad.eu/
 Source0: %{name}-%{version}.tar.gz
+Patch0: redhat8_compability_patch.patch
 BuildRequires: python36-devel
 Requires: python36
 Conflicts: baltrad-config-py27
@@ -19,6 +20,7 @@ Provides configuration features for the baltrad system
 
 %prep
 %setup -q
+%patch0 -p1
 
 %build
 %{__python36} setup.py build

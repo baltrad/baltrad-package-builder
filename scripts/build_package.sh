@@ -655,7 +655,6 @@ else
     fi
   fi
 fi
-echo "BUILD_NUMBER=$BUILD_NUMBER"
 
 if [[ "$OS_VARIANT" == "Ubuntu"* ]]; then
   prepare_and_build_debian "$PACKAGEDIR/$PACKAGE_NAME/debian" $BUILD_NAME $PACKAGE_VERSION-$BUILD_NUMBER $INSTALL_ARTIFACTS "$OS_VARIANT" "$ARTIFACT_REPOSITORY"
