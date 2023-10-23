@@ -17,13 +17,20 @@ if [ "$1" = configure ]; then
   su -s /bin/sh baltrad -c "test -O /var/lib/baltrad &&
     test -G /var/lib/baltrad" || chown baltrad:baltrad /var/lib/baltrad
 
+  if [ ! -d /var/log/baltrad]; then
+    mkdir -p /var/log/baltrad
+  fi
+
+  if [ ! -d /run/baltrad ]; then
+    mkdir -p /run/baltrad
+  fi
+
   chmod 1775 /var/log/baltrad
-  chmod 1775 /var/run/baltrad
-  chmod 1775 /var/cache/baltrad-node-tomcat
+  chmod 1775 /run/baltrad
 
   chown baltrad:baltrad /var/lib/baltrad/rave_pgf_queue.xml  
   chown root:baltrad /var/log/baltrad
-  chown root:baltrad /var/run/baltrad
+  chown root:baltrad /run/baltrad
   chown -R root:baltrad /etc/baltrad/rave
   chown 664 /etc/baltrad/rave/Lib/rave_defines.py
   
@@ -45,6 +52,6 @@ a.register('se.smhi.rave.creategmapimage', 'googlemap_pgf_plugin', 'generate', '
 a.deregister('eu.baltrad.beast.applyqc')
 a.register('eu.baltrad.beast.applyqc', 'rave_pgf_apply_qc_plugin', 'generate', 'Apply quality controls on a polar volume', 'date,time,anomaly-qc,algorithm_id', '', '')  
 EOF
-  python $TMPNAME
+  python3 $TMPNAME
   \rm -f $TMPNAME
 fi

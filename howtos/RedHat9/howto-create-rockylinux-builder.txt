@@ -4,13 +4,13 @@
 %> sudo dnf install python3-devel python3-numpy atlas
 %> sudo dnf install https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm -y
 %> sudo dnf config-manager --enable crb
-%> sudo dnf install hdf-devel hdf5-devel java-hdf5 libpng-devel netcdf-devel expat-devel 
+%> sudo dnf install hdf-devel hdf5-devel java-hdf5 libpng-devel netcdf-devel expat-devel proj-devel
 %> sudo dnf install lapack-devel blas-devel atlas-devel gsl-devel
-%> sudo dnf install java-1.8.0-openjdk-devel ant ant-junit ImageMagick desktop-file-utils doxygen 
-%> sudo dnf install postgresql postgresql-devel postgresql-contrib postgresql-server postgresql-jdbc
+%> sudo dnf install java-11-openjdk-devel ant ant-junit ImageMagick desktop-file-utils doxygen 
+%> sudo dnf install postgresql postgresql-devel postgresql-contrib postgresql-jdbc
 %> sudo dnf install php php-common python3-pillow python3-pyasn1
 %> sudo dnf install python3-pbr python3-sqlparse python3-tempita python3-pycryptodomex
-%> sudo dnf install python3-daemon python3-sqlalchemy
+%> sudo dnf install python3-daemon python3-sqlalchemy python3-migrate
 %> sudo dnf install python3-cherrypy python3-progressbar2 python3-psycopg2 python3-werkzeug
 %> sudo dnf install python3-decorator
 %> sudo pip3 install py2pack
