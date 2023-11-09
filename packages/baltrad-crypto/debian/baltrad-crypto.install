@@ -1,0 +1,3 @@
+usr/local/bin/baltrad-crypto-config usr/bin
+usr/local/lib/python3.10/dist-packages/baltradcrypto usr/lib/python3/dist-packages/
+usr/local/lib/python3.10/dist-packages/baltradcrypto*dist-info usr/lib/python3/dist-packages/
