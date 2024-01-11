@@ -34,6 +34,7 @@ Requires: python36-jprops-blt
 Requires: python36-pycrypto-blt
 Requires: python36-keyczar-blt
 Requires: python36-sqlalchemy-migrate-blt
+Requires: python3-numpy
 Conflicts: baltrad-db-py27
 
 %description

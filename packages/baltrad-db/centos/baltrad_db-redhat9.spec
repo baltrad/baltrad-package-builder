@@ -33,6 +33,7 @@ Requires: python3-psycopg2
 Requires: baltrad-crypto
 Requires: baltrad-utils
 Requires: python3-migrate
+Requires: python3-numpy
 Conflicts: baltrad-db-py27
 
 %description

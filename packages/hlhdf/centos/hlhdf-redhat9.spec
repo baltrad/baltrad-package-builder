@@ -12,6 +12,7 @@ Source0: %{name}-%{version}.tar.gz
 Source1: hlhdf-python.conf
 BuildRequires: hdf5-devel
 Requires: hdf5
+Requires: python3-numpy
 BuildRequires: zlib-devel
 BuildRequires: python3-devel
 BuildRequires: python3-numpy
