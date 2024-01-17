@@ -157,6 +157,7 @@ systemctl stop baltrad-exchange || :
 /usr/bin/baltrad-exchange-client
 /usr/bin/baltrad-exchange-server
 /usr/bin/baltrad-exchange-config
+/usr/bin/baltrad-exchange-zmq
 %{_unitdir}/baltrad-exchange.service
 %{_tmpfilesdir}/baltrad-exchange.conf
 %{bdb_site_install_dir}/bexchange
