@@ -8,7 +8,7 @@ X-Python-Version: >=3.7
 
 Package: rave
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}, libexpat1, libhdf5-103, zlib1g, hlhdf
+Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}, libexpat1, libhdf5-103, zlib1g, hlhdf, python3, python3-numpy, libexpat1, bbufr, libnetcdf
 Description: Product generation framework and toolbox. Injector using ODIM_H5 files.
 
 Package: rave-dev
