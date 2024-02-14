@@ -102,6 +102,4 @@ ln -sf ../../usr/lib/hlhdf/lib/libhlhdf.so %{buildroot}/usr/lib/libhlhdf.so
 %{_prefix}/include/pyhlhdf_common.h
 %{_prefix}/include/pyhlcompat.h
 %{_prefix}/include
-%{_prefix}/lib/libhlhdf.a
-%{_prefix}/lib/libpyhlhdf.a
 
