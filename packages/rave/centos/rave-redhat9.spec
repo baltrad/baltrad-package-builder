@@ -200,6 +200,8 @@ a.deregister('se.smhi.rave.creategmapimage')
 a.register('se.smhi.rave.creategmapimage', 'googlemap_pgf_plugin', 'generate', 'Google Map Plugin', 'outfile,date,time,algorithm_id', '', '')
 a.deregister('eu.baltrad.beast.applyqc')
 a.register('eu.baltrad.beast.applyqc', 'rave_pgf_apply_qc_plugin', 'generate', 'Apply quality controls on a polar volume', 'date,time,anomaly-qc,qc-mode,algorithm_id,remove-malfunc', '', '')  
+a.deregister('eu.baltrad.beast.generateacrr')
+a.register('eu.baltrad.beast.generateacrr', 'rave_pgf_acrr_plugin', 'generate', 'Generate ACRR plugin', 'date,time,quantity,distancefield,applygra,productid', 'hours,N,accept', 'zra,zrb')  
 EOF
 %{__python3} $TMPNAME
 \rm -f $TMPNAME
@@ -284,7 +286,7 @@ systemctl stop odiminjectord || :
 %{_unitdir}/odiminjectord.service
 %config /etc/baltrad/rave/Lib/*.py
 %config /etc/baltrad/rave/config/*.xml
-%config /etc/baltrad/rave/etc/*.xml
+%config(noreplace) /etc/baltrad/rave/etc/*.xml
 %{_sysconfdir}/ld.so.conf.d/rave.conf
 %{_tmpfilesdir}/rave.conf
 /var/lib/baltrad/rave_pgf_queue.xml
