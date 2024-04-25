@@ -1,0 +1,13 @@
+usr/local/bin/baltrad-exchange-* usr/bin
+usr/local/lib/python3.10/dist-packages/bexchange usr/lib/python3/dist-packages/
+usr/local/lib/python3.10/dist-packages/bexchange*dist-info usr/lib/python3/dist-packages/
+var/run/baltrad
+var/lib/baltrad/exchange
+var/cache/baltrad/exchange
+etc/baltrad/exchange
+usr/lib/systemd/system
+
+
+#	mkdir -p $(DEBROOT)/etc/init.d
+#	mkdir -p $(DEBROOT)/etc/baltrad/exchange/etc
+#	mkdir -p $(DEBROOT)/etc/baltrad/exchange/config/examples

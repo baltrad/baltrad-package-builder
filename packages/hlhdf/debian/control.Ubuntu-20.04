@@ -8,7 +8,7 @@ X-Python-Version: >=3.6
 
 Package: hlhdf
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libhdf5-103-1
+Depends: ${shlibs:Depends}, ${misc:Depends}, libhdf5-103
 Description: High Level Interface to the HDF5 File Format
 
 Package: hlhdf-dev

@@ -3,19 +3,19 @@ usr/local/bin/baltrad-bdb-drop usr/bin
 usr/local/bin/baltrad-bdb-server usr/bin
 usr/local/bin/baltrad-bdb-client usr/bin
 usr/local/bin/baltrad-bdb-upgrade usr/bin
-usr/local/lib/python2.7/dist-packages/baltrad/bdbcommon/*.py usr/lib/python2.7/dist-packages/baltrad/bdbcommon
-usr/local/lib/python2.7/dist-packages/baltrad/bdbcommon/oh5/*.py usr/lib/python2.7/dist-packages/baltrad/bdbcommon/oh5
-usr/local/lib/python2.7/dist-packages/baltrad/bdbclient/*.py usr/lib/python2.7/dist-packages/baltrad/bdbclient
-usr/local/lib/python2.7/dist-packages/baltrad/bdbserver/*.py usr/lib/python2.7/dist-packages/baltrad/bdbserver
-usr/local/lib/python2.7/dist-packages/baltrad/bdbserver/sqla/*.py usr/lib/python2.7/dist-packages/baltrad/bdbserver/sqla
-usr/local/lib/python2.7/dist-packages/baltrad/bdbserver/sqla/migrate/*.py usr/lib/python2.7/dist-packages/baltrad/bdbserver/sqla/migrate
-usr/local/lib/python2.7/dist-packages/baltrad/bdbserver/sqla/migrate/migrate.cfg usr/lib/python2.7/dist-packages/baltrad/bdbserver/sqla/migrate
-usr/local/lib/python2.7/dist-packages/baltrad/bdbserver/sqla/migrate/versions/*.py usr/lib/python2.7/dist-packages/baltrad/bdbserver/sqla/migrate/versions
-usr/local/lib/python2.7/dist-packages/baltrad/bdbserver/web/*.py usr/lib/python2.7/dist-packages/baltrad/bdbserver/web
-usr/local/lib/python2.7/dist-packages/baltrad.*.pth usr/lib/python2.7/dist-packages
-usr/local/lib/python2.7/dist-packages/baltrad.bdbcommon-0.1*dev0*.egg-info usr/lib/python2.7/dist-packages
-usr/local/lib/python2.7/dist-packages/baltrad.bdbserver-0.1*dev0*.egg-info usr/lib/python2.7/dist-packages
-usr/local/lib/python2.7/dist-packages/baltrad.bdbclient-0.1*dev0*.egg-info usr/lib/python2.7/dist-packages
+usr/local/lib/python3.10/dist-packages/baltrad/bdbcommon/*.py usr/lib/python3/dist-packages/baltrad/bdbcommon
+usr/local/lib/python3.10/dist-packages/baltrad/bdbcommon/oh5/*.py usr/lib/python3/dist-packages/baltrad/bdbcommon/oh5
+usr/local/lib/python3.10/dist-packages/baltrad/bdbclient/*.py usr/lib/python3/dist-packages/baltrad/bdbclient
+usr/local/lib/python3.10/dist-packages/baltrad/bdbserver/*.py usr/lib/python3/dist-packages/baltrad/bdbserver
+usr/local/lib/python3.10/dist-packages/baltrad/bdbserver/sqla/*.py usr/lib/python3/dist-packages/baltrad/bdbserver/sqla
+usr/local/lib/python3.10/dist-packages/baltrad/bdbserver/sqla/migrate/*.py usr/lib/python3/dist-packages/baltrad/bdbserver/sqla/migrate
+usr/local/lib/python3.10/dist-packages/baltrad/bdbserver/sqla/migrate/migrate.cfg usr/lib/python3/dist-packages/baltrad/bdbserver/sqla/migrate
+usr/local/lib/python3.10/dist-packages/baltrad/bdbserver/sqla/migrate/versions/*.py usr/lib/python3/dist-packages/baltrad/bdbserver/sqla/migrate/versions
+usr/local/lib/python3.10/dist-packages/baltrad/bdbserver/web/*.py usr/lib/python3/dist-packages/baltrad/bdbserver/web
+usr/local/lib/python3.10/dist-packages/baltrad.*.pth usr/lib/python3/dist-packages
+usr/local/lib/python3.10/dist-packages/baltrad.bdbcommon-0.1*dev0*.egg-info usr/lib/python3/dist-packages
+usr/local/lib/python3.10/dist-packages/baltrad.bdbserver-0.1*dev0*.egg-info usr/lib/python3/dist-packages
+usr/local/lib/python3.10/dist-packages/baltrad.bdbclient-0.1*dev0*.egg-info usr/lib/python3/dist-packages
 var/log/baltrad
 var/run/baltrad
 etc/init.d/bdbserver
