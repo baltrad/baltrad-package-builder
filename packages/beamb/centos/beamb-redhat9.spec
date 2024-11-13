@@ -80,6 +80,7 @@ EOF
 %{_prefix}/bin/beamb
 %{_prefix}/lib/libbeamb.so
 %{_prefix}/share/beamb/data/gtopo30/*
+%{_prefix}/share/beamb/config/beamb_options.xml
 # Python package?
 %{_prefix}/share/beamb/pybeamb/*.so
 %{_prefix}/share/beamb/pybeamb/*.py
