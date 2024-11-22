@@ -11,7 +11,7 @@ Summary: Baltrad Exchange
 License: GPL-3 and LGPL-3
 URL: http://www.baltrad.eu/
 Patch1: baltrad-exchange_service.patch
-#Patch2: baltrad_exchange_setup.patch
+Patch2: baltrad_setup_redhat95_cherrypy.patch
 Source0: %{name}-%{version}.tar.gz
 Source1: baltrad-exchange-tmpfiles.d.conf
 BuildRequires: python3-devel
@@ -36,7 +36,7 @@ Provides exchange functionality for the baltrad network.
 %prep
 %setup -q
 %patch1 -p1
-#%patch2 -p1
+%patch2 -p1
 
 %build
 %{__python3} -v setup.py build
