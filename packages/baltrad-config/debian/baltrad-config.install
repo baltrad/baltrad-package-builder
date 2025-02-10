@@ -1,4 +1,5 @@
 usr/local/bin/baltrad-config usr/bin
-usr/local/lib/python2.7/dist-packages/baltrad/config/*.py usr/lib/python2.7/dist-packages/baltrad/config
-usr/local/lib/python2.7/dist-packages/baltrad.*.pth usr/lib/python2.7/dist-packages
-usr/local/lib/python2.7/dist-packages/baltrad.config-0.1*dev0*.egg-info usr/lib/python2.7/dist-packages
+usr/local/lib/python3.10/dist-packages/baltrad/config/*.py usr/lib/python3/dist-packages/baltrad/config
+usr/local/lib/python3.10/dist-packages/baltrad/config/*.template usr/lib/python3/dist-packages/baltrad/config
+usr/local/lib/python3.10/dist-packages/baltrad.*.pth usr/lib/python3/dist-packages
+usr/local/lib/python3.10/dist-packages/baltrad.config-0.1*dev0*.egg-info usr/lib/python3/dist-packages

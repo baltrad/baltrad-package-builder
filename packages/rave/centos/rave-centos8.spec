@@ -206,6 +206,20 @@ EOF
 %{__python36} $TMPNAME
 \rm -f $TMPNAME
 
+cat <<EOF > $TMPNAME
+from rave_pgf_quality_registry_mgr import rave_pgf_quality_registry_mgr
+a = rave_pgf_quality_registry_mgr("/etc/baltrad/rave/etc/rave_pgf_quality_registry.xml")
+a.remove_plugin("qi-total:minimum")
+a.remove_plugin("qi-total:additive")
+a.remove_plugin("qi-total:multiplicative")
+a.add_plugin("qi-total:minimum", "rave_qitotal_quality_plugin", "rave_qitotal_quality_minimum")
+a.add_plugin("qi-total:additive", "rave_qitotal_quality_plugin", "rave_qitotal_quality_additive")
+a.add_plugin("qi-total:multiplicative", "rave_qitotal_quality_plugin", "rave_qitotal_quality_multiplicative")
+a.save("/etc/baltrad/rave/etc/rave_pgf_quality_registry.xml")
+EOF
+%{__python3} $TMPNAME
+\rm -f $TMPNAME
+
 mkdir -p /var/lib/baltrad
 chmod 0775 /var/lib/baltrad
 chown root:$BALTRAD_GROUP /var/lib/baltrad

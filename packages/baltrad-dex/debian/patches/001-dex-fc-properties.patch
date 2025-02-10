@@ -1,15 +1,22 @@
 diff --git a/src/java/resources/dex.fc.properties b/src/java/resources/dex.fc.properties
-index 7c1c7b1..e174693 100755
+index ea7b19d8..d85cff00 100755
 --- a/src/java/resources/dex.fc.properties
 +++ b/src/java/resources/dex.fc.properties
-@@ -27,8 +27,8 @@
- # Database URI
- database.uri=http://localhost:8090
+@@ -31,7 +31,7 @@ database.uri=http://localhost:8090
+ data.storage.strategy=db
+ 
  # File catalog data storage directory
 -data.storage.folder=/opt/baltrad/bdb_storage
 +data.storage.folder=/var/lib/baltrad/bdb_storage
+ 
+ # The number of layers used if using "fs" storage
+ data.storage.number.layers=3
+@@ -46,7 +46,7 @@ bdb.rest.client.maxconnections=20
+ bdb.rest.client.cachesize=6000
+ 
  # Location of keyczar folder when using keyzcar authentication
 -database.keyczar.key=/opt/baltrad/etc/bltnode-keys/nodename.priv
 +database.keyczar.key=/etc/baltrad/bltnode-keys/nodename.priv
+ 
  # Name of the node
  database.keyczar.name=nodename
