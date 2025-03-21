@@ -89,6 +89,7 @@ mkdir -p %{buildroot}/var/run/baltrad
 mkdir -p %{buildroot}/var/log/baltrad
 mkdir -p %{buildroot}/var/lib/baltrad/odim_injector/data
 mkdir -p %{buildroot}/var/lib/baltrad/MSG_CT
+mkdir -p %{buildroot}/var/lib/baltrad/acqva/cluttermap
 mkdir -p %{buildroot}%{python36_sitelib}
 echo "/usr/lib/rave/Lib">> %{buildroot}/etc/ld.so.conf.d/rave.conf
 make install DESTDIR=%{buildroot}
@@ -137,6 +138,7 @@ ln -s ../../../../etc/baltrad/rave/config/radvol_params.xml		%{buildroot}/usr/li
 ln -s ../../../../etc/baltrad/rave/config/rave_quality_chain_registry.xml	%{buildroot}/usr/lib/rave/config/rave_quality_chain_registry.xml
 ln -s ../../../../etc/baltrad/rave/config/swedish_areas.xml		%{buildroot}/usr/lib/rave/config/swedish_areas.xml
 ln -s ../../../../etc/baltrad/rave/config/swedish_radars.xml		%{buildroot}/usr/lib/rave/config/swedish_radars.xml
+ln -s ../../../../etc/baltrad/rave/config/composite_generator_filter.xml		%{buildroot}/usr/lib/rave/config/composite_generator_filter.xml
 ln -s ../../../../etc/baltrad/rave/Lib/rave_defines.py %{buildroot}/usr/lib/rave/Lib/rave_defines.py
 
 %pre
@@ -263,6 +265,7 @@ chown $BALTRAD_USER:$BALTRAD_GROUP /etc/baltrad/rave/etc/*.xml
 
 chown $BALTRAD_USER:$BALTRAD_GROUP /var/lib/baltrad/rave_pgf_queue.xml
 chown $BALTRAD_USER:$BALTRAD_GROUP /var/lib/baltrad/MSG_CT
+chown -R $BALTRAD_USER:$BALTRAD_GROUP /var/lib/baltrad/acqva
 
 %preun
 systemctl stop raved || :
@@ -306,6 +309,7 @@ systemctl stop odiminjectord || :
 %{_tmpfilesdir}/rave.conf
 /var/lib/baltrad/rave_pgf_queue.xml
 /var/lib/baltrad/MSG_CT
+/var/lib/baltrad/acqva/cluttermap
 
 %files devel
 %{_prefix}/include/python/*.h
