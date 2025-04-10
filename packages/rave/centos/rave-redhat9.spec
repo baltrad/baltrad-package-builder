@@ -27,7 +27,9 @@ BuildRequires: python3-numpy
 BuildRequires: proj-devel
 BuildRequires: systemd
 BuildRequires: expat-devel
+BuildRequires: json-c-devel
 Requires: expat
+Requires: json-c
 Requires: netcdf
 Requires: hlhdf
 Requires: python3-numpy

@@ -1,4 +1,6 @@
 usr/local/bin/baltrad-config usr/bin
+usr/local/bin/bltcfg usr/bin
+usr/local/bin/bltgroovyroute usr/bin
 usr/local/lib/python3.10/dist-packages/baltrad/config/*.py usr/lib/python3/dist-packages/baltrad/config
 usr/local/lib/python3.10/dist-packages/baltrad/config/*.template usr/lib/python3/dist-packages/baltrad/config
 usr/local/lib/python3.10/dist-packages/baltrad.*.pth usr/lib/python3/dist-packages
