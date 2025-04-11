@@ -621,7 +621,7 @@ if [ ! -d build/$BUILD_NAME ]; then
     cd $BUILD_NAME || exit 127
     git checkout $gitbranch || exit 127
   fi
-  cd $BUILD_NAME
+  cd "$BUILD_NAME"
   if [ "$BUILD_NUMBER" = "auto" ]; then
     get_git_repo_version "$GIT_PKG_OFFSET" "$GIT_PKG_NBR" "$GIT_PKG_NO_EXTRACT" "$GIT_PKG_BUMP"
     TMP_NUMBER=`get_git_repo_version "$GIT_PKG_OFFSET" "$GIT_PKG_NBR" "$GIT_PKG_NO_EXTRACT" "$GIT_PKG_BUMP"`

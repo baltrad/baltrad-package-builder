@@ -143,6 +143,7 @@ ln -s ../../../../etc/baltrad/rave/config/swedish_areas.xml		%{buildroot}/usr/li
 ln -s ../../../../etc/baltrad/rave/config/swedish_radars.xml		%{buildroot}/usr/lib/rave/config/swedish_radars.xml
 ln -s ../../../../etc/baltrad/rave/config/composite_generator_filter.xml		%{buildroot}/usr/lib/rave/config/composite_generator_filter.xml
 ln -s ../../../../etc/baltrad/rave/config/rave_properties.json		%{buildroot}/usr/lib/rave/config/rave_properties.json
+ln -s ../../../../etc/baltrad/rave/config/acqva_static.json		%{buildroot}/usr/lib/rave/config/acqva_static.json
 ln -s ../../../../etc/baltrad/rave/Lib/rave_defines.py %{buildroot}/usr/lib/rave/Lib/rave_defines.py
 
 %pre
