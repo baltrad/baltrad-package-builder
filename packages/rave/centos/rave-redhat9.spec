@@ -108,6 +108,7 @@ cp etc/raved.service %{buildroot}/%{_unitdir}/raved.service
 cp etc/odiminjectord.service %{buildroot}/%{_unitdir}/odiminjectord.service
 mv %{buildroot}/usr/lib/rave/Lib/rave_defines.py %{buildroot}/etc/baltrad/rave/Lib/
 mv %{buildroot}/usr/lib/rave/config/*.xml %{buildroot}/etc/baltrad/rave/config/
+mv %{buildroot}/usr/lib/rave/config/*.json %{buildroot}/etc/baltrad/rave/config/
 mv %{buildroot}/usr/lib/rave/etc/rave_pgf_quality_registry.xml %{buildroot}/etc/baltrad/rave/etc/
 mv %{buildroot}/usr/lib/rave/etc/rave_pgf_registry.xml %{buildroot}/etc/baltrad/rave/etc/
 mv %{buildroot}/usr/lib/rave/etc/rave_tile_registry.xml %{buildroot}/etc/baltrad/rave/etc/
@@ -141,6 +142,7 @@ ln -s ../../../../etc/baltrad/rave/config/rave_quality_chain_registry.xml	%{buil
 ln -s ../../../../etc/baltrad/rave/config/swedish_areas.xml		%{buildroot}/usr/lib/rave/config/swedish_areas.xml
 ln -s ../../../../etc/baltrad/rave/config/swedish_radars.xml		%{buildroot}/usr/lib/rave/config/swedish_radars.xml
 ln -s ../../../../etc/baltrad/rave/config/composite_generator_filter.xml		%{buildroot}/usr/lib/rave/config/composite_generator_filter.xml
+ln -s ../../../../etc/baltrad/rave/config/rave_properties.json		%{buildroot}/usr/lib/rave/config/rave_properties.json
 ln -s ../../../../etc/baltrad/rave/Lib/rave_defines.py %{buildroot}/usr/lib/rave/Lib/rave_defines.py
 
 %pre
@@ -262,6 +264,8 @@ chmod 0664 /etc/baltrad/rave/Lib/*.py
 chown $BALTRAD_USER:$BALTRAD_GROUP /etc/baltrad/rave/Lib/*.py
 chmod 0664 /etc/baltrad/rave/config/*.xml
 chown $BALTRAD_USER:$BALTRAD_GROUP /etc/baltrad/rave/config/*.xml
+chmod 0664 /etc/baltrad/rave/config/*.json
+chown $BALTRAD_USER:$BALTRAD_GROUP /etc/baltrad/rave/config/*.json
 chmod 0664 /etc/baltrad/rave/etc/*.xml
 chown $BALTRAD_USER:$BALTRAD_GROUP /etc/baltrad/rave/etc/*.xml
 
@@ -305,6 +309,7 @@ systemctl stop odiminjectord || :
 %{_unitdir}/odiminjectord.service
 %config /etc/baltrad/rave/Lib/*.py
 %config /etc/baltrad/rave/config/*.xml
+%config /etc/baltrad/rave/config/*.json
 %config(noreplace) /etc/baltrad/rave/etc/*.xml
 %{_sysconfdir}/ld.so.conf.d/rave.conf
 %{_tmpfilesdir}/rave.conf
