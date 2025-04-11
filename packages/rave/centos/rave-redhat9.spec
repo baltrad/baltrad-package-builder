@@ -300,6 +300,7 @@ systemctl stop odiminjectord || :
 %{_prefix}/bin/*
 /usr/bin/*
 %{_prefix}/config/*.xml
+%{_prefix}/config/*.json
 %{_prefix}/mkf/def.mk
 %{_prefix}/rave.xbm
 %{_prefix}/etc/rave_pgf
