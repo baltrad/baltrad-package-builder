@@ -15,11 +15,9 @@ DEBROOT=$(CURDIR)/debian/tmp
 %:
 	dh $@ --with python3 --buildsystem=none
 
-#override_dh_auto_build:
-#python3 -m build .
-
 override_dh_auto_install:
-	python3 -m pip install --no-warn-script-location --root $(CURDIR)/debian/tmp .
+	python3 -m pip install --no-warn-script-location --ignore-installed --root $(CURDIR)/debian/tmp .
 	mkdir -p $(DEBROOT)/etc/init.d
 	mkdir -p $(DEBROOT)/var/run/baltrad
 	mkdir -p $(DEBROOT)/var/log/baltrad
+
