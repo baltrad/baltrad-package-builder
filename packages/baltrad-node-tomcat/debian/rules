@@ -10,6 +10,7 @@ override_dh_auto_clean:
 
 override_dh_installdirs:
 	mkdir -p $(INSTALLROOT)/usr/share/baltrad/baltrad-node-tomcat
+	mkdir -p $(INSTALLROOT)/usr/lib/systemd/system
 	mkdir -p $(INSTALLROOT)/var/lib/baltrad/baltrad-node-tomcat
 	mkdir -p $(INSTALLROOT)/var/lib/baltrad/baltrad-node-tomcat/policy
 	mkdir -p $(INSTALLROOT)/var/lib/baltrad/baltrad-node-tomcat/webapps
@@ -23,6 +24,7 @@ override_dh_auto_build:
 override_dh_auto_install:
 	cp bin/baltrad-node $(INSTALLROOT)/etc/init.d/
 	chmod a+x $(INSTALLROOT)/etc/init.d/baltrad-node
+	cp etc/baltrad-node.service $(INSTALLROOT)/usr/lib/systemd/system/
 	rm -f bin/baltrad-node
 	cp -r bin $(INSTALLROOT)/usr/share/baltrad/baltrad-node-tomcat/
 	cp -r lib $(INSTALLROOT)/usr/share/baltrad/baltrad-node-tomcat/
@@ -40,7 +42,7 @@ override_dh_auto_install:
 	cp LICENSE $(INSTALLROOT)/usr/share/baltrad/baltrad-node-tomcat/
 	cp NOTICE $(INSTALLROOT)/usr/share/baltrad/baltrad-node-tomcat/
 	cp README.md $(INSTALLROOT)/usr/share/baltrad/baltrad-node-tomcat/
-	
+
 override_dh_install:
 	dh_install
 	dh_link

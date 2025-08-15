@@ -1,2 +1,3 @@
 001-baltrad-node.patch -p0
 002-server-xml.patch -p0
+003-baltrad-node-service.patch -p0

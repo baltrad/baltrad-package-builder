@@ -35,7 +35,8 @@ if [ "$1" = configure ]; then
   chmod 660 /etc/baltrad/db.properties
   chmod 660 /etc/baltrad/dex.fc.properties
   chmod 770 /etc/baltrad/bltnode-keys
-  chown -R root:baltrad var/lib/baltrad/baltrad-node-tomcat/webapps/BaltradDex
+  chown -R root:baltrad /var/lib/baltrad/baltrad-node-tomcat/webapps/BaltradDex
+  chmod -R g+rw /var/lib/baltrad/baltrad-node-tomcat/webapps/BaltradDex
 fi
     
 service baltrad-node start

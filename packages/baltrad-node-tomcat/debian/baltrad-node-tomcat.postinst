@@ -40,13 +40,13 @@ if [ "$1" = configure ]; then
   chown root:baltrad /etc/baltrad/baltrad-node-tomcat/tomcat-users.xsd
   chown root:baltrad /etc/baltrad/baltrad-node-tomcat/web.xml
 
-  chmod 640 /etc/baltrad/baltrad-node-tomcat/catalina.properties
-  chmod 640 /etc/baltrad/baltrad-node-tomcat/context.xml
-  chmod 640 /etc/baltrad/baltrad-node-tomcat/jaspic-providers.xml
-  chmod 640 /etc/baltrad/baltrad-node-tomcat/jaspic-providers.xsd
-  chmod 640 /etc/baltrad/baltrad-node-tomcat/logging.properties
-  chmod 640 /etc/baltrad/baltrad-node-tomcat/server.xml
-  chmod 640 /etc/baltrad/baltrad-node-tomcat/tomcat-users.xml
-  chmod 640 /etc/baltrad/baltrad-node-tomcat/tomcat-users.xsd
-  chmod 640 /etc/baltrad/baltrad-node-tomcat/web.xml
+  chmod 660 /etc/baltrad/baltrad-node-tomcat/catalina.properties
+  chmod 660 /etc/baltrad/baltrad-node-tomcat/context.xml
+  chmod 660 /etc/baltrad/baltrad-node-tomcat/jaspic-providers.xml
+  chmod 660 /etc/baltrad/baltrad-node-tomcat/jaspic-providers.xsd
+  chmod 660 /etc/baltrad/baltrad-node-tomcat/logging.properties
+  chmod 660 /etc/baltrad/baltrad-node-tomcat/server.xml*
+  chmod 660 /etc/baltrad/baltrad-node-tomcat/tomcat-users.xml
+  chmod 660 /etc/baltrad/baltrad-node-tomcat/tomcat-users.xsd
+  chmod 660 /etc/baltrad/baltrad-node-tomcat/web.xml
 fi

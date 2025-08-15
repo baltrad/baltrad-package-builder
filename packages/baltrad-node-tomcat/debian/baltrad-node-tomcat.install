@@ -2,5 +2,6 @@ var/lib/baltrad/baltrad-node-tomcat
 var/log/baltrad/baltrad-node-tomcat
 var/cache/baltrad-node-tomcat
 usr/share/baltrad/baltrad-node-tomcat
+usr/lib/systemd/system
 etc/baltrad/baltrad-node-tomcat
 etc/init.d/baltrad-node

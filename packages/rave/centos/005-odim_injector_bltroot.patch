@@ -1,8 +1,8 @@
 diff --git a/bin/odim_injector b/bin/odim_injector
-index a900b87..0dc5b1c 100755
+index cb8885bd..56cf6cb1 100755
 --- a/bin/odim_injector
 +++ b/bin/odim_injector
-@@ -45,7 +45,7 @@ import _rave
+@@ -46,7 +46,7 @@ import _rave
  import math
  from rave_defines import DEX_SPOE  # Files are injected to this URI
  
@@ -11,46 +11,38 @@ index a900b87..0dc5b1c 100755
  ODIM_INJECTOR_ROOT = BLTROOT + '/odim_injector'  # CHANGE if necessary
  DEFAULTIN = ODIM_INJECTOR_ROOT + '/data'  # CHANGE if necessary
  PIDFILE = ODIM_INJECTOR_ROOT + '/odim_injector.pid'
-@@ -53,24 +53,6 @@ LOGFILE = ODIM_INJECTOR_ROOT + '/odim_injector.log'
+@@ -54,24 +54,6 @@ LOGFILE = ODIM_INJECTOR_ROOT + '/odim_injector.log'
  LOGFILESIZE = 5000000  # 5 Mb each
  LOGFILES = 5
  
 -if not os.path.isdir(ODIM_INJECTOR_ROOT):
--  try:
--    os.makedirs(ODIM_INJECTOR_ROOT)
--    print("Created directory %s" % ODIM_INJECTOR_ROOT)
--  except OSError:
--    print("Directory %s does not exist. Failed to create it. Exiting." % ODIM_INJECTOR_ROOT)
--    sys.exit(1)
+-    try:
+-        os.makedirs(ODIM_INJECTOR_ROOT)
+-        print("Created directory %s" % ODIM_INJECTOR_ROOT)
+-    except OSError:
+-        print("Directory %s does not exist. Failed to create it. Exiting." % ODIM_INJECTOR_ROOT)
+-        sys.exit(1)
 -
 -if not os.path.isdir(DEFAULTIN):
--  try:
--    os.makedirs(DEFAULTIN)
--    print("Created directory %s" % DEFAULTIN)
--  except OSError:
--    print("Directory %s does not exist. Failed to create it. Exiting." % DEFAULTIN)
--    sys.exit(1)
+-    try:
+-        os.makedirs(DEFAULTIN)
+-        print("Created directory %s" % DEFAULTIN)
+-    except OSError:
+-        print("Directory %s does not exist. Failed to create it. Exiting." % DEFAULTIN)
+-        sys.exit(1)
 -
 -sys.path.append(ODIM_INJECTOR_ROOT)
 -
  MASK = pyinotify.IN_CLOSE_WRITE
  
  
-@@ -264,14 +246,17 @@ if __name__ == "__main__":
-                     help="Attempt to kill a running daemon.")
+@@ -274,6 +256,9 @@ if __name__ == "__main__":
+     parser.add_option("-k", "--kill", action="store_true", dest="kill", help="Attempt to kill a running daemon.")
  
-   (options, args) = parser.parse_args()
-+  if not os.path.isdir(options.in_dir):
-+    print("odim_injector in_dir="+options.in_dir+" does not exist")
-+    sys.exit()
+     (options, args) = parser.parse_args()
++    if not os.path.isdir(options.in_dir):
++        print("odim_injector in_dir="+options.in_dir+" does not exist")
++        sys.exit()
  
-   if not options.kill:
-     ALIVE = alive(options.pid_file)
-     if not ALIVE and os.path.isfile(options.pid_file):
-       print("odim_injector is not alive but pid file %s exists, removing." % options.pid_file)
-       os.remove(options.pid_file)
-     elif ALIVE:
-       print("odim_injector is already running.")
-       sys.exit()
- 
-     # Shut down a previous incarnation of this daemon.
+     if not options.kill:
+         ALIVE = alive(options.pid_file)
