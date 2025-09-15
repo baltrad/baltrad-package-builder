@@ -3,6 +3,6 @@ usr/lib/bropo/lib/libbropo.so
 usr/lib/bropo/share/bropo/pyropo/ropo_*.py
 usr/lib/bropo/share/bropo/pyropo/_fmiimage.so
 usr/lib/bropo/share/bropo/pyropo/_ropogenerator.so
-usr/lib/python2.7/site-packages/pyropo.pth usr/lib/python2.7/dist-packages/
+usr/local/lib/python3.12/dist-packages/pyropo.pth usr/lib/python3/dist-packages
 etc/ld.so.conf.d/bropo.conf
 etc/baltrad/bropo
