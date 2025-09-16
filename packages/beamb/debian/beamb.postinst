@@ -10,6 +10,6 @@ a.remove_plugin("beamb")
 a.add_plugin("beamb", "beamb_quality_plugin", "beamb_quality_plugin")
 a.save("/etc/baltrad/rave/etc/rave_pgf_quality_registry.xml")
 EOF
-  python $TMPNAME
+  python3 $TMPNAME
   \rm -f $TMPNAME
 fi

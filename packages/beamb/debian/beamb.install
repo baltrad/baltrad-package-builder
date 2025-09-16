@@ -4,5 +4,5 @@ usr/lib/beamb/share/beamb/data/gtopo30/*
 usr/lib/beamb/share/beamb/pybeamb/*.so
 usr/lib/beamb/share/beamb/pybeamb/*.py
 var/cache/beamb
-usr/local/lib/python3.10/dist-packages/pybeamb.pth usr/lib/python3.10/dist-packages
+usr/local/lib/python3.12/dist-packages/pybeamb.pth usr/lib/python3/dist-packages
 etc/ld.so.conf.d/beamb.conf

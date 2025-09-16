@@ -91,7 +91,8 @@ mkdir -p %{buildroot}/var/run/baltrad
 mkdir -p %{buildroot}/var/log/baltrad
 mkdir -p %{buildroot}/var/lib/baltrad/odim_injector/data
 mkdir -p %{buildroot}/var/lib/baltrad/MSG_CT
-mkdir -p %{buildroot}/var/lib/baltrad/acqva/cluttermap
+mkdir -p %{buildroot}/var/lib/baltrad/rave/acqva/cluttermap
+mkdir -p %{buildroot}/var/lib/baltrad/rave/hac
 mkdir -p %{buildroot}%{python36_sitelib}
 echo "/usr/lib/rave/Lib">> %{buildroot}/etc/ld.so.conf.d/rave.conf
 make install DESTDIR=%{buildroot}
@@ -227,9 +228,10 @@ EOF
 %{__python3} $TMPNAME
 \rm -f $TMPNAME
 
-mkdir -p /var/lib/baltrad
-chmod 0775 /var/lib/baltrad
-chown root:$BALTRAD_GROUP /var/lib/baltrad
+mkdir -p /var/lib/baltrad/rave/acqva/cluttermap
+mkdir -p /var/lib/baltrad/rave/hac
+chmod -R 0775 /var/lib/baltrad
+chown -R root:$BALTRAD_GROUP /var/lib/baltrad
 
 mkdir -p /var/lib/baltrad/odim_injector/data
 chmod 0775 /var/lib/baltrad/odim_injector
@@ -272,7 +274,7 @@ chown $BALTRAD_USER:$BALTRAD_GROUP /etc/baltrad/rave/etc/*.xml
 
 chown $BALTRAD_USER:$BALTRAD_GROUP /var/lib/baltrad/rave_pgf_queue.xml
 chown $BALTRAD_USER:$BALTRAD_GROUP /var/lib/baltrad/MSG_CT
-chown -R $BALTRAD_USER:$BALTRAD_GROUP /var/lib/baltrad/acqva
+chown -R $BALTRAD_USER:$BALTRAD_GROUP /var/lib/baltrad/rave
 
 %preun
 systemctl stop raved || :
@@ -318,7 +320,8 @@ systemctl stop odiminjectord || :
 %{_tmpfilesdir}/rave.conf
 /var/lib/baltrad/rave_pgf_queue.xml
 /var/lib/baltrad/MSG_CT
-/var/lib/baltrad/acqva/cluttermap
+/var/lib/baltrad/rave/acqva/cluttermap
+/var/lib/baltrad/rave/hac
 
 %files devel
 %{_prefix}/include/python/*.h
