@@ -1,8 +1,8 @@
 diff --git a/Lib/rave_defines.py b/Lib/rave_defines.py
-index 941bcc8..484d13f 100644
+index 49b90559..be9bbcf7 100644
 --- a/Lib/rave_defines.py
 +++ b/Lib/rave_defines.py
-@@ -78,7 +78,7 @@ ZR_A = 200.0
+@@ -97,7 +97,7 @@ ZR_A = 200.0
  ZR_b = 1.5
  
  # Gauge adjustment - migrated from NORDRAD2
@@ -11,7 +11,7 @@ index 941bcc8..484d13f 100644
  DEFAULTA = 0.323868068019
  DEFAULTB = -0.00107776407064
  DEFAULTC = 1.77500903316e-05
-@@ -87,24 +87,24 @@ TIMELIMIT_CLIMATOLOGIC_COEFF = 48 # how many hours back in time we can use gener
+@@ -108,13 +108,13 @@ TIMELIMIT_CLIMATOLOGIC_COEFF = (
  
  # SAF-NWC MSG CT filter
  CT_FTEMPLATE = "SAFNWC_MSG?_CT___%s_FES_________.h5"
@@ -28,7 +28,8 @@ index 941bcc8..484d13f 100644
  
  # Projection and area registries
  PROJECTION_REGISTRY = os.path.join(RAVECONFIG, 'projection_registry.xml')
- AREA_REGISTRY = os.path.join(RAVECONFIG, 'area_registry.xml')
+@@ -125,11 +125,11 @@ HACDATA_DIRECTORY = os.path.join(RAVEROOT, 'share/hac/data')
+ HAC_CONFIG_FILE = os.path.join(RAVECONFIG, 'hac_options.xml')
  
  # XML-RPC server variables
 -PIDFILE = os.path.join(RAVEETC, 'rave_pgf_server.pid')
@@ -41,12 +42,12 @@ index 941bcc8..484d13f 100644
  
  DEX_SPOE = 'http://localhost:8084/BaltradDex'
  DEX_CHANNEL = 'default_products'
-@@ -127,7 +127,7 @@ PGF_TAG = 'bltgenerate'  # used for sending files to the DEX
+@@ -152,7 +152,7 @@ PGF_TAG = 'bltgenerate'  # used for sending files to the DEX
  # Logging - little of this is relevant if SysLog is used or the OS rotates the logs.
  LOGID = 'PGF[rave.baltrad.eu]'
  LOGPORT = 8089
--LOGFILE     = os.path.join(RAVEETC, "rave_pgf.log") # Default logger is to syslog.
-+LOGFILE     = "/var/log/baltrad/rave_pgf.log" # Default logger is to syslog.
+-LOGFILE = os.path.join(RAVEETC, "rave_pgf.log")  # Default logger is to syslog.
++LOGFILE = "/var/log/baltrad/rave_pgf.log"  # Default logger is to syslog.
  LOGFILESIZE = 5000000  # 5 Mb each
- LOGFILES    = 5
+ LOGFILES = 5
  LOGFACILITY = "local3"
