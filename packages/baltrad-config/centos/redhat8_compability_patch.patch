@@ -15,7 +15,7 @@ index 4328f84..97443ef 100755
  
  setuptools.setup(name="baltrad.config",
 diff --git a/src/baltrad/config/bltcmd.py b/src/baltrad/config/bltcmd.py
-index a35a434..a159f34 100755
+index 05c50ab..a159f34 100755
 --- a/src/baltrad/config/bltcmd.py
 +++ b/src/baltrad/config/bltcmd.py
 @@ -33,7 +33,7 @@ import json
@@ -27,7 +27,7 @@ index a35a434..a159f34 100755
  
  DEFAULT_HOST="http://localhost:8080"
  DEFAULT_URI="%s/BaltradDex/administrator.htm"%DEFAULT_HOST
-@@ -82,7 +82,7 @@ class bltcmd(object):
+@@ -82,11 +82,11 @@ class bltcmd(object):
      self._uri = uri
      self._nodename = nodename
      self._privatekey=privatekey
@@ -36,6 +36,11 @@ index a35a434..a159f34 100755
        
    def _generate_headers(self, message):
      d = datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
+-    signature = self._signer.sign(d + ":" + message)
++    signature = self._signer.Sign(d + ":" + message)
+     headers = {
+       "Node-Name": self._nodename, 
+       "Content-Type":"application/json",
 diff --git a/src/baltrad/config/main.py b/src/baltrad/config/main.py
 index 65a219d..19e9bd7 100644
 --- a/src/baltrad/config/main.py
@@ -113,7 +118,7 @@ index 65a219d..19e9bd7 100644
  def create_initial_config(args):
    a=propertyhandler.propertyhandler()
 diff --git a/src/baltrad/config/propertyhandler.py b/src/baltrad/config/propertyhandler.py
-index 24fb011..d659c91 100644
+index e4ee595..5665d10 100644
 --- a/src/baltrad/config/propertyhandler.py
 +++ b/src/baltrad/config/propertyhandler.py
 @@ -19,7 +19,7 @@ along with baltrad-config.  If not, see <http://www.gnu.org/licenses/>.
@@ -125,7 +130,7 @@ index 24fb011..d659c91 100644
  import tempfile
  import re
  import os
-@@ -114,7 +114,7 @@ class propertyhandler(object):
+@@ -121,7 +121,7 @@ class propertyhandler(object):
      
    def _load_properties(self, cfile):
      with open(cfile, "r") as fp:
