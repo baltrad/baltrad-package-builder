@@ -225,6 +225,7 @@ a.add_plugin("qi-total:minimum", "rave_qitotal_quality_plugin", "rave_qitotal_qu
 a.add_plugin("qi-total:additive", "rave_qitotal_quality_plugin", "rave_qitotal_quality_additive")
 a.add_plugin("qi-total:multiplicative", "rave_qitotal_quality_plugin", "rave_qitotal_quality_multiplicative")
 a.add_plugin("elevation-index", "rave_radarindex_quality_plugin", "rave_elevationindex_quality_plugin")
+a.add_plugin("pia", "rave_pia_quality_plugin", "rave_pia_quality_plugin")
 a.save("/etc/baltrad/rave/etc/rave_pgf_quality_registry.xml")
 EOF
 %{__python3} $TMPNAME
