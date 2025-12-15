@@ -38,12 +38,10 @@ are provided in the beast package.
 
 %build
 # Use %{_prefix} once known what it should be based on higher level components requirements
-# JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk ant -Dbaltraddb.path=/usr/share/baltrad -Dbaltraddb.java.path=/usr/share/baltrad/baltrad-db/java -Dbaltraddb.bin.path=/usr/bin
-JAVA_HOME=/usr/bin ant -Dbaltraddb.path=/usr/share/baltrad -Dbaltraddb.java.path=/usr/share/baltrad/baltrad-db/java -Dbaltraddb.bin.path=/usr/bin
+JAVA_HOME=/usr/lib/jvm/java-11-openjdk ant -Dbaltraddb.path=/usr/share/baltrad -Dbaltraddb.java.path=/usr/share/baltrad/baltrad-db/java -Dbaltraddb.bin.path=/usr/bin
 
 %install
-# JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk ant install-files -Dapp.dist.dir.name=%{name} -Dbaltraddb.path=/usr/share/baltrad -Dbaltraddb.java.path=/usr/share/baltrad/baltrad-db/java -Dbaltraddb.bin.path=/usr/bin -Dprefix=$RPM_BUILD_ROOT/usr/share/baltrad
-JAVA_HOME=/usr/bin ant install-files -Dapp.dist.dir.name=%{name} -Dbaltraddb.path=/usr/share/baltrad -Dbaltraddb.java.path=/usr/share/baltrad/baltrad-db/java -Dbaltraddb.bin.path=/usr/bin -Dprefix=$RPM_BUILD_ROOT/usr/share/baltrad
+JAVA_HOME=/usr/lib/jvm/java-11-openjdk ant install-files -Dapp.dist.dir.name=%{name} -Dbaltraddb.path=/usr/share/baltrad -Dbaltraddb.java.path=/usr/share/baltrad/baltrad-db/java -Dbaltraddb.bin.path=/usr/bin -Dprefix=$RPM_BUILD_ROOT/usr/share/baltrad
 %files
 %{_prefix}/bin/beast.jar
 %{_prefix}/bin/pgfwkplugin

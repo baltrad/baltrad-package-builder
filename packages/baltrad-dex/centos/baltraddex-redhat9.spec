@@ -1,5 +1,5 @@
 %define _prefix /usr/share/baltrad/baltrad-dex
-%define java_home /usr/bin
+%define java_home /usr/lib/jvm/java-11-openjdk
 %global debug_package %{nil}
 
 Name: baltrad-dex

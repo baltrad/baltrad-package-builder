@@ -67,7 +67,7 @@ cd ../server
 cd ../client/python
 %{__python3} setup.py build
 cd ../../client/java
-JAVA_HOME=/usr/bin ant
+JAVA_HOME=/usr/lib/jvm/java-11-openjdk ant
 cd ../../
 #ls -lR
 

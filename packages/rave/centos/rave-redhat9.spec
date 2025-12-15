@@ -1,5 +1,5 @@
 %{!?__python3: %global __python3 /usr/bin/python3.9}
-%{!?python3_sitelib: %global python3_sitelib %(%{__python3} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
+%define _sitelib  /usr/lib64/python3.9/site-packages/
 %define _prefix /usr/lib/rave
 
 Name: rave
@@ -93,7 +93,7 @@ mkdir -p %{buildroot}/var/lib/baltrad/odim_injector/data
 mkdir -p %{buildroot}/var/lib/baltrad/MSG_CT
 mkdir -p %{buildroot}/var/lib/baltrad/rave/acqva/cluttermap
 mkdir -p %{buildroot}/var/lib/baltrad/rave/hac
-mkdir -p %{buildroot}%{python3_sitelib}
+mkdir -p %{buildroot}%{_sitelib}
 echo "/usr/lib/rave/Lib">> %{buildroot}/etc/ld.so.conf.d/rave.conf
 make install DESTDIR=%{buildroot}
 cp %{buildroot}/usr/lib/rave/bin/fm12_importer %{buildroot}/usr/bin/ 
@@ -113,7 +113,7 @@ mv %{buildroot}/usr/lib/rave/config/*.json %{buildroot}/etc/baltrad/rave/config/
 mv %{buildroot}/usr/lib/rave/etc/rave_pgf_quality_registry.xml %{buildroot}/etc/baltrad/rave/etc/
 mv %{buildroot}/usr/lib/rave/etc/rave_pgf_registry.xml %{buildroot}/etc/baltrad/rave/etc/
 mv %{buildroot}/usr/lib/rave/etc/rave_tile_registry.xml %{buildroot}/etc/baltrad/rave/etc/
-mv %{buildroot}/usr/lib/rave/etc/rave.pth %{buildroot}%{python3_sitelib}
+mv %{buildroot}/usr/lib/rave/etc/rave.pth %{buildroot}%{_sitelib}
 mv %{buildroot}/usr/lib/rave/etc/rave_pgf_queue.xml %{buildroot}/var/lib/baltrad/
 # rm -f %{buildroot}/usr/lib/python3.9/site-packages/rave.pth
 ln -s ../../../../var/lib/baltrad/rave_pgf_queue.xml %{buildroot}/usr/lib/rave/etc/rave_pgf_queue.xml
@@ -162,8 +162,6 @@ if [[ -f /etc/baltrad/baltrad.rc ]]; then
   . /etc/baltrad/baltrad.rc
 fi
 
-#echo "BALTRAD_USER=$BALTRAD_USER, BALTRAD_GROUP=$BALTRAD_GROUP, CREATE_BALTRAD_USER=$CREATE_BALTRAD_USER"
-
 if [[ "$CREATE_BALTRAD_USER" = "true" ]]; then
   if ! getent group $BALTRAD_GROUP > /dev/null; then
     groupadd --system $BALTRAD_GROUP
@@ -194,42 +192,6 @@ echo "d /var/run/baltrad 0775 root $BALTRAD_GROUP -" > %{_tmpfilesdir}/rave.conf
 
 /sbin/ldconfig
 TMPNAME=`mktemp /tmp/XXXXXXXXXX.py`
-  
-cat <<EOF > $TMPNAME
-from rave_pgf_registry import PGF_Registry
-a=PGF_Registry(filename="/etc/baltrad/rave/etc/rave_pgf_registry.xml")
-a.deregister('eu.baltrad.beast.generatesite2d')
-a.register('eu.baltrad.beast.generatesite2d', 'rave_pgf_site2D_plugin', 'generate', 'Generate Site2D plugin', 'area,quantity,method,date,time,anomaly-qc,qc-mode,prodpar,applygra,ignore-malfunc,ctfilter,pcsid,algorithm_id,options', '', 'height,range,zrA,zrb,xscale,yscale')
-a.deregister('eu.baltrad.beast.generatecomposite')
-a.register('eu.baltrad.beast.generatecomposite', 'rave_pgf_composite_plugin', 'generate', 'Generate composite plugin', 'area,quantity,method,date,time,selection,interpolation_method,anomaly-qc,qc-mode,reprocess_qfields,prodpar,applygra,ignore-malfunc,ctfilter,qitotal_field,algorithm_id,merge,options', '', 'height,range,zrA,zrb')
-a.deregister('eu.baltrad.beast.generatevolume')
-a.register('eu.baltrad.beast.generatevolume', 'rave_pgf_volume_plugin', 'generate', 'Polar volume generation from individual scans', 'source,date,time,anomaly-qc,qc-mode,algorithm_id,merge', '', 'height,range,zrA,zrb')
-a.deregister('se.smhi.rave.creategmapimage')
-a.register('se.smhi.rave.creategmapimage', 'googlemap_pgf_plugin', 'generate', 'Google Map Plugin', 'outfile,date,time,algorithm_id', '', '')
-a.deregister('eu.baltrad.beast.applyqc')
-a.register('eu.baltrad.beast.applyqc', 'rave_pgf_apply_qc_plugin', 'generate', 'Apply quality controls on a polar volume', 'date,time,anomaly-qc,qc-mode,algorithm_id,remove-malfunc', '', '')  
-a.deregister('eu.baltrad.beast.generateacrr')
-a.register('eu.baltrad.beast.generateacrr', 'rave_pgf_acrr_plugin', 'generate', 'Generate ACRR plugin', 'date,time,quantity,distancefield,applygra,productid', 'hours,N,accept', 'zra,zrb')  
-EOF
-%{__python3} $TMPNAME
-\rm -f $TMPNAME
-
-cat <<EOF > $TMPNAME
-from rave_pgf_quality_registry_mgr import rave_pgf_quality_registry_mgr
-a = rave_pgf_quality_registry_mgr("/etc/baltrad/rave/etc/rave_pgf_quality_registry.xml")
-a.remove_plugin("qi-total:minimum")
-a.remove_plugin("qi-total:additive")
-a.remove_plugin("qi-total:multiplicative")
-a.remove_plugin("elevation-index")
-a.add_plugin("qi-total:minimum", "rave_qitotal_quality_plugin", "rave_qitotal_quality_minimum")
-a.add_plugin("qi-total:additive", "rave_qitotal_quality_plugin", "rave_qitotal_quality_additive")
-a.add_plugin("qi-total:multiplicative", "rave_qitotal_quality_plugin", "rave_qitotal_quality_multiplicative")
-a.add_plugin("elevation-index", "rave_radarindex_quality_plugin", "rave_elevationindex_quality_plugin")
-a.add_plugin("pia", "rave_pia_quality_plugin", "rave_pia_quality_plugin")
-a.save("/etc/baltrad/rave/etc/rave_pgf_quality_registry.xml")
-EOF
-%{__python3} $TMPNAME
-\rm -f $TMPNAME
 
 mkdir -p /var/lib/baltrad/rave/acqva/cluttermap
 mkdir -p /var/lib/baltrad/rave/hac
@@ -279,6 +241,42 @@ chown $BALTRAD_USER:$BALTRAD_GROUP /var/lib/baltrad/rave_pgf_queue.xml
 chown $BALTRAD_USER:$BALTRAD_GROUP /var/lib/baltrad/MSG_CT
 chown -R $BALTRAD_USER:$BALTRAD_GROUP /var/lib/baltrad/rave
 
+cat <<EOF > $TMPNAME
+from rave_pgf_registry import PGF_Registry
+a=PGF_Registry(filename="/etc/baltrad/rave/etc/rave_pgf_registry.xml")
+a.deregister('eu.baltrad.beast.generatesite2d')
+a.register('eu.baltrad.beast.generatesite2d', 'rave_pgf_site2D_plugin', 'generate', 'Generate Site2D plugin', 'area,quantity,method,date,time,anomaly-qc,qc-mode,prodpar,applygra,ignore-malfunc,ctfilter,pcsid,algorithm_id,options', '', 'height,range,zrA,zrb,xscale,yscale')
+a.deregister('eu.baltrad.beast.generatecomposite')
+a.register('eu.baltrad.beast.generatecomposite', 'rave_pgf_composite_plugin', 'generate', 'Generate composite plugin', 'area,quantity,method,date,time,selection,interpolation_method,anomaly-qc,qc-mode,reprocess_qfields,prodpar,applygra,ignore-malfunc,ctfilter,qitotal_field,algorithm_id,merge,options', '', 'height,range,zrA,zrb')
+a.deregister('eu.baltrad.beast.generatevolume')
+a.register('eu.baltrad.beast.generatevolume', 'rave_pgf_volume_plugin', 'generate', 'Polar volume generation from individual scans', 'source,date,time,anomaly-qc,qc-mode,algorithm_id,merge', '', 'height,range,zrA,zrb')
+a.deregister('se.smhi.rave.creategmapimage')
+a.register('se.smhi.rave.creategmapimage', 'googlemap_pgf_plugin', 'generate', 'Google Map Plugin', 'outfile,date,time,algorithm_id', '', '')
+a.deregister('eu.baltrad.beast.applyqc')
+a.register('eu.baltrad.beast.applyqc', 'rave_pgf_apply_qc_plugin', 'generate', 'Apply quality controls on a polar volume', 'date,time,anomaly-qc,qc-mode,algorithm_id,remove-malfunc', '', '')  
+a.deregister('eu.baltrad.beast.generateacrr')
+a.register('eu.baltrad.beast.generateacrr', 'rave_pgf_acrr_plugin', 'generate', 'Generate ACRR plugin', 'date,time,quantity,distancefield,applygra,productid', 'hours,N,accept', 'zra,zrb')  
+EOF
+%{__python3} $TMPNAME
+\rm -f $TMPNAME
+
+cat <<EOF > $TMPNAME
+from rave_pgf_quality_registry_mgr import rave_pgf_quality_registry_mgr
+a = rave_pgf_quality_registry_mgr("/etc/baltrad/rave/etc/rave_pgf_quality_registry.xml")
+a.remove_plugin("qi-total:minimum")
+a.remove_plugin("qi-total:additive")
+a.remove_plugin("qi-total:multiplicative")
+a.remove_plugin("elevation-index")
+a.add_plugin("qi-total:minimum", "rave_qitotal_quality_plugin", "rave_qitotal_quality_minimum")
+a.add_plugin("qi-total:additive", "rave_qitotal_quality_plugin", "rave_qitotal_quality_additive")
+a.add_plugin("qi-total:multiplicative", "rave_qitotal_quality_plugin", "rave_qitotal_quality_multiplicative")
+a.add_plugin("elevation-index", "rave_radarindex_quality_plugin", "rave_elevationindex_quality_plugin")
+a.add_plugin("pia", "rave_pia_quality_plugin", "rave_pia_quality_plugin")
+a.save("/etc/baltrad/rave/etc/rave_pgf_quality_registry.xml")
+EOF
+%{__python3} $TMPNAME
+\rm -f $TMPNAME
+
 %preun
 systemctl stop raved || :
 systemctl stop odiminjectord || :
@@ -311,7 +309,7 @@ systemctl stop odiminjectord || :
 %{_prefix}/etc/rave_pgf
 %{_prefix}/etc/rave_pgf_*.xml
 %{_prefix}/etc/rave_tile_registry.xml
-%{python3_sitelib}/rave.pth
+%{_sitelib}/rave.pth
 %{_unitdir}/raved.service
 %{_unitdir}/odiminjectord.service
 %config /etc/baltrad/rave/Lib/*.py
