@@ -1,5 +1,5 @@
 %{!?__python3: %global __python3 /usr/bin/python3.9}
-%{!?python3_sitearch: %global python3_sitearch %(%{__python3} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
+%define _sitepackages  /usr/lib64/python3.9/site-packages
 %define _prefix /usr/lib/%{name}
 
 Name: hlhdf
@@ -60,8 +60,8 @@ mkdir -p %{buildroot}/usr/lib/hlhdf
 make install DESTDIR=%{buildroot}
 # Fix proper bin-path
 sed -i "s/HL_INSTALL=.*/HL_INSTALL= \/usr\/lib\/hlhdf\/bin\/hlinstall.sh/g" %{buildroot}/usr/lib/hlhdf/mkf/hldef.mk
-mkdir -p %{buildroot}%{python3_sitearch}
-mv %{buildroot}%{_prefix}/lib/_pyhl.so %{buildroot}%{python3_sitearch}/
+mkdir -p %{buildroot}%{_sitepackages}
+mv %{buildroot}%{_prefix}/lib/_pyhl.so %{buildroot}%{_sitepackages}/
 install -p -D -m 0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/ld.so.conf.d/hlhdf-python.conf
 mkdir -p %{buildroot}/usr/lib
 ln -sf ../../usr/lib/hlhdf/lib/libhlhdf.so %{buildroot}/usr/lib/libhlhdf.so
@@ -84,7 +84,7 @@ ln -sf ../../usr/lib/hlhdf/lib/libhlhdf.so %{buildroot}/usr/lib/libhlhdf.so
 /usr/lib/libhlhdf.so
 
 %files python
-%{python3_sitearch}/_pyhl.so
+%{_sitepackages}/_pyhl.so
 %config(noreplace) %{_sysconfdir}/ld.so.conf.d/hlhdf-python.conf
 
 %files devel

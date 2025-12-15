@@ -1,6 +1,6 @@
 var/lib/baltrad/baltrad-node-tomcat/webapps/BaltradDex
-var/lib/baltrad/baltrad-node-tomcat/webapps/BaltradDex/dex.properties /etc/baltrad
-var/lib/baltrad/baltrad-node-tomcat/webapps/BaltradDex/dex.log4j.properties /etc/baltrad
-var/lib/baltrad/baltrad-node-tomcat/webapps/BaltradDex/db.properties /etc/baltrad
-var/lib/baltrad/baltrad-node-tomcat/webapps/BaltradDex/WEB-INF/classes/resources/dex.fc.properties /etc/baltrad
+var/lib/baltrad/baltrad-node-tomcat/webapps/BaltradDex/dex.properties /etc/baltrad/
+var/lib/baltrad/baltrad-node-tomcat/webapps/BaltradDex/dex.log4j.properties /etc/baltrad/
+var/lib/baltrad/baltrad-node-tomcat/webapps/BaltradDex/db.properties /etc/baltrad/
+var/lib/baltrad/baltrad-node-tomcat/webapps/BaltradDex/WEB-INF/classes/resources/dex.fc.properties /etc/baltrad/
 

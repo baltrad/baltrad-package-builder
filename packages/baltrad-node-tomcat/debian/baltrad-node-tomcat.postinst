@@ -29,7 +29,7 @@ if [ "$1" = configure ]; then
   chown -R baltrad:baltrad /var/log/baltrad/baltrad-node-tomcat
   chown -R baltrad:baltrad /var/cache/baltrad-node-tomcat
   chown -R baltrad:baltrad /var/lib/baltrad/baltrad-node-tomcat
-  
+
   chown root:baltrad /etc/baltrad/baltrad-node-tomcat/catalina.properties
   chown root:baltrad /etc/baltrad/baltrad-node-tomcat/context.xml
   chown root:baltrad /etc/baltrad/baltrad-node-tomcat/jaspic-providers.xml

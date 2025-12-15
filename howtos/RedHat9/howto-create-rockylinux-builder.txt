@@ -1,7 +1,7 @@
 %> sudo dnf groupinstall 'Development Tools'
 %> sudo dnf install git rpm-build rpmdevtools yum-utils
 %> rpmdev-setuptree
-%> sudo dnf install python3-devel python3-numpy atlas
+%> sudo dnf install python3-devel python3-numpy atlas json-c-devel
 %> sudo dnf install https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm -y
 %> sudo dnf config-manager --enable crb
 %> sudo dnf install hdf-devel hdf5-devel java-hdf5 libpng-devel netcdf-devel expat-devel proj-devel

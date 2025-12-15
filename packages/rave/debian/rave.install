@@ -1,4 +1,8 @@
 usr/lib/rave/Lib/*.py
+usr/lib/rave/Lib/gadjust/*.py
+usr/lib/rave/Lib/ravemigrate/*.py
+usr/lib/rave/Lib/ravemigrate/*.cfg
+usr/lib/rave/Lib/ravemigrate/versions/*.py
 usr/lib/rave/Lib/_*.so
 usr/lib/rave/lib/*.so
 usr/lib/rave/bin/*
