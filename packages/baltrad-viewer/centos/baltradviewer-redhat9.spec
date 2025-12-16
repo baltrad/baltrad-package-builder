@@ -1,5 +1,5 @@
 %{!?__python3: %global __python3 /usr/bin/python3.9}
-%{!?python3_sitelib: %global python3_sitelib %(%{__python3} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
+%define _sitelib  /usr/lib/python3.9/site-packages/
 %define _prefix /usr/lib/baltrad-viewer
 
 Name:		baltrad-viewer
@@ -55,7 +55,7 @@ rm -rf %{buildroot}
 %install
 mkdir -p %{buildroot}%{_prefix}
 mkdir -p %{buildroot}%{_prefix}/Lib
-mkdir -p %{buildroot}%{python3_sitelib}
+mkdir -p %{buildroot}%{_sitelib}
 mkdir -p %{buildroot}/var/lib/baltrad/baltrad-viewer/data
 mkdir -p %{buildroot}/etc/baltrad/baltrad-viewer
 %{__python3} setup.py install --prefix=/usr/lib --root=%{buildroot}
@@ -66,7 +66,7 @@ mv web/products.js %{buildroot}/etc/baltrad/baltrad-viewer
 cp web/smhi-areas.xml %{buildroot}/etc/baltrad/baltrad-viewer/product-areas.xml
 ln -s ../../../../etc/baltrad/baltrad-viewer/products.js %{buildroot}/usr/lib/baltrad-viewer/web/products.js
 ln -s ../../../../var/lib/baltrad/baltrad-viewer/data %{buildroot}/usr/lib/baltrad-viewer/web/data
-echo "/usr/lib/baltrad-viewer/Lib" > %{buildroot}%{python3_sitelib}/baltrad-viewer.pth
+echo "/usr/lib/baltrad-viewer/Lib" > %{buildroot}%{_sitelib}/baltrad-viewer.pth
 
 %post pgf
 BALTRAD_USER=baltrad
@@ -143,7 +143,7 @@ chmod 775 /etc/baltrad/baltrad-viewer
 %{_prefix}/COPYING.LESSER
 %{_prefix}/LICENSE
 %{_prefix}/README.ravepgf
-%{python3_sitelib}/baltrad-viewer.pth
+%{_sitelib}/baltrad-viewer.pth
 
 %files web
 %{_prefix}/web

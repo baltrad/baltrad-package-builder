@@ -1,6 +1,6 @@
 %global debug_package %{nil}
 %{!?__python3: %global __python3 /usr/bin/python3.9}
-%{!?python3_sitelib: %global python3_sitelib %(%{__python3} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
+%define _sitelib  /usr/lib64/python3.9/site-packages/
 %{!?bdb_site_install_dir: %global bdb_site_install_dir /usr/lib/python3.9/site-packages}
 %define _prefix /usr
 

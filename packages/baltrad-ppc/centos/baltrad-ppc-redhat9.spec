@@ -1,5 +1,5 @@
 %{!?__python3: %global __python3 /usr/bin/python3.9}
-%{!?python3_sitelib: %global python3_sitelib %(%{__python3} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
+%define _sitelib  /usr/lib/python3.9/site-packages/
 %define _prefix /usr/lib/baltrad-ppc
 
 Name: baltrad-ppc
@@ -43,11 +43,11 @@ make
 make install DESTDIR=%{buildroot}
 %py_byte_compile %{__python3} %{buildroot}/usr/lib/baltrad-ppc/share/baltrad-ppc/pyppc/ || :
 mkdir -p %{buildroot}/etc/ld.so.conf.d/
-mkdir -p %{buildroot}%{python3_sitelib}
+mkdir -p %{buildroot}%{_sitelib}
 mkdir -p %{buildroot}/etc/baltrad/baltrad-ppc/config
 mv %{buildroot}/%{_prefix}/share/baltrad-ppc/config/*.xml %{buildroot}/etc/baltrad/baltrad-ppc/config/
 echo "/usr/lib/baltrad-ppc/lib" >> %{buildroot}/etc/ld.so.conf.d/baltrad-ppc.conf
-mv %{buildroot}/usr/lib64/python3.9/site-packages/baltrad-ppc.pth %{buildroot}%{python3_sitelib}
+mv %{buildroot}/usr/lib64/python3.9/site-packages/baltrad-ppc.pth %{buildroot}%{_sitelib}
 ln -s ../../../../../../etc/baltrad/baltrad-ppc/config/ppc_options.xml 		%{buildroot}/%{_prefix}/share/baltrad-ppc/config/ppc_options.xml
 
 %post
@@ -84,7 +84,7 @@ chown $BALTRAD_USER:$BALTRAD_GROUP /etc/baltrad/baltrad-ppc/config/ppc_options.x
 %{_prefix}/share/baltrad-ppc/config/ppc_options.xml
 %{_prefix}/share/baltrad-ppc/pyppc/*.py
 %{_prefix}/share/baltrad-ppc/pyppc/__pycache__/*.pyc
-%{python3_sitelib}/baltrad-ppc.pth
+%{_sitelib}/baltrad-ppc.pth
 %{_prefix}/share/baltrad-ppc/pyppc/_pdpprocessor.so
 %{_prefix}/share/baltrad-ppc/pyppc/_ppcoptions.so
 %{_prefix}/share/baltrad-ppc/pyppc/_ppcradaroptions.so

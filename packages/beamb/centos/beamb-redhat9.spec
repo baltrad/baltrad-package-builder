@@ -1,5 +1,5 @@
 %{!?__python3: %global __python3 /usr/bin/python3.9}
-%{!?python3_sitelib: %global python3_sitelib %(%{__python3} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
+%define _sitelib  /usr/lib/python3.9/site-packages/
 %define _prefix /usr/lib/beamb
 
 Name: beamb
@@ -37,7 +37,7 @@ make
 
 %install
 make install DESTDIR=%{buildroot}
-mkdir -p %{buildroot}%{python3_sitelib}
+mkdir -p %{buildroot}%{_sitelib}
 mkdir -p %{buildroot}/usr/lib/beamb
 mkdir -p %{buildroot}/etc/ld.so.conf.d
 mkdir -p %{buildroot}/var/cache/beamb
@@ -48,7 +48,7 @@ mv %{buildroot}/usr/lib/beamb/share/beamb/config/beamb_options.xml %{buildroot}/
 ln -s ../../../../../../etc/baltrad/beamb/beamb_options.xml %{buildroot}/usr/lib/beamb/share/beamb/config/beamb_options.xml
 %py_byte_compile %{__python3} %{buildroot}/usr/lib/beamb/share/beamb/pybeamb/ || :
 echo "/usr/lib/beamb/lib">> %{buildroot}/etc/ld.so.conf.d/beamb.conf
-mv %{buildroot}/usr/lib64/python3.9/site-packages/pybeamb.pth %{buildroot}%{python3_sitelib}
+mv %{buildroot}/usr/lib64/python3.9/site-packages/pybeamb.pth %{buildroot}%{_sitelib}
 
 %post
 BALTRAD_USER=baltrad
@@ -86,7 +86,7 @@ EOF
 %{_prefix}/share/beamb/pybeamb/*.py
 %{_prefix}/share/beamb/pybeamb/__pycache__/*.pyc
 # %{_prefix}/share/beamb/pybeamb/*.pyo
-%{python3_sitelib}/pybeamb.pth
+%{_sitelib}/pybeamb.pth
 /var/cache/beamb
 /etc/ld.so.conf.d/beamb.conf
 %config /etc/baltrad/beamb/beamb_defines.py

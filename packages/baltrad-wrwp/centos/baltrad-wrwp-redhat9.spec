@@ -1,5 +1,5 @@
 %{!?__python3: %global __python3 /usr/bin/python3.9}
-%{!?python3_sitelib: %global python3_sitelib %(%{__python3} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
+%define _sitelib  /usr/lib/python3.9/site-packages/
 %define _prefix /usr/lib/baltrad-wrwp
 
 Name: baltrad-wrwp
@@ -55,14 +55,14 @@ make
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/lib/baltrad-wrwp
 mkdir -p %{buildroot}%{_sysconfdir}/ld.so.conf.d
-mkdir -p %{buildroot}%{python3_sitelib}
+mkdir -p %{buildroot}%{_sitelib}
 make install DESTDIR=%{buildroot}
 mkdir -p %{buildroot}/etc/baltrad/wrwp
 mv %{buildroot}/usr/lib/baltrad-wrwp/config/wrwp_config.xml %{buildroot}/etc/baltrad/wrwp/wrwp_config.xml
 rm -fr %{buildroot}/usr/lib/baltrad-wrwp/config
 %py_byte_compile %{__python3} %{buildroot}/usr/lib/baltrad-wrwp/share/wrwp/pywrwp/ || :
 echo "/usr/lib/baltrad-wrwp/lib" >> %{buildroot}%{_sysconfdir}/ld.so.conf.d/baltrad-wrwp.conf
-mv %{buildroot}/usr/lib64/python3.9/site-packages/pywrwp.pth %{buildroot}%{python3_sitelib}
+mv %{buildroot}/usr/lib64/python3.9/site-packages/pywrwp.pth %{buildroot}%{_sitelib}
 
 %post
 BALTRAD_USER=baltrad
@@ -107,6 +107,6 @@ EOF
 
 %files python
 %{_prefix}/share/wrwp/pywrwp/
-%{python3_sitelib}/pywrwp.pth
+%{_sitelib}/pywrwp.pth
 
 %config(noreplace) %{_sysconfdir}/ld.so.conf.d/baltrad-wrwp.conf

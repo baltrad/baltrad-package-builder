@@ -1,5 +1,5 @@
 %{!?__python3: %global __python3 /usr/bin/python3.9}
-%{!?python3_sitelib: %global python3_sitelib %(%{__python3} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
+%define _sitelib  /usr/lib/python3.9/site-packages/
 %define _prefix /usr/lib/bropo
 
 Name: bropo
@@ -45,10 +45,10 @@ mv %{buildroot}/usr/lib/bropo/share/bropo/config/ropo_options.xml %{buildroot}/e
 ln -s ../../../../../../etc/baltrad/ropo/ropo_options.xml %{buildroot}/usr/lib/bropo/share/bropo/config/ropo_options.xml
 
 mkdir -p %{buildroot}/etc/ld.so.conf.d/
-mkdir -p %{buildroot}%{python3_sitelib}
+mkdir -p %{buildroot}%{_sitelib}
 
 echo "/usr/lib/bropo/lib" >> %{buildroot}/etc/ld.so.conf.d/bropo.conf
-mv %{buildroot}/usr/lib64/python3.9/site-packages/pyropo.pth %{buildroot}%{python3_sitelib}
+mv %{buildroot}/usr/lib64/python3.9/site-packages/pyropo.pth %{buildroot}%{_sitelib}
 
 %post
 BALTRAD_USER=baltrad
@@ -82,7 +82,7 @@ EOF
 %{_prefix}/share/bropo/config/ropo_options.xml
 %{_prefix}/share/bropo/pyropo/ropo_*.py
 %{_prefix}/share/bropo/pyropo/__pycache__/*.pyc
-%{python3_sitelib}/pyropo.pth
+%{_sitelib}/pyropo.pth
 %{_prefix}/share/bropo/pyropo/_fmiimage.so
 %{_prefix}/share/bropo/pyropo/_ropogenerator.so
 /etc/ld.so.conf.d/bropo.conf
