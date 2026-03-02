@@ -38,7 +38,7 @@ Requires: python3-daemon
 Requires: python3-sqlalchemy
 Requires: baltrad-crypto
 Requires: baltrad-utils
-Requires: python3-migrate
+Requires: python3-alembic
 Conflicts: rave-py27
 
 %description
@@ -298,7 +298,7 @@ systemctl stop odiminjectord || :
 %{_prefix}/Lib/__pycache__/*.pyc
 %{_prefix}/Lib/_*.so
 %{_prefix}/Lib/gadjust
-%{_prefix}/Lib/ravemigrate
+%{_prefix}/Lib/alembic
 %{_prefix}/lib/*.so
 %{_prefix}/bin/*
 /usr/bin/*

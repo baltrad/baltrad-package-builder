@@ -29,7 +29,7 @@ The baltrad node tomcat server is the adapted tomcat server that is suitable for
 the baltrad web application.
 
 %prep
-%setup -q -n baltrad-node-tomcat
+%setup -q
 %patch1 -p1
 %patch2 -p0
 %patch3 -p0
