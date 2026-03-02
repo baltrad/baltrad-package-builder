@@ -1,7 +1,7 @@
 #!/usr/bin/make -f
 export DH_VERBOSE=1
 export DH_OPTIONS=-v
-JAVA_HOME=/usr/lib/jvm/default-java
+JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
 INSTALLROOT=$(CURDIR)/debian/tmp
 
 %:
@@ -30,6 +30,8 @@ override_dh_auto_install:
 	rm -f bin/baltrad-node
 	cp -r bin $(INSTALLROOT)/usr/share/baltrad/baltrad-node-tomcat/
 	cp -r lib $(INSTALLROOT)/usr/share/baltrad/baltrad-node-tomcat/
+	echo `pwd`
+	cp -r debian/libs/*.jar $(INSTALLROOT)/usr/share/baltrad/baltrad-node-tomcat/lib/
 	cp conf/catalina.policy $(INSTALLROOT)/var/lib/baltrad/baltrad-node-tomcat/policy/
 	cp conf/*.xml $(INSTALLROOT)/etc/baltrad/baltrad-node-tomcat/
 	cp conf/*.xsd $(INSTALLROOT)/etc/baltrad/baltrad-node-tomcat/

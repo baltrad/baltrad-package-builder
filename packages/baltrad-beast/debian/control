@@ -2,7 +2,7 @@ Source: baltrad-beast
 Section: science
 Priority: extra
 Maintainer: Povi Software LLC <laur@baltrad.eu>
-Build-Depends: debhelper (>= 8.0.0),  openjdk-8-jdk, ant, baltrad-db-external, baltrad-db-java, cron-daemon
+Build-Depends: debhelper (>= 8.0.0),  openjdk-21-jdk, ant, baltrad-db-external, baltrad-db-java, cron-daemon
 Standards-Version: 3.9.4
 
 Package: baltrad-beast
@@ -12,5 +12,5 @@ Description: Task manager/scheduler subsystem
 
 Package: baltrad-beast-external
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, openjdk-8-jre, baltrad-beast
+Depends: ${shlibs:Depends}, ${misc:Depends}, openjdk-21-jre, baltrad-beast
 Description: Task manager/scheduler subsystem

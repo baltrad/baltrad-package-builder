@@ -53,7 +53,7 @@
 +
 +find_java_home()
 +{
-+  for jv in 8 7; do
++  for jv in 21; do
 +    tmpdir=/usr/lib/jvm/jre-1.${jv}.0-openjdk
 +    if [ -d "${tmpdir}" ]; then
 +      if [ -x "${tmpdir}/jre/bin/java" ]; then
