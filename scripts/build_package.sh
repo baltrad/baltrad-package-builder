@@ -612,6 +612,7 @@ if [ ! -d build/$BUILD_NAME ]; then
         BUILD_NUMBER=1 # Always set build number to 1 on auto when unpacking tarballs unless bump has been set
       fi
     fi  
+    cd "$BUILD_NAME" || exit 127
   else
     gitbranch=$GIT_BRANCH
     if [ "$gitbranch" = "" ]; then
@@ -621,7 +622,6 @@ if [ ! -d build/$BUILD_NAME ]; then
     cd $BUILD_NAME || exit 127
     git checkout $gitbranch || exit 127
   fi
-  cd "$BUILD_NAME"
   if [ "$BUILD_NUMBER" = "auto" ]; then
     get_git_repo_version "$GIT_PKG_OFFSET" "$GIT_PKG_NBR" "$GIT_PKG_NO_EXTRACT" "$GIT_PKG_BUMP"
     TMP_NUMBER=`get_git_repo_version "$GIT_PKG_OFFSET" "$GIT_PKG_NBR" "$GIT_PKG_NO_EXTRACT" "$GIT_PKG_BUMP"`
