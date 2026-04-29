@@ -10,11 +10,11 @@ URL:		http://www.baltrad.eu/
 Source0:	%{name}-%{version}.tar.gz
 BuildRequires:	zlib-devel
 BuildRequires:	hdf5-devel
-BuildRequires:	((proj-devel >= 9.6 and proj-devel <= 9.7.1) or proj96-devel or proj97-devel)
+BuildRequires:	((proj-devel >= 9.6 and proj-devel < 9.8) or proj96-devel or proj97-devel)
 BuildRequires:	libpng-devel
 BuildRequires:  autoconf, automake libtool
 Requires:	zlib
-Requires:	((proj >= 9.6 and proj <= 9.7.1) or proj96 or proj97)
+Requires:	((proj >= 9.6 and proj < 9.8) or proj96 or proj97)
 Requires:	libpng
 Requires:	hdf5
 
