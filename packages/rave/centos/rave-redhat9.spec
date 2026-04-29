@@ -24,7 +24,7 @@ BuildRequires: python3-devel
 BuildRequires: netcdf-devel
 BuildRequires: atlas-devel
 BuildRequires: python3-numpy
-BuildRequires: proj-devel
+BuildRequires: ((proj-devel >= 9.6 and proj-devel <= 9.7.1) or proj96-devel or proj97-devel)
 BuildRequires: systemd
 BuildRequires: expat-devel
 BuildRequires: json-c-devel
@@ -39,6 +39,7 @@ Requires: python3-sqlalchemy
 Requires: baltrad-crypto
 Requires: baltrad-utils
 Requires: python3-alembic
+Requires: ((proj >= 9.6 and proj <= 9.7.1) or proj96 or proj97)
 Conflicts: rave-py27
 
 %description
@@ -49,7 +50,7 @@ Summary: RAVE development files
 Group: Development/Libraries
 Requires: %{name} = %{version}-%{release}
 # rave development headers include headers from proj
-Requires: proj-devel
+Requires: ((proj-devel >= 9.6 and proj-devel <= 9.7.1) or proj96-devel or proj97-devel)
 # arrayobject.h and other needs
 Requires: python3-numpy
 Requires: hlhdf-devel
