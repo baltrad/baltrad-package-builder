@@ -256,7 +256,9 @@ a.register('se.smhi.rave.creategmapimage', 'googlemap_pgf_plugin', 'generate', '
 a.deregister('eu.baltrad.beast.applyqc')
 a.register('eu.baltrad.beast.applyqc', 'rave_pgf_apply_qc_plugin', 'generate', 'Apply quality controls on a polar volume', 'date,time,anomaly-qc,qc-mode,algorithm_id,remove-malfunc', '', '')  
 a.deregister('eu.baltrad.beast.generateacrr')
-a.register('eu.baltrad.beast.generateacrr', 'rave_pgf_acrr_plugin', 'generate', 'Generate ACRR plugin', 'date,time,quantity,distancefield,applygra,productid', 'hours,N,accept', 'zra,zrb')  
+a.register('eu.baltrad.beast.generateacrr', 'rave_pgf_acrr_plugin', 'generate', 'Generate ACRR plugin', 'date,time,quantity,distancefield,applygra,productid,options', 'hours,N,accept', 'zra,zrb')  
+a.deregister('eu.baltrad.beast.creategracoefficient')
+a.register('eu.baltrad.beast.creategracoefficient', 'rave_pgf_gra_plugin', 'generate', 'Generate GRA coefficient plugin', 'date,time,quantity,distancefield,adjustmentfile,options', 'hours,N,accept', 'zra,zrb')  
 EOF
 %{__python3} $TMPNAME
 \rm -f $TMPNAME
